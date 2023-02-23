@@ -209,7 +209,7 @@ class Ui_MainWindow(object):
         self.pushButton_2.setStyleSheet("QPushButton {\n"
 "border-radius: 11px;\n"
 "border: 2px solid #95753d;\n"
-"background-color: #white;\n"
+"background-color: white;\n"
 "color: #95753d;\n"
 "height: 25px;\n"
 "}\n"
@@ -234,7 +234,7 @@ class Ui_MainWindow(object):
         self.lineEdit.setStyleSheet("QLineEdit {\n"
 "border-radius: 6px;\n"
 "border: 1px solid #d3c393;\n"
-"background-color: #white;\n"
+"background-color: white;\n"
 "color:  #95753d;\n"
 "height: 20px;\n"
 "}")
