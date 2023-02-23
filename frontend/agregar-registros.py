@@ -40,8 +40,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.addItem(spacerItem4)
         self.verticalLayout_6 = QtWidgets.QVBoxLayout()
         self.verticalLayout_6.setObjectName("verticalLayout_6")
-        self.pushButton_4 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_4.setStyleSheet("QPushButton {\n"
+        self.button_tabla = QtWidgets.QPushButton(self.centralwidget)
+        self.button_tabla.setStyleSheet("QPushButton {\n"
 "    color: rgb(141, 110, 58);\n"
 "    border: none;\n"
 "    font: 10pt \"Arial Rounded MT Bold\";\n"
@@ -61,13 +61,13 @@ class Ui_MainWindow(object):
 "")
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("bar-chart-box-line.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButton_4.setIcon(icon)
-        self.pushButton_4.setAutoDefault(False)
-        self.pushButton_4.setFlat(False)
-        self.pushButton_4.setObjectName("pushButton_4")
-        self.verticalLayout_6.addWidget(self.pushButton_4)
-        self.pushButton_9 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_9.setStyleSheet("QPushButton {\n"
+        self.button_tabla.setIcon(icon)
+        self.button_tabla.setAutoDefault(False)
+        self.button_tabla.setFlat(False)
+        self.button_tabla.setObjectName("button_tabla")
+        self.verticalLayout_6.addWidget(self.button_tabla)
+        self.button_importar_excel = QtWidgets.QPushButton(self.centralwidget)
+        self.button_importar_excel.setStyleSheet("QPushButton {\n"
 "    color: rgb(141, 110, 58);\n"
 "    border: none;\n"
 "    font: 10pt \"Arial Rounded MT Bold\";\n"
@@ -86,11 +86,11 @@ class Ui_MainWindow(object):
 "}")
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap("file-excel-2-fill.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButton_9.setIcon(icon1)
-        self.pushButton_9.setObjectName("pushButton_9")
-        self.verticalLayout_6.addWidget(self.pushButton_9)
-        self.pushButton_8 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_8.setStyleSheet("QPushButton {\n"
+        self.button_importar_excel.setIcon(icon1)
+        self.button_importar_excel.setObjectName("button_importar_excel")
+        self.verticalLayout_6.addWidget(self.button_importar_excel)
+        self.button_agregar_usuario = QtWidgets.QPushButton(self.centralwidget)
+        self.button_agregar_usuario.setStyleSheet("QPushButton {\n"
 "    color: rgb(141, 110, 58);\n"
 "    border: none;\n"
 "    font: 10pt \"Arial Rounded MT Bold\";\n"
@@ -109,11 +109,11 @@ class Ui_MainWindow(object):
 "}")
         icon2 = QtGui.QIcon()
         icon2.addPixmap(QtGui.QPixmap("user-add-fill.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButton_8.setIcon(icon2)
-        self.pushButton_8.setObjectName("pushButton_8")
-        self.verticalLayout_6.addWidget(self.pushButton_8)
-        self.pushButton_7 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_7.setStyleSheet("QPushButton {\n"
+        self.button_agregar_usuario.setIcon(icon2)
+        self.button_agregar_usuario.setObjectName("button_agregar_usuario")
+        self.verticalLayout_6.addWidget(self.button_agregar_usuario)
+        self.button_editar_privilegios = QtWidgets.QPushButton(self.centralwidget)
+        self.button_editar_privilegios.setStyleSheet("QPushButton {\n"
 "    color: rgb(141, 110, 58);\n"
 "    border: none;\n"
 "    font: 10pt \"Arial Rounded MT Bold\";\n"
@@ -132,9 +132,9 @@ class Ui_MainWindow(object):
 "}")
         icon3 = QtGui.QIcon()
         icon3.addPixmap(QtGui.QPixmap("edit-2-fill.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButton_7.setIcon(icon3)
-        self.pushButton_7.setObjectName("pushButton_7")
-        self.verticalLayout_6.addWidget(self.pushButton_7)
+        self.button_editar_privilegios.setIcon(icon3)
+        self.button_editar_privilegios.setObjectName("button_editar_privilegios")
+        self.verticalLayout_6.addWidget(self.button_editar_privilegios)
         self.verticalLayout_5.addLayout(self.verticalLayout_6)
         spacerItem5 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_5.addItem(spacerItem5)
@@ -152,8 +152,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.addItem(spacerItem11)
         spacerItem12 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_5.addItem(spacerItem12)
-        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setStyleSheet("QPushButton {\n"
+        self.button_logout = QtWidgets.QPushButton(self.centralwidget)
+        self.button_logout.setStyleSheet("QPushButton {\n"
 "    color: rgb(141, 110, 58);\n"
 "    border: none;\n"
 "    font: 10pt \"Arial Rounded MT Bold\";\n"
@@ -172,9 +172,9 @@ class Ui_MainWindow(object):
 "}")
         icon4 = QtGui.QIcon()
         icon4.addPixmap(QtGui.QPixmap("logout-box-r-line.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButton.setIcon(icon4)
-        self.pushButton.setObjectName("pushButton")
-        self.verticalLayout_5.addWidget(self.pushButton)
+        self.button_logout.setIcon(icon4)
+        self.button_logout.setObjectName("button_logout")
+        self.verticalLayout_5.addWidget(self.button_logout)
         spacerItem13 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_5.addItem(spacerItem13)
         self.horizontalLayout.addLayout(self.verticalLayout_5)
@@ -188,11 +188,11 @@ class Ui_MainWindow(object):
         self.verticalLayout_7.setObjectName("verticalLayout_7")
         spacerItem16 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_7.addItem(spacerItem16)
-        self.label_3 = QtWidgets.QLabel(self.centralwidget)
-        self.label_3.setStyleSheet("font: 10pt \"Arial Rounded MT Bold\";\n"
+        self.label_id = QtWidgets.QLabel(self.centralwidget)
+        self.label_id.setStyleSheet("font: 10pt \"Arial Rounded MT Bold\";\n"
 "color: rgb(141, 110, 58);")
-        self.label_3.setObjectName("label_3")
-        self.verticalLayout_7.addWidget(self.label_3)
+        self.label_id.setObjectName("label_id")
+        self.verticalLayout_7.addWidget(self.label_id)
         self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEdit.setStyleSheet("QLineEdit {\n"
 "border-radius: 6px;\n"
@@ -283,8 +283,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_7.addItem(spacerItem21)
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_2.setStyleSheet("QPushButton {\n"
+        self.button_cancel = QtWidgets.QPushButton(self.centralwidget)
+        self.button_cancel.setStyleSheet("QPushButton {\n"
 "border-radius: 6px;\n"
 "border: 2px solid #95753d;\n"
 "background-color: white;\n"
@@ -304,12 +304,12 @@ class Ui_MainWindow(object):
 "    color: rgb(255, 255, 255);\n"
 "    border: 3px solid  rgb(103, 80, 41);\n"
 "}")
-        self.pushButton_2.setObjectName("pushButton_2")
-        self.horizontalLayout_4.addWidget(self.pushButton_2)
+        self.button_cancel.setObjectName("button_cancel")
+        self.horizontalLayout_4.addWidget(self.button_cancel)
         spacerItem22 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_4.addItem(spacerItem22)
-        self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_3.setStyleSheet("QPushButton {\n"
+        self.button_guardar = QtWidgets.QPushButton(self.centralwidget)
+        self.button_guardar.setStyleSheet("QPushButton {\n"
 "border-radius: 6px;\n"
 "border: 3px solid #95753d;\n"
 "background-color: #95753d;\n"
@@ -329,8 +329,8 @@ class Ui_MainWindow(object):
 "    color: rgb(255, 255, 255);\n"
 "    border: 3px solid  rgb(103, 80, 41);\n"
 "}")
-        self.pushButton_3.setObjectName("pushButton_3")
-        self.horizontalLayout_4.addWidget(self.pushButton_3)
+        self.button_guardar.setObjectName("button_guardar")
+        self.horizontalLayout_4.addWidget(self.button_guardar)
         self.verticalLayout_7.addLayout(self.horizontalLayout_4)
         spacerItem23 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_7.addItem(spacerItem23)
@@ -352,20 +352,20 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label_2.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:24pt; color:#ffffff;\">....</span><span style=\" font-size:24pt;\">Notarius</span><span style=\" font-size:24pt; color:#ffffff;\">....</span></p></body></html>"))
-        self.pushButton_4.setText(_translate("MainWindow", "Tabla"))
-        self.pushButton_9.setText(_translate("MainWindow", "Importar Excel"))
-        self.pushButton_8.setText(_translate("MainWindow", "Agregar Usuario"))
-        self.pushButton_7.setText(_translate("MainWindow", "Editar Privilegios"))
-        self.pushButton.setText(_translate("MainWindow", "Cerrar Sesión"))
-        self.label_3.setText(_translate("MainWindow", "ID"))
+        self.button_tabla.setText(_translate("MainWindow", "Tabla"))
+        self.button_importar_excel.setText(_translate("MainWindow", "Importar Excel"))
+        self.button_agregar_usuario.setText(_translate("MainWindow", "Agregar Usuario"))
+        self.button_editar_privilegios.setText(_translate("MainWindow", "Editar Privilegios"))
+        self.button_logout.setText(_translate("MainWindow", "Cerrar Sesión"))
+        self.label_id.setText(_translate("MainWindow", "ID"))
         self.label_4.setText(_translate("MainWindow", "Input"))
         self.label_5.setText(_translate("MainWindow", "Input"))
         self.label_6.setText(_translate("MainWindow", "Your password is between 4 and 12 characters"))
         self.label_7.setText(_translate("MainWindow", "Input Text Label"))
         self.label_8.setText(_translate("MainWindow", "Error message informing me of a problem"))
         self.label_9.setText(_translate("MainWindow", "Input"))
-        self.pushButton_2.setText(_translate("MainWindow", "     Cancel     "))
-        self.pushButton_3.setText(_translate("MainWindow", "     Guardar     "))
+        self.button_cancel.setText(_translate("MainWindow", "     Cancel     "))
+        self.button_guardar.setText(_translate("MainWindow", "     Guardar     "))
 
 if __name__ == "__main__":
     import sys

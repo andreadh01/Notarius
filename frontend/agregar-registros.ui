@@ -105,7 +105,7 @@ color: rgb(149, 117, 61);</string>
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
-         <widget class="QPushButton" name="pushButton_4">
+         <widget class="QPushButton" name="button_tabla">
           <property name="styleSheet">
            <string notr="true">QPushButton {
 	color: rgb(141, 110, 58);
@@ -142,7 +142,7 @@ QPushButton:pressed {
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_9">
+         <widget class="QPushButton" name="button_importar_excel">
           <property name="styleSheet">
            <string notr="true">QPushButton {
 	color: rgb(141, 110, 58);
@@ -172,7 +172,7 @@ QPushButton:pressed {
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_8">
+         <widget class="QPushButton" name="button_agregar_usuario">
           <property name="styleSheet">
            <string notr="true">QPushButton {
 	color: rgb(141, 110, 58);
@@ -202,7 +202,7 @@ QPushButton:pressed {
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_7">
+         <widget class="QPushButton" name="button_editar_privilegios">
           <property name="styleSheet">
            <string notr="true">QPushButton {
 	color: rgb(141, 110, 58);
@@ -338,7 +338,7 @@ QPushButton:pressed {
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="button_logout">
         <property name="styleSheet">
          <string notr="true">QPushButton {
 	color: rgb(141, 110, 58);
@@ -426,7 +426,7 @@ QPushButton:pressed {
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="label_3">
+         <widget class="QLabel" name="label_id">
           <property name="styleSheet">
            <string notr="true">font: 10pt &quot;Arial Rounded MT Bold&quot;;
 color: rgb(141, 110, 58);</string>
@@ -633,7 +633,7 @@ height: 20px;
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QPushButton" name="button_cancel">
             <property name="styleSheet">
              <string notr="true">QPushButton {
 border-radius: 6px;
@@ -675,7 +675,7 @@ QPushButton:pressed {
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_3">
+           <widget class="QPushButton" name="button_guardar">
             <property name="styleSheet">
              <string notr="true">QPushButton {
 border-radius: 6px;
