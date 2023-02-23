@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>750</width>
+    <width>836</width>
     <height>541</height>
    </rect>
   </property>
@@ -172,66 +172,6 @@ QPushButton:pressed {
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_8">
-          <property name="styleSheet">
-           <string notr="true">QPushButton {
-	color: rgb(141, 110, 58);
-	border: none;
-	font: 10pt &quot;Arial Rounded MT Bold&quot;;
-height: 25px;
-}
-
-QPushButton:hover {
-	background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}
-
-QPushButton:pressed {
-    border-style: inset;
-    background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}</string>
-          </property>
-          <property name="text">
-           <string>Agregar Registro</string>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normaloff>profile-line.png</normaloff>profile-line.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_7">
-          <property name="styleSheet">
-           <string notr="true">QPushButton {
-	color: rgb(141, 110, 58);
-	border: none;
-	font: 10pt &quot;Arial Rounded MT Bold&quot;;
-height: 25px;
-}
-
-QPushButton:hover {
-	background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}
-
-QPushButton:pressed {
-    border-style: inset;
-    background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}</string>
-          </property>
-          <property name="text">
-           <string>Modificar Registro</string>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normaloff>edit-2-fill.png</normaloff>edit-2-fill.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QPushButton" name="pushButton_6">
           <property name="styleSheet">
            <string notr="true">QPushButton {
@@ -257,7 +197,7 @@ QPushButton:pressed {
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>file-history-fill.png</normaloff>file-history-fill.png</iconset>
+            <normaloff>user-add-fill.png</normaloff>user-add-fill.png</iconset>
           </property>
          </widget>
         </item>
@@ -284,6 +224,10 @@ QPushButton:pressed {
           </property>
           <property name="text">
            <string>Editar Privilegios</string>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>edit-2-fill.png</normaloff>edit-2-fill.png</iconset>
           </property>
          </widget>
         </item>

@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(750, 541)
+        MainWindow.resize(836, 541)
         MainWindow.setStyleSheet("QMainWindow {\n"
 "background-color:white;\n"
 "\n"
@@ -89,52 +89,6 @@ class Ui_MainWindow(object):
         self.pushButton_9.setIcon(icon1)
         self.pushButton_9.setObjectName("pushButton_9")
         self.verticalLayout_6.addWidget(self.pushButton_9)
-        self.pushButton_8 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_8.setStyleSheet("QPushButton {\n"
-"    color: rgb(141, 110, 58);\n"
-"    border: none;\n"
-"    font: 10pt \"Arial Rounded MT Bold\";\n"
-"height: 25px;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background-color: rgb(149, 117, 61);\n"
-"    color: rgb(255, 255, 255);\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    border-style: inset;\n"
-"    background-color: rgb(149, 117, 61);\n"
-"    color: rgb(255, 255, 255);\n"
-"}")
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap("profile-line.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButton_8.setIcon(icon2)
-        self.pushButton_8.setObjectName("pushButton_8")
-        self.verticalLayout_6.addWidget(self.pushButton_8)
-        self.pushButton_7 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_7.setStyleSheet("QPushButton {\n"
-"    color: rgb(141, 110, 58);\n"
-"    border: none;\n"
-"    font: 10pt \"Arial Rounded MT Bold\";\n"
-"height: 25px;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background-color: rgb(149, 117, 61);\n"
-"    color: rgb(255, 255, 255);\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    border-style: inset;\n"
-"    background-color: rgb(149, 117, 61);\n"
-"    color: rgb(255, 255, 255);\n"
-"}")
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap("edit-2-fill.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButton_7.setIcon(icon3)
-        self.pushButton_7.setObjectName("pushButton_7")
-        self.verticalLayout_6.addWidget(self.pushButton_7)
         self.pushButton_6 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_6.setStyleSheet("QPushButton {\n"
 "    color: rgb(141, 110, 58);\n"
@@ -153,9 +107,9 @@ class Ui_MainWindow(object):
 "    background-color: rgb(149, 117, 61);\n"
 "    color: rgb(255, 255, 255);\n"
 "}")
-        icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap("file-history-fill.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButton_6.setIcon(icon4)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap("user-add-fill.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButton_6.setIcon(icon2)
         self.pushButton_6.setObjectName("pushButton_6")
         self.verticalLayout_6.addWidget(self.pushButton_6)
         self.pushButton_5 = QtWidgets.QPushButton(self.centralwidget)
@@ -176,6 +130,9 @@ class Ui_MainWindow(object):
 "    background-color: rgb(149, 117, 61);\n"
 "    color: rgb(255, 255, 255);\n"
 "}")
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap("edit-2-fill.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButton_5.setIcon(icon3)
         self.pushButton_5.setObjectName("pushButton_5")
         self.verticalLayout_6.addWidget(self.pushButton_5)
         self.verticalLayout_5.addLayout(self.verticalLayout_6)
@@ -213,9 +170,9 @@ class Ui_MainWindow(object):
 "    background-color: rgb(149, 117, 61);\n"
 "    color: rgb(255, 255, 255);\n"
 "}")
-        icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap("logout-box-r-line.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButton.setIcon(icon5)
+        icon4 = QtGui.QIcon()
+        icon4.addPixmap(QtGui.QPixmap("logout-box-r-line.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButton.setIcon(icon4)
         self.pushButton.setObjectName("pushButton")
         self.verticalLayout_5.addWidget(self.pushButton)
         spacerItem13 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
@@ -425,8 +382,6 @@ class Ui_MainWindow(object):
         self.label_2.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:24pt; color:#ffffff;\">....</span><span style=\" font-size:24pt;\">Notarius</span><span style=\" font-size:24pt; color:#ffffff;\">....</span></p></body></html>"))
         self.pushButton_4.setText(_translate("MainWindow", "Tabla"))
         self.pushButton_9.setText(_translate("MainWindow", "Exportar Excel"))
-        self.pushButton_8.setText(_translate("MainWindow", "Agregar Registro"))
-        self.pushButton_7.setText(_translate("MainWindow", "Modificar Registro"))
         self.pushButton_6.setText(_translate("MainWindow", "Agregar Usuario"))
         self.pushButton_5.setText(_translate("MainWindow", "Editar Privilegios"))
         self.pushButton.setText(_translate("MainWindow", "Cerrar Sesión"))

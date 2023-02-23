@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>750</width>
+    <width>786</width>
     <height>539</height>
    </rect>
   </property>
@@ -23,7 +23,7 @@ background-color:white;
    <property name="styleSheet">
     <string notr="true"/>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0">
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
@@ -142,36 +142,6 @@ QPushButton:pressed {
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_6">
-          <property name="styleSheet">
-           <string notr="true">QPushButton {
-	color: rgb(141, 110, 58);
-	border: none;
-	font: 10pt &quot;Arial Rounded MT Bold&quot;;
-	height: 25px;
-}
-
-QPushButton:hover {
-	background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}
-
-QPushButton:pressed {
-    border-style: inset;
-    background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}</string>
-          </property>
-          <property name="text">
-           <string>Historial</string>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normaloff>file-history-fill.png</normaloff>file-history-fill.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QPushButton" name="pushButton_9">
           <property name="styleSheet">
            <string notr="true">QPushButton {
@@ -202,13 +172,13 @@ QPushButton:pressed {
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_8">
+         <widget class="QPushButton" name="pushButton_6">
           <property name="styleSheet">
            <string notr="true">QPushButton {
 	color: rgb(141, 110, 58);
 	border: none;
 	font: 10pt &quot;Arial Rounded MT Bold&quot;;
-height: 25px;
+	height: 25px;
 }
 
 QPushButton:hover {
@@ -223,22 +193,22 @@ QPushButton:pressed {
 }</string>
           </property>
           <property name="text">
-           <string>Agregar Registro</string>
+           <string>Agregar Usuario</string>
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>profile-line.png</normaloff>profile-line.png</iconset>
+            <normaloff>user-add-fill.png</normaloff>user-add-fill.png</iconset>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_7">
+         <widget class="QPushButton" name="pushButton_11">
           <property name="styleSheet">
            <string notr="true">QPushButton {
 	color: rgb(141, 110, 58);
 	border: none;
 	font: 10pt &quot;Arial Rounded MT Bold&quot;;
-height: 25px;
+	height: 25px;
 }
 
 QPushButton:hover {
@@ -253,7 +223,7 @@ QPushButton:pressed {
 }</string>
           </property>
           <property name="text">
-           <string>Modificar Registro</string>
+           <string>Editar Privilegios</string>
           </property>
           <property name="icon">
            <iconset>
@@ -409,6 +379,63 @@ QPushButton:pressed {
          </size>
         </property>
        </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <spacer name="verticalSpacer_16">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_10">
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+border-radius: 6px;
+background-color: rgb(255, 255, 255);
+color: white;
+height: 25px;
+}
+
+QPushButton:hover {
+	
+	
+	background-color: rgb(179, 179, 179);
+	color: rgb(255, 255, 255);
+	border: 3px solid  rgb(255, 255, 255)
+}
+
+QPushButton:pressed {
+    border-style: inset;
+    background-color: rgb(103, 80, 41);
+	color: rgb(255, 255, 255);
+	border: 3px solid  rgb(103, 80, 41);
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>add-circle-fill.png</normaloff>add-circle-fill.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
