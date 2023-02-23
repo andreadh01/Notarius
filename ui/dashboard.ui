@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QDialog</class>
+ <widget class="QDialog" name="QDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QDialog {
+ background-color:white;
+ 
+ }</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout_5">
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:24pt; font-weight:700; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:30pt; color:rgb(141, 110, 58);&quot;&gt;Notarius&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_13">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_14">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <item>
+        <widget class="QPushButton" name="botonTabla">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+	color: rgb(141, 110, 58);
+	border: none;
+	height: 25px;
+	background-color: white;
+
+}
+
+QPushButton:hover {
+	background-color: rgb(149, 117, 61);
+	color: rgb(255, 255, 255);
+}
+QPushButton:pressed {
+    border-style: inset;
+    background-color: rgb(149, 117, 61);
+	color: rgb(255, 255, 255);
+}
+</string>
+         </property>
+         <property name="text">
+          <string>Tabla</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>bar-chart-box-line.png</normaloff>bar-chart-box-line.png</iconset>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_6">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+	color: rgb(141, 110, 58);
+	border: none;
+	height: 25px;
+}
+
+QPushButton:hover {
+	background-color: rgb(149, 117, 61);
+	color: rgb(255, 255, 255);
+}
+
+QPushButton:pressed {
+    border-style: inset;
+    background-color: rgb(149, 117, 61);
+	color: rgb(255, 255, 255);
+}</string>
+         </property>
+         <property name="text">
+          <string>Historial</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>file-history-fill.png</normaloff>file-history-fill.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_9">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+	color: rgb(141, 110, 58);
+	border: none;
+	height: 25px;
+}
+
+QPushButton:hover {
+	background-color: rgb(149, 117, 61);
+	color: rgb(255, 255, 255);
+}
+
+QPushButton:pressed {
+    border-style: inset;
+    background-color: rgb(149, 117, 61);
+	color: rgb(255, 255, 255);
+}</string>
+         </property>
+         <property name="text">
+          <string>Importar Excel</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>file-excel-2-fill.png</normaloff>file-excel-2-fill.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="botonAgregar">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+	color: rgb(141, 110, 58);
+	border: none;
+height: 25px;
+}
+
+QPushButton:hover {
+	background-color: rgb(149, 117, 61);
+	color: rgb(255, 255, 255);
+}
+
+QPushButton:pressed {
+    border-style: inset;
+    background-color: rgb(149, 117, 61);
+	color: rgb(255, 255, 255);
+}</string>
+         </property>
+         <property name="text">
+          <string>Agregar Registro</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>profile-line.png</normaloff>profile-line.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="botonEditarPrivilegios">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+	color: rgb(141, 110, 58);
+	border: none;
+height: 25px;
+}
+
+QPushButton:hover {
+	background-color: rgb(149, 117, 61);
+	color: rgb(255, 255, 255);
+}
+
+QPushButton:pressed {
+    border-style: inset;
+    background-color: rgb(149, 117, 61);
+	color: rgb(255, 255, 255);
+}</string>
+         </property>
+         <property name="text">
+          <string>Editar Privilegios</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>edit-2-fill.png</normaloff>edit-2-fill.png</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_4">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_8">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_11">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+	color: rgb(141, 110, 58);
+	border: none;
+height: 25px;
+}
+
+QPushButton:hover {
+	background-color: rgb(149, 117, 61);
+	color: rgb(255, 255, 255);
+}
+
+QPushButton:pressed {
+    border-style: inset;
+    background-color: rgb(149, 117, 61);
+	color: rgb(255, 255, 255);
+}</string>
+       </property>
+       <property name="text">
+        <string>Cerrar Sesión</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>logout-box-r-line.png</normaloff>logout-box-r-line.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_5">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Minimum</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="1">
+    <widget class="QStackedWidget" name="stackedWidget">
+     <widget class="VerTabla" name="vertabla"/>
+     <widget class="AgregarRegistro" name="agregar"/>
+     <widget class="EditarPrivilegios" name="editarprivilegios"/>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AgregarRegistro</class>
+   <extends>QWidget</extends>
+   <header>pages/agregar</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>VerTabla</class>
+   <extends>QWidget</extends>
+   <header>pages/vertabla</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+    <class>EditarPrivilegios</class>
+    <extends>QWidget</extends>
+    <header>pages/editarprivilegios</header>
+    <container>1</container>
+   </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
