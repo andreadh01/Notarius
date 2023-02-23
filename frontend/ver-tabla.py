@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ver-tabla.ui'
+# Form implementation generated from reading ui file 'ver-tabla-dialog.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -8,18 +8,11 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Ui_ver_tabla(object):
-    def setupUi(self, ver_tabla):
-        ver_tabla.setObjectName("ver_tabla")
-        ver_tabla.resize(786, 539)
-        ver_tabla.setStyleSheet("QMainWindow {\n"
-"background-color:white;\n"
-"\n"
-"}")
-        self.centralwidget = QtWidgets.QWidget(ver_tabla)
-        self.centralwidget.setStyleSheet("")
-        self.centralwidget.setObjectName("centralwidget")
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralwidget)
+class Ui_Dialog(object):
+    def setupUi(self, Dialog):
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(764, 591)
+        self.horizontalLayout = QtWidgets.QHBoxLayout(Dialog)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout()
         self.verticalLayout_5.setObjectName("verticalLayout_5")
@@ -27,7 +20,7 @@ class Ui_ver_tabla(object):
         self.verticalLayout_5.addItem(spacerItem)
         spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_5.addItem(spacerItem1)
-        self.title_notarius = QtWidgets.QLabel(self.centralwidget)
+        self.title_notarius = QtWidgets.QLabel(Dialog)
         self.title_notarius.setStyleSheet("font: 26pt \"Arial Black\";\n"
 "color: rgb(149, 117, 61);")
         self.title_notarius.setObjectName("title_notarius")
@@ -40,7 +33,7 @@ class Ui_ver_tabla(object):
         self.verticalLayout_5.addItem(spacerItem4)
         self.verticalLayout_6 = QtWidgets.QVBoxLayout()
         self.verticalLayout_6.setObjectName("verticalLayout_6")
-        self.button_tabla = QtWidgets.QPushButton(self.centralwidget)
+        self.button_tabla = QtWidgets.QPushButton(Dialog)
         self.button_tabla.setStyleSheet("QPushButton {\n"
 "    color: rgb(141, 110, 58);\n"
 "    border: none;\n"
@@ -66,7 +59,7 @@ class Ui_ver_tabla(object):
         self.button_tabla.setFlat(False)
         self.button_tabla.setObjectName("button_tabla")
         self.verticalLayout_6.addWidget(self.button_tabla)
-        self.button_importar_excel = QtWidgets.QPushButton(self.centralwidget)
+        self.button_importar_excel = QtWidgets.QPushButton(Dialog)
         self.button_importar_excel.setStyleSheet("QPushButton {\n"
 "    color: rgb(141, 110, 58);\n"
 "    border: none;\n"
@@ -89,7 +82,7 @@ class Ui_ver_tabla(object):
         self.button_importar_excel.setIcon(icon1)
         self.button_importar_excel.setObjectName("button_importar_excel")
         self.verticalLayout_6.addWidget(self.button_importar_excel)
-        self.button_agregar_usuario = QtWidgets.QPushButton(self.centralwidget)
+        self.button_agregar_usuario = QtWidgets.QPushButton(Dialog)
         self.button_agregar_usuario.setStyleSheet("QPushButton {\n"
 "    color: rgb(141, 110, 58);\n"
 "    border: none;\n"
@@ -112,7 +105,7 @@ class Ui_ver_tabla(object):
         self.button_agregar_usuario.setIcon(icon2)
         self.button_agregar_usuario.setObjectName("button_agregar_usuario")
         self.verticalLayout_6.addWidget(self.button_agregar_usuario)
-        self.button_editar_privilegios = QtWidgets.QPushButton(self.centralwidget)
+        self.button_editar_privilegios = QtWidgets.QPushButton(Dialog)
         self.button_editar_privilegios.setStyleSheet("QPushButton {\n"
 "    color: rgb(141, 110, 58);\n"
 "    border: none;\n"
@@ -152,7 +145,7 @@ class Ui_ver_tabla(object):
         self.verticalLayout_5.addItem(spacerItem11)
         spacerItem12 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_5.addItem(spacerItem12)
-        self.button_logout = QtWidgets.QPushButton(self.centralwidget)
+        self.button_logout = QtWidgets.QPushButton(Dialog)
         self.button_logout.setStyleSheet("QPushButton {\n"
 "    color: rgb(141, 110, 58);\n"
 "    border: none;\n"
@@ -182,7 +175,7 @@ class Ui_ver_tabla(object):
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         spacerItem14 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_2.addItem(spacerItem14)
-        self.button_agregar_registro = QtWidgets.QPushButton(self.centralwidget)
+        self.button_agregar_registro = QtWidgets.QPushButton(Dialog)
         self.button_agregar_registro.setStyleSheet("QPushButton {\n"
 "border-radius: 6px;\n"
 "background-color: rgb(255, 255, 255);\n"
@@ -216,11 +209,11 @@ class Ui_ver_tabla(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.button_exportar = QtWidgets.QPushButton(self.centralwidget)
+        self.button_exportar = QtWidgets.QPushButton(Dialog)
         self.button_exportar.setStyleSheet("QPushButton {\n"
 "border-radius: 11px;\n"
 "border: 2px solid #95753d;\n"
-"background-color: white;\n"
+"background-color: #white;\n"
 "color: #95753d;\n"
 "height: 25px;\n"
 "}\n"
@@ -241,17 +234,17 @@ class Ui_ver_tabla(object):
         self.horizontalLayout_3.addWidget(self.button_exportar)
         spacerItem15 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_3.addItem(spacerItem15)
-        self.lineEdit_search = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_search = QtWidgets.QLineEdit(Dialog)
         self.lineEdit_search.setStyleSheet("QLineEdit {\n"
 "border-radius: 6px;\n"
 "border: 1px solid #d3c393;\n"
-"background-color: white;\n"
+"background-color: #white;\n"
 "color:  #95753d;\n"
 "height: 20px;\n"
 "}")
         self.lineEdit_search.setObjectName("lineEdit_search")
         self.horizontalLayout_3.addWidget(self.lineEdit_search)
-        self.button_search = QtWidgets.QPushButton(self.centralwidget)
+        self.button_search = QtWidgets.QPushButton(Dialog)
         self.button_search.setStyleSheet("QPushButton {\n"
 "border-radius: 6px;\n"
 "border: 3px solid #95753d;\n"
@@ -278,7 +271,7 @@ class Ui_ver_tabla(object):
         self.button_search.setIcon(icon6)
         self.button_search.setObjectName("button_search")
         self.horizontalLayout_3.addWidget(self.button_search)
-        self.button_filtro = QtWidgets.QPushButton(self.centralwidget)
+        self.button_filtro = QtWidgets.QPushButton(Dialog)
         self.button_filtro.setStyleSheet("QPushButton {\n"
 "border-radius: 6px;\n"
 "background-color: rgb(255, 255, 255);\n"
@@ -305,7 +298,7 @@ class Ui_ver_tabla(object):
         self.button_filtro.setObjectName("button_filtro")
         self.horizontalLayout_3.addWidget(self.button_filtro)
         self.verticalLayout.addLayout(self.horizontalLayout_3)
-        self.full_table = QtWidgets.QTableWidget(self.centralwidget)
+        self.full_table = QtWidgets.QTableWidget(Dialog)
         self.full_table.setShowGrid(True)
         self.full_table.setGridStyle(QtCore.Qt.SolidLine)
         self.full_table.setWordWrap(True)
@@ -328,33 +321,34 @@ class Ui_ver_tabla(object):
         self.full_table.setItem(0, 0, item)
         self.verticalLayout.addWidget(self.full_table)
         self.horizontalLayout.addLayout(self.verticalLayout)
-        spacerItem16 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem16 = QtWidgets.QSpacerItem(20, 570, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.horizontalLayout.addItem(spacerItem16)
-        ver_tabla.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(ver_tabla)
-        QtCore.QMetaObject.connectSlotsByName(ver_tabla)
+        self.retranslateUi(Dialog)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
 
-    def retranslateUi(self, ver_tabla):
+    def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        ver_tabla.setWindowTitle(_translate("ver_tabla", "MainWindow"))
-        self.title_notarius.setText(_translate("ver_tabla", "<html><head/><body><p align=\"center\"><span style=\" font-size:24pt; color:#ffffff;\">....</span><span style=\" font-size:24pt;\">Notarius</span><span style=\" font-size:24pt; color:#ffffff;\">....</span></p></body></html>"))
-        self.button_tabla.setText(_translate("ver_tabla", "Tabla"))
-        self.button_importar_excel.setText(_translate("ver_tabla", "Importar Excel"))
-        self.button_agregar_usuario.setText(_translate("ver_tabla", "Agregar Usuario"))
-        self.button_editar_privilegios.setText(_translate("ver_tabla", "Editar Privilegios"))
-        self.button_logout.setText(_translate("ver_tabla", "Cerrar Sesión"))
-        self.button_exportar.setText(_translate("ver_tabla", "     Exportar     "))
+        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        self.title_notarius.setText(_translate("Dialog", "<html><head/><body><p align=\"center\"><span style=\" font-size:24pt; color:#ffffff;\">....</span><span style=\" font-size:24pt;\">Notarius</span><span style=\" font-size:24pt; color:#ffffff;\">....</span></p></body></html>"))
+        self.button_tabla.setText(_translate("Dialog", "Tabla"))
+        self.button_importar_excel.setText(_translate("Dialog", "Importar Excel"))
+        self.button_agregar_usuario.setText(_translate("Dialog", "Agregar Usuario"))
+        self.button_editar_privilegios.setText(_translate("Dialog", "Editar Privilegios"))
+        self.button_logout.setText(_translate("Dialog", "Cerrar Sesión"))
+        self.button_exportar.setText(_translate("Dialog", "     Exportar     "))
         self.full_table.setSortingEnabled(False)
         __sortingEnabled = self.full_table.isSortingEnabled()
         self.full_table.setSortingEnabled(False)
         self.full_table.setSortingEnabled(__sortingEnabled)
 
+
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
+    Dialog = QtWidgets.QDialog()
+    ui = Ui_Dialog()
+    ui.setupUi(Dialog)
+    Dialog.show()
     sys.exit(app.exec_())
+
