@@ -6,70 +6,392 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>1440</width>
+    <height>847</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>100</number>
+   </property>
+   <property name="rightMargin">
+    <number>100</number>
+   </property>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Minimum</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <spacer name="verticalSpacer_18">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
+      <widget class="QLabel" name="label_editar_privilegios">
+       <property name="font">
+        <font>
+         <pointsize>22</pointsize>
+         <weight>75</weight>
+         <italic>false</italic>
+         <bold>true</bold>
+        </font>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(149, 117, 61);</string>
        </property>
-      </spacer>
+       <property name="text">
+        <string>Editar Privilegios</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
      </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <spacer name="horizontalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_editar_privilegios">
-         <property name="styleSheet">
-          <string notr="true">font: 26pt &quot;Arial Black&quot;;
+    </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer_18">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="7" column="3">
+      <widget class="QCheckBox" name="acceso_8">
+       <property name="styleSheet">
+        <string notr="true">
+font: 16pt &quot;&quot;;
 color: rgb(149, 117, 61);</string>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;Editar privilegios&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
+       </property>
+       <property name="text">
+        <string>Columna 7</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QCheckBox" name="acceso_1">
+       <property name="styleSheet">
+        <string notr="true">
+font: 16pt &quot;&quot;;
+color: rgb(149, 117, 61);</string>
+       </property>
+       <property name="text">
+        <string>Columna 1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="3">
+      <widget class="QCheckBox" name="acceso_2">
+       <property name="styleSheet">
+        <string notr="true">
+font: 16pt &quot;&quot;;
+color: rgb(149, 117, 61);</string>
+       </property>
+       <property name="text">
+        <string>Columna 10</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="3">
+      <widget class="QCheckBox" name="acceso_5">
+       <property name="styleSheet">
+        <string notr="true">
+font: 16pt &quot;&quot;;
+color: rgb(149, 117, 61);</string>
+       </property>
+       <property name="text">
+        <string>Columna 4</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="3">
+      <widget class="QCheckBox" name="acceso_6">
+       <property name="styleSheet">
+        <string notr="true">
+font: 16pt &quot;&quot;;
+color: rgb(149, 117, 61);</string>
+       </property>
+       <property name="text">
+        <string>Columna 5</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QLabel" name="label_accesos">
+       <property name="styleSheet">
+        <string notr="true">
+font: 16pt &quot;&quot;;
+color: rgb(149, 117, 61);</string>
+       </property>
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Acceso a&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <widget class="QCheckBox" name="acceso_4">
+       <property name="styleSheet">
+        <string notr="true">
+font: 16pt &quot;&quot;;
+color: rgb(149, 117, 61);</string>
+       </property>
+       <property name="text">
+        <string>Columna 3</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="3">
+      <widget class="QCheckBox" name="acceso_9">
+       <property name="styleSheet">
+        <string notr="true">
+font: 16pt &quot;&quot;;
+color: rgb(149, 117, 61);</string>
+       </property>
+       <property name="text">
+        <string>Columna 8</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="3">
+      <widget class="QCheckBox" name="acceso_10">
+       <property name="styleSheet">
+        <string notr="true">
+font: 16pt &quot;&quot;;
+color: rgb(149, 117, 61);</string>
+       </property>
+       <property name="text">
+        <string>Columna 9</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="3">
+      <widget class="QCheckBox" name="acceso_3">
+       <property name="styleSheet">
+        <string notr="true">
+font: 16pt &quot;&quot;;
+color: rgb(149, 117, 61);</string>
+       </property>
+       <property name="text">
+        <string>Columna 2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="3">
+      <widget class="QCheckBox" name="acceso_7">
+       <property name="styleSheet">
+        <string notr="true">
+font: 16pt &quot;&quot;;
+color: rgb(149, 117, 61);</string>
+       </property>
+       <property name="text">
+        <string>Columna 6</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0">
+      <widget class="QComboBox" name="accioneslist">
+       <property name="styleSheet">
+        <string notr="true">
+font: 16pt &quot;&quot;;
+color: rgb(149, 117, 61);</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>Agregar</string>
+        </property>
        </item>
        <item>
-        <spacer name="horizontalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
+        <property name="text">
+         <string>Modificar</string>
+        </property>
        </item>
-      </layout>
+       <item>
+        <property name="text">
+         <string>Eliminar</string>
+        </property>
+       </item>
+      </widget>
      </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="label_acciones">
+       <property name="styleSheet">
+        <string notr="true">
+font: 20pt &quot;&quot;;
+color: rgb(149, 117, 61);</string>
+       </property>
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Acciones&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QComboBox" name="tablaslist">
+       <property name="styleSheet">
+        <string notr="true">
+font: 16pt &quot;&quot;;
+color: rgb(149, 117, 61);</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>Tabla 1</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tabla 2</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tabla 3</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tabla 4</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tabla 5</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tabla 6</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tabla 7</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tabla 8</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tabla 9</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tabla 10</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tabla 11</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tabla 12</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tabla 13</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tabla 14</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tabla 15</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tabla 16</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tabla 17</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_tablas">
+       <property name="styleSheet">
+        <string notr="true">
+font: 20pt &quot;&quot;;
+color: rgb(149, 117, 61);</string>
+       </property>
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Tabla&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QComboBox" name="usuarioslist">
+       <property name="styleSheet">
+        <string notr="true">
+font: 16pt &quot;&quot;;
+color: rgb(149, 117, 61);</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>Usuario 1</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Usuario 2</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Usuario 3</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_Usuarios">
+       <property name="styleSheet">
+        <string notr="true">
+font: 20pt &quot;&quot;;
+color: rgb(149, 117, 61);</string>
+       </property>
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Usuarios&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <spacer name="horizontalSpacer">
+      <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -82,356 +404,9 @@ color: rgb(149, 117, 61);</string>
       </spacer>
      </item>
      <item>
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="1">
-        <widget class="QLabel" name="label_tablas">
-         <property name="styleSheet">
-          <string notr="true">font: 12pt &quot;Arial Rounded MT Bold&quot;;
-color: rgb(141, 110, 58);</string>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Tabla&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="3">
-        <widget class="QCheckBox" name="acceso_8">
-         <property name="styleSheet">
-          <string notr="true">
-font: 75 11pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(149, 117, 61);</string>
-         </property>
-         <property name="text">
-          <string>Columna 7</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QComboBox" name="usuarioslist">
-         <property name="styleSheet">
-          <string notr="true">QComboBox{
-border: 1px solid #95753d;
-background-color: white;
-font: 75 11pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(149, 117, 61);
-}</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>Usuario 1</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Usuario 2</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Usuario 3</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="1" column="3">
-        <widget class="QCheckBox" name="acceso_1">
-         <property name="styleSheet">
-          <string notr="true">
-font: 75 11pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(149, 117, 61);</string>
-         </property>
-         <property name="text">
-          <string>Columna 1</string>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="3">
-        <widget class="QCheckBox" name="acceso_2">
-         <property name="styleSheet">
-          <string notr="true">
-font: 75 11pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(149, 117, 61);</string>
-         </property>
-         <property name="text">
-          <string>Columna 10</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="3">
-        <widget class="QCheckBox" name="acceso_5">
-         <property name="styleSheet">
-          <string notr="true">
-font: 75 11pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(149, 117, 61);</string>
-         </property>
-         <property name="text">
-          <string>Columna 4</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="3">
-        <widget class="QCheckBox" name="acceso_6">
-         <property name="styleSheet">
-          <string notr="true">
-font: 75 11pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(149, 117, 61);</string>
-         </property>
-         <property name="text">
-          <string>Columna 5</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="3">
-        <widget class="QLabel" name="label_accesos">
-         <property name="styleSheet">
-          <string notr="true">font: 12pt &quot;Arial Rounded MT Bold&quot;;
-color: rgb(141, 110, 58);</string>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Acceso a&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_Usuarios">
-         <property name="styleSheet">
-          <string notr="true">font: 10pt &quot;Arial Rounded MT Bold&quot;;
-color: rgb(141, 110, 58);</string>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Usuarios&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="3">
-        <widget class="QCheckBox" name="acceso_4">
-         <property name="styleSheet">
-          <string notr="true">
-font: 75 11pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(149, 117, 61);</string>
-         </property>
-         <property name="text">
-          <string>Columna 3</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="3">
-        <widget class="QCheckBox" name="acceso_9">
-         <property name="styleSheet">
-          <string notr="true">
-font: 75 11pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(149, 117, 61);</string>
-         </property>
-         <property name="text">
-          <string>Columna 8</string>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="3">
-        <widget class="QCheckBox" name="acceso_10">
-         <property name="styleSheet">
-          <string notr="true">
-font: 75 11pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(149, 117, 61);</string>
-         </property>
-         <property name="text">
-          <string>Columna 9</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="3">
-        <widget class="QCheckBox" name="acceso_3">
-         <property name="styleSheet">
-          <string notr="true">
-font: 75 11pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(149, 117, 61);</string>
-         </property>
-         <property name="text">
-          <string>Columna 2</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="3">
-        <widget class="QCheckBox" name="acceso_7">
-         <property name="styleSheet">
-          <string notr="true">
-font: 75 11pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(149, 117, 61);</string>
-         </property>
-         <property name="text">
-          <string>Columna 6</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QLabel" name="label_acciones">
-         <property name="styleSheet">
-          <string notr="true">font: 10pt &quot;Arial Rounded MT Bold&quot;;
-color: rgb(141, 110, 58);</string>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Acciones&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QComboBox" name="tablaslist">
-         <property name="styleSheet">
-          <string notr="true">QComboBox{
-border: 1px solid #95753d;
-background-color: white;
-font: 75 11pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(149, 117, 61);
-}</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>Tabla 1</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Tabla 2</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Tabla 3</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Tabla 4</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Tabla 5</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Tabla 6</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Tabla 7</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Tabla 8</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Tabla 9</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Tabla 10</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Tabla 11</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Tabla 12</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Tabla 13</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Tabla 14</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Tabla 15</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Tabla 16</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Tabla 17</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <widget class="QComboBox" name="accioneslist">
-         <property name="styleSheet">
-          <string notr="true">QComboBox{
-border: 1px solid #95753d;
-background-color: white;
-font: 75 11pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(149, 117, 61);
-}</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>Agregar</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Modificar</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Eliminar</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <spacer name="verticalSpacer_17">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="button_guardar">
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
+      <widget class="QPushButton" name="button_guardar">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
 border-radius: 6px;
 border: 3px solid #95753d;
 background-color: #95753d;
@@ -451,15 +426,28 @@ QPushButton:pressed {
 	color: rgb(255, 255, 255);
 	border: 3px solid  rgb(103, 80, 41);
 }</string>
-         </property>
-         <property name="text">
-          <string>    Guardar    </string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+       </property>
+       <property name="text">
+        <string>    Guardar    </string>
+       </property>
+      </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer_17">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

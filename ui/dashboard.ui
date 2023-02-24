@@ -15,11 +15,18 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QDialog {
- background-color:white;
+ background-color:rgb(255, 253, 225);
  
  }</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="1">
+    <widget class="QStackedWidget" name="stackedWidget">
+     <widget class="VerTabla" name="vertabla"/>
+     <widget class="AgregarRegistro" name="agregar"/>
+     <widget class="EditarPrivilegios" name="editarprivilegios"/>
+    </widget>
+   </item>
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout_5">
      <item>
@@ -104,7 +111,6 @@ p, li { white-space: pre-wrap; }
 	color: rgb(141, 110, 58);
 	border: none;
 	height: 25px;
-	background-color: white;
 
 }
 
@@ -379,13 +385,6 @@ QPushButton:pressed {
      </item>
     </layout>
    </item>
-   <item row="0" column="1">
-    <widget class="QStackedWidget" name="stackedWidget">
-     <widget class="VerTabla" name="vertabla"/>
-     <widget class="AgregarRegistro" name="agregar"/>
-     <widget class="EditarPrivilegios" name="editarprivilegios"/>
-    </widget>
-   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -402,11 +401,11 @@ QPushButton:pressed {
    <container>1</container>
   </customwidget>
   <customwidget>
-    <class>EditarPrivilegios</class>
-    <extends>QWidget</extends>
-    <header>pages/editarprivilegios</header>
-    <container>1</container>
-   </customwidget>
+   <class>EditarPrivilegios</class>
+   <extends>QWidget</extends>
+   <header>pages/editarprivilegios</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <resources/>
  <connections/>
