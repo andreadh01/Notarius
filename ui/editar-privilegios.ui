@@ -76,66 +76,6 @@
    </item>
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="7" column="3">
-      <widget class="QCheckBox" name="acceso_8">
-       <property name="styleSheet">
-        <string notr="true">
-font: 16pt &quot;&quot;;
-color: rgb(149, 117, 61);</string>
-       </property>
-       <property name="text">
-        <string>Columna 7</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="3">
-      <widget class="QCheckBox" name="acceso_1">
-       <property name="styleSheet">
-        <string notr="true">
-font: 16pt &quot;&quot;;
-color: rgb(149, 117, 61);</string>
-       </property>
-       <property name="text">
-        <string>Columna 1</string>
-       </property>
-      </widget>
-     </item>
-     <item row="10" column="3">
-      <widget class="QCheckBox" name="acceso_2">
-       <property name="styleSheet">
-        <string notr="true">
-font: 16pt &quot;&quot;;
-color: rgb(149, 117, 61);</string>
-       </property>
-       <property name="text">
-        <string>Columna 10</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="3">
-      <widget class="QCheckBox" name="acceso_5">
-       <property name="styleSheet">
-        <string notr="true">
-font: 16pt &quot;&quot;;
-color: rgb(149, 117, 61);</string>
-       </property>
-       <property name="text">
-        <string>Columna 4</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="3">
-      <widget class="QCheckBox" name="acceso_6">
-       <property name="styleSheet">
-        <string notr="true">
-font: 16pt &quot;&quot;;
-color: rgb(149, 117, 61);</string>
-       </property>
-       <property name="text">
-        <string>Columna 5</string>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="3">
       <widget class="QLabel" name="label_accesos">
        <property name="styleSheet">
@@ -148,66 +88,7 @@ color: rgb(149, 117, 61);</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="3">
-      <widget class="QCheckBox" name="acceso_4">
-       <property name="styleSheet">
-        <string notr="true">
-font: 16pt &quot;&quot;;
-color: rgb(149, 117, 61);</string>
-       </property>
-       <property name="text">
-        <string>Columna 3</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="3">
-      <widget class="QCheckBox" name="acceso_9">
-       <property name="styleSheet">
-        <string notr="true">
-font: 16pt &quot;&quot;;
-color: rgb(149, 117, 61);</string>
-       </property>
-       <property name="text">
-        <string>Columna 8</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="3">
-      <widget class="QCheckBox" name="acceso_10">
-       <property name="styleSheet">
-        <string notr="true">
-font: 16pt &quot;&quot;;
-color: rgb(149, 117, 61);</string>
-       </property>
-       <property name="text">
-        <string>Columna 9</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="3">
-      <widget class="QCheckBox" name="acceso_3">
-       <property name="styleSheet">
-        <string notr="true">
-font: 16pt &quot;&quot;;
-color: rgb(149, 117, 61);</string>
-       </property>
-       <property name="text">
-        <string>Columna 2</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="3">
-      <widget class="QCheckBox" name="acceso_7">
-       <property name="styleSheet">
-        <string notr="true">
-font: 16pt &quot;&quot;;
-color: rgb(149, 117, 61);</string>
-       </property>
-       <property name="text">
-        <string>Columna 6</string>
-       </property>
-      </widget>
-     </item>
+    
      <item row="9" column="0">
       <widget class="QComboBox" name="accioneslist">
        <property name="styleSheet">
@@ -227,7 +108,7 @@ color: rgb(149, 117, 61);</string>
        </item>
        <item>
         <property name="text">
-         <string>Eliminar</string>
+         <string>Ver</string>
         </property>
        </item>
       </widget>
@@ -251,91 +132,6 @@ color: rgb(149, 117, 61);</string>
 font: 16pt &quot;&quot;;
 color: rgb(149, 117, 61);</string>
        </property>
-       <item>
-        <property name="text">
-         <string>Tabla 1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Tabla 2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Tabla 3</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Tabla 4</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Tabla 5</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Tabla 6</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Tabla 7</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Tabla 8</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Tabla 9</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Tabla 10</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Tabla 11</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Tabla 12</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Tabla 13</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Tabla 14</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Tabla 15</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Tabla 16</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Tabla 17</string>
-        </property>
-       </item>
       </widget>
      </item>
      <item row="5" column="0">
@@ -357,21 +153,6 @@ color: rgb(149, 117, 61);</string>
 font: 16pt &quot;&quot;;
 color: rgb(149, 117, 61);</string>
        </property>
-       <item>
-        <property name="text">
-         <string>Usuario 1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Usuario 2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Usuario 3</string>
-        </property>
-       </item>
       </widget>
      </item>
      <item row="2" column="0">

@@ -1,24 +1,81 @@
-from PyQt5 import QtGui, uic
+from PyQt5 import uic,QtWidgets
 import os
+
+from bdConexion import obtener_conexion
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/editar-privilegios.ui")))
 
 
 class EditarPrivilegios(Base, Form):
+	cols = []
 	def __init__(self, parent=None):
 		super(self.__class__, self).__init__(parent)
 		self.setupUi(self)
+		# se mandan llamar los metodos al correr el programa
+		self.setupUsers(self)
+		self.setupTables(self)
+		self.setupColumns(self)
+		# cada que se actualice el combobox de tablas, se actualizan los checkbox de las columnas
+		self.tablaslist.currentTextChanged.connect(self.setupColumns)
   
-	# en este metodo se van a actualizar los checkbox de las columnas de la pantalla editar privilegios
-	# def setupUi(self, Form):
-		# print("editar privilegios")
-		# el usuario sera redirigido a esta pagina al seleccionar un usuario de la tabla
-		# la otra opcion es que lo seleccione dentro de esta pantalla, en caso de ser asi, rellenar un combo box con un fetch de los usuarios
-		# despues de tener un usuario seleccionado, se selecciona el tipo de permiso a otorgar 
-		# el cual puede ser SELECT, INSERT, UPDATE
-  		# se selecciona una tabla, por default sera escrituras
-		# se cargaran cada uno de los campos de la tabla seleccionada, a partir de un fetch de la base de datos
-		# estos campos seran del tipo combo box
-		# al seleccionar guardar se llevara a cabo el comando en la base de datos
-		#	ejemplo: GRANT SELECT (col1), INSERT (col1,col2) ON mydb.mytbl TO 'someuser'@'somehost';
+	# en esta funcion se van a cargar los usuarios de la base de datos al combobox de usuarios
+	def setupUsers(self, Form):
+		conn = obtener_conexion()
+		cur = conn.cursor()
+		query = 'SELECT nombre_usuario FROM usuario'
+		cur.execute(query)
+		usuarios = cur.fetchall()
+		cur.close()
+		conn.close()
+		lista_usuarios = [usu[0] for usu in usuarios]
+		self.usuarioslist.addItems(lista_usuarios)
+
+	# en esta funcion se van a cargar las tablas de la base de datos al combobox de tablas
+	def setupTables(self, Form):
+		conn = obtener_conexion()
+		cur = conn.cursor()
+		query = 'SHOW TABLES'
+		cur.execute(query)
+		tablas = cur.fetchall()
+		cur.close()
+		conn.close()
+		lista_tablas = [tabla[0] for tabla in tablas]
+		self.tablaslist.addItems(lista_tablas)
+	
+ 	# en esta funcion se van a actualizar los checkbox de las columnas de la pantalla editar privilegios
+	def setupColumns(self, Form):
+		# se eliminan los combobox anteriores
+		self.resetCombobox(self)
+		conn = obtener_conexion()
+		cur = conn.cursor()
+		tabla_seleccionada = self.tablaslist.currentText()
+		query = ' SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME= \''+tabla_seleccionada+'\''
+		cur.execute(query)
+		columnas = cur.fetchall()
+		cur.close()
+		conn.close()
+		lista_columnas = [col[0] for col in columnas]
+		# aqui se crea el widget del checkbox y se agrega al gui
+		for i, col in enumerate(lista_columnas):
+			name = f"acceso_{i}"
+			setattr(self, name, QtWidgets.QCheckBox(Form))
+			attr = getattr(self,name)
+			attr.setStyleSheet("\n"
+			"font: 75 16pt;\n"
+			"color: rgb(149, 117, 61);")
+			attr.setObjectName(name)
+			attr.setText(col)
+			self.gridLayout.addWidget(attr, i+1, 3, 1, 1)
+			self.cols.append(attr)
+   
+	def resetCombobox(self, Form):
+		for obj in self.cols:
+			self.gridLayout.removeWidget(obj)
+			obj.deleteLater()
+			del obj
+		self.cols = []
+
+	# al seleccionar guardar se llevara a cabo el comando en la base de datos
+	#	ejemplo: GRANT SELECT (col1), INSERT (col1,col2) ON mydb.mytbl TO 'someuser'@'somehost';
+	# seria buena opcion que aparezca un aviso una vez que se ha guardado correctamente
