@@ -121,6 +121,44 @@ padding: 5px;
           </widget>
          </item>
          <item>
+          <widget class="QComboBox" name="comboBox_roles">
+           <property name="styleSheet">
+            <string notr="true">QComboBox {
+border-radius: 6px;
+border: 1px solid rgb(166,164, 180);
+background-color:white;
+color: rgb(103,80,41);
+padding: 5px;
+}</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>Administrador</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Empleado</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Proyectista</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Armadores</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Otro</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
           <spacer name="verticalSpacer_19">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
