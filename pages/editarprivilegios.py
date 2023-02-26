@@ -21,6 +21,7 @@ class EditarPrivilegios(Base, Form):
 		self.setupTables(self)
 		self.setupColumns(self)
 		# cada que se actualice el combobox de tablas, se actualizan los checkbox de las columnas
+		self.usuarioslist.currentTextChanged.connect(self.limpiarDict)
 		self.tablaslist.currentTextChanged.connect(self.setupColumns)
 		self.accioneslist.currentTextChanged.connect(self.resetCheckboxes)
   
@@ -99,6 +100,12 @@ class EditarPrivilegios(Base, Form):
 	def guardar_opcion(self, obj):
 		self.diccionario_permisos[self.accioneslist.currentText()][self.tablaslist.currentText()][obj.text()] = obj.isChecked()
 
+	def limpiarDict(self):
+		self.diccionario_permisos = {'Agregar':{},
+								'Modificar':{},
+								'Ver':{}}
+		print(self.diccionario_permisos)
+		self.resetCheckboxes(Form)
 
 	# al seleccionar guardar se llevara a cabo el comando en la base de datos
 	#	ejemplo: GRANT SELECT (col1), INSERT (col1,col2) ON mydb.mytbl TO 'someuser'@'somehost';
