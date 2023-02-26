@@ -1,4 +1,5 @@
 from PyQt5 import QtGui, uic, QtWidgets, QtCore
+from pages.editarprivilegios import EditarPrivilegios
 import os
 from bdConexion import obtener_conexion
 from functools import partial
@@ -135,6 +136,7 @@ class RegistrarUsuario(Form, Base):
                 self.lineEdit_contrasenausuario.setText("")
                 self.label_error.setText("")
                 self.label_exito.setText("Usuario registrado exitosamente")
+                self.parent().findChild(EditarPrivilegios).usuarioslist.addItem(nombre_usuario)
                 self.limpiarDict()
 
     def generarGrants(self,nombre_usuario):
