@@ -25,6 +25,11 @@
      <widget class="VerTabla" name="vertabla"/>
      <widget class="AgregarRegistro" name="agregar"/>
      <widget class="EditarPrivilegios" name="editarprivilegios"/>
+     <widget class="RegistrarUsuario" name="registrarusuario">
+      <property name="whatsThis">
+       <string/>
+      </property>
+     </widget>
     </widget>
    </item>
    <item row="0" column="0">
@@ -249,6 +254,36 @@ QPushButton:pressed {
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="botonRegistrar">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+	color: rgb(141, 110, 58);
+	border: none;
+height: 25px;
+}
+
+QPushButton:hover {
+	background-color: rgb(149, 117, 61);
+	color: rgb(255, 255, 255);
+}
+
+QPushButton:pressed {
+    border-style: inset;
+    background-color: rgb(149, 117, 61);
+	color: rgb(255, 255, 255);
+}</string>
+         </property>
+         <property name="text">
+          <string>Agregar Usuario</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="botonEditarPrivilegios">
          <property name="font">
           <font>
@@ -404,6 +439,12 @@ QPushButton:pressed {
    <class>EditarPrivilegios</class>
    <extends>QWidget</extends>
    <header>pages/editarprivilegios</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>RegistrarUsuario</class>
+   <extends>QWidget</extends>
+   <header>pages/registrarusuario</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

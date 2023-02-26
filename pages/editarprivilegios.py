@@ -74,6 +74,7 @@ class EditarPrivilegios(Base, Form):
 			attr.setText(col)
 			self.gridLayout.addWidget(attr, i+1, 3, 1, 1)
 			self.cols.append(attr)
+		# aqui se le asignan los metodos a cada checkbox y se llena el diccionario con las columnas de la tabla - Jared
 		self.connectCheckboxes(self)
 		self.resetCheckboxes(self)
 
@@ -84,10 +85,12 @@ class EditarPrivilegios(Base, Form):
 			del obj
 		self.cols = []
 
+	# este metodo le asigna un metodo a cada checkbox que ejecuta guardar_opcion al ser activado/desactivado - Jared
 	def connectCheckboxes(self, Form):
 		for obj in self.cols:
 			obj.stateChanged.connect(partial(self.guardar_opcion,obj))
 
+	# este metodo revisa el diccionario de permisos y activa aquellas columnas que estan guardadas como true -Jared
 	def resetCheckboxes(self, Form):
 		for obj in self.cols:
 			if self.tablaslist.currentText() not in self.diccionario_permisos[self.accioneslist.currentText()]:
@@ -97,14 +100,20 @@ class EditarPrivilegios(Base, Form):
 			else:
 				obj.setChecked(False)
 
+	'''
+	En este metodo se guarda si el checkbox fue activado o no.
+	El diccionario se compone por:
+	Acciones (Guardar,Ver,Modificar) -> Nombre de tabla -> Columna: True/False
+	-Jared
+	'''
 	def guardar_opcion(self, obj):
 		self.diccionario_permisos[self.accioneslist.currentText()][self.tablaslist.currentText()][obj.text()] = obj.isChecked()
 
+	#este metodo borra todos los datos del diccionario y desactiva todas las checkboxes. se utiliza al cambiar de usuario a modificar -Jared
 	def limpiarDict(self):
 		self.diccionario_permisos = {'Agregar':{},
 								'Modificar':{},
 								'Ver':{}}
-		print(self.diccionario_permisos)
 		self.resetCheckboxes(Form)
 
 	# al seleccionar guardar se llevara a cabo el comando en la base de datos
