@@ -1,4 +1,8 @@
+from functools import partial
 from PyQt5 import QtGui, uic
+from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView
+from PyQt5.QtWidgets import QMessageBox, QAbstractItemView,QPushButton
+from bdConexion import obtener_conexion
 import os
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -9,25 +13,72 @@ class VerTabla(Base, Form):
 	def __init__(self, parent=None):
 		super(self.__class__, self).__init__(parent)
 		self.setupUi(self)
-  
-	# def setupUi(self, Form):
-		# print('actualizar tabla')
-		# en este metodo se debe crear el checkbox con las tablas disponibles para el usuario	
-		# checar permisos de usuario, si no puede editar desactivar edicion
-  
-  
-		# se necesita un select all que permita ver la cantidad de tablas seleccionadas
-		# en el check box (dinamico), si es posible, evitar la repeticion de columnas
-		# en este punto estamos considerando que con la creacion del usuario con sus permisos
-		# no mostrara de forma automatica los campos que no puede ver (comprobar en tests)
+		self.setupTableList(self)
+		self.setupTable(self)
+		self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+		self.tableslist.itemSelectionChanged.connect(partial(self.setupTable,self))
 
-		# mock up de como se actualizara ver tabla
-  
-		# all_data = db.fetch
-		# tbl = QtGui.QTableWidget(len(all_data),X) # X is The number of columns that you need  
-		# header_labels = ['Column 1', 'Column 2', 'Column 3', 'Column 4',...]  
-		# tbl.setHorizontalHeaderLabels(header_labels)
-		# for row in all_data:
-		# 	inx = all_data.index(row)
-		# 	tbl.insertRow(inx)
-		# 	tbl.setItem(inx,Y,QTableWidgetItem(your data)) # Y is the column that you want to insert data  
+
+	# en este metodo se agregan las tablas disponibles para el usuario a una lista	
+	def setupTableList(self, Form):
+		conn = obtener_conexion()
+		cur = conn.cursor()
+		query = 'SHOW TABLES'
+		cur.execute(query)
+		tablas = cur.fetchall()
+		cur.close()
+		conn.close()
+		lista_tablas = [tabla[0] for tabla in tablas]
+		self.tableslist.addItems(lista_tablas)
+		self.tableslist.setCurrentRow(0)
+
+	# en este metodo se actualizan los datos de la tabla, segun la tabla seleccionada en la lista
+	def setupTable(self, Form):
+		self.tableWidget.setRowCount(0)
+		self.tableWidget.setColumnCount(0)
+		tabla_name = self.tableslist.currentItem().text()
+		conn = obtener_conexion()
+		query = f"SELECT * FROM {tabla_name}"
+		cur = conn.cursor(dictionary=True)
+		cur.execute(query)
+		tabla = cur.fetchall()
+		cur.close()
+		conn.close()
+		header = ["Modificar"]+list(tabla[0].keys())
+		print(header)
+		self.tableWidget.setColumnCount(len(header))
+		self.tableWidget.setHorizontalHeaderLabels(header)
+
+		for dic in tabla:
+			col = 1
+			button = self.createButton(self)
+			rows = self.tableWidget.rowCount()
+			self.tableWidget.setRowCount(rows + 1)
+			# se agrega un boton modificar que al hacer clic mandara a la pagina modificar registro
+			self.tableWidget.setCellWidget(rows,0,button)
+			for val in dic.values():
+				self.tableWidget.setItem(rows, col, QTableWidgetItem(str(val)))
+				col +=1
+		self.tableWidget.resizeColumnsToContents()
+		self.tableWidget.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents);
+	
+	def createButton(self, Form):
+		button = QPushButton(self.tableWidget)
+		button.setObjectName("modificar")
+		button.setText("Modificar")
+		button.setStyleSheet("QPushButton {\n"
+"background-color: #d3c393;\n"
+"color: rgb(131, 112, 82);\n"
+"height: 25px;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color: rgb(116, 91, 47);\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: rgb(103, 80, 41);\n"
+"    color: rgb(255, 255, 255);\n"
+"}")
+		return button
