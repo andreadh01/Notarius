@@ -1,4 +1,5 @@
 from PyQt5 import QtGui, uic, QtWidgets, QtCore
+from pages.editarprivilegios import EditarPrivilegios
 import os
 from bdConexion import obtener_conexion
 from functools import partial
@@ -107,6 +108,7 @@ class RegistrarUsuario(Form, Base):
     def crearUsuario(self):
         nombre_usuario = self.lineEdit_nombreusuario.text()
         contrasena = self.lineEdit_contrasenausuario.text()
+        rol = self.formatRol(self.comboBox_roles.currentText())
         if len(nombre_usuario) > 100:
             self.label_error.setText("El nombre de usuario no debe superar 100 caracteres")
             self.label_exito.setText("")
@@ -119,18 +121,23 @@ class RegistrarUsuario(Form, Base):
         else:
             conn = obtener_conexion()
             cur = conn.cursor()
-            query = f"INSERT INTO usuario(nombre_usuario,contrasena) VALUES('{nombre_usuario}','{contrasena}')"
-            cur.execute(query)
-            query = f"CREATE USER '{nombre_usuario}'@'localhost' IDENTIFIED BY '{contrasena}'"
-            cur.execute(query)
-            self.generarGrants(nombre_usuario)
-            cur.close()
-            conn.close()
-            self.lineEdit_nombreusuario.setText("")
-            self.lineEdit_contrasenausuario.setText("")
-            self.label_error.setText("")
-            self.label_exito.setText("Usuario registrado exitosamente")
-            self.limpiarDict()
+            if self.isUsuarioRepetido(nombre_usuario, cur):
+                self.label_error.setText("El usuario ingresado ya existe")
+                self.label_exito.setText("")
+            else:
+                query = f"INSERT INTO usuario(nombre_usuario,contrasena,rol) VALUES('{nombre_usuario}','{contrasena}','{rol}')"
+                cur.execute(query)
+                query = f"CREATE USER '{nombre_usuario}'@'localhost' IDENTIFIED BY '{contrasena}'"
+                cur.execute(query)
+                self.generarGrants(nombre_usuario)
+                cur.close()
+                conn.close()
+                self.lineEdit_nombreusuario.setText("")
+                self.lineEdit_contrasenausuario.setText("")
+                self.label_error.setText("")
+                self.label_exito.setText("Usuario registrado exitosamente")
+                self.parent().findChild(EditarPrivilegios).usuarioslist.addItem(nombre_usuario)
+                self.limpiarDict()
 
     def generarGrants(self,nombre_usuario):
         query = f""
@@ -152,3 +159,25 @@ class RegistrarUsuario(Form, Base):
         self.lineEdit_nombreusuario.setText("")
         self.lineEdit_contrasenausuario.setText("")
         self.limpiarDict()
+
+    def formatRol(self,rol_unformat):
+        if rol_unformat == 'Administrador':
+            return 'admin'
+        elif rol_unformat == 'Empleado':
+            return 'empleado'
+        elif rol_unformat == 'Proyectista':
+            return 'proyectista'
+        elif rol_unformat == 'Armadores':
+            return 'armadores'
+        else:
+            return 'otro' 
+
+    def isUsuarioRepetido(self,nombre_usuario,cur):
+        query = f"SELECT * FROM usuario WHERE nombre_usuario ='{nombre_usuario}'"
+        cur.execute(query)
+        usuarios = cur.fetchall()
+        if len(usuarios) == 0:
+            repetido = False
+        else:
+            repetido = True
+        return repetido
