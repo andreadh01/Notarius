@@ -1,6 +1,6 @@
+from lib2to3.pgen2.pgen import generate_grammar
 from PyQt5 import uic,QtWidgets
 import os
-
 from bdConexion import obtener_conexion
 from functools import partial
 
@@ -20,11 +20,21 @@ class EditarPrivilegios(Base, Form):
 		self.setupUsers(self)
 		self.setupTables(self)
 		self.setupColumns(self)
+
+		self.button_guardar.clicked.connect(self.guardarCambios)
+
 		# cada que se actualice el combobox de tablas, se actualizan los checkbox de las columnas
 		self.usuarioslist.currentTextChanged.connect(self.limpiarDict)
 		self.tablaslist.currentTextChanged.connect(self.setupColumns)
 		self.accioneslist.currentTextChanged.connect(self.resetCheckboxes)
   
+
+	def guardarCambios(self):
+		usuario_seleccionado = self.usuarioslist.currentText()
+		self.generarGrants(usuario_seleccionado)
+		self.label_guardado_exitoso.setText("Guardado exitosamente")
+    	
+
 	# en esta funcion se van a cargar los usuarios de la base de datos al combobox de usuarios
 	def setupUsers(self, Form):
 		conn = obtener_conexion()
@@ -78,6 +88,22 @@ class EditarPrivilegios(Base, Form):
 		self.connectCheckboxes(self)
 		self.resetCheckboxes(self)
 
+	def generarGrants(self,nombre_usuario):
+		query = f""
+		conn = obtener_conexion()
+		cur = conn.cursor()
+		for llave,accion in self.diccionario_permisos.items():
+			if llave == 'Agregar': permiso='INSERT'
+			elif llave == 'Modificar': permiso='UPDATE'
+			elif llave == 'Ver': permiso='SELECT'
+			for nombre_tabla,columnas in accion.items():
+				for nombre_columna,checked in columnas.items():
+					if checked:
+						query=f"GRANT {permiso} ({nombre_columna}) ON {nombre_tabla} TO '{nombre_usuario}'@'localhost';"
+						cur.execute(query)
+		cur.close()
+		conn.close()
+
 	def resetCombobox(self, Form):
 		for obj in self.cols:
 			self.gridLayout.removeWidget(obj)
@@ -115,6 +141,8 @@ class EditarPrivilegios(Base, Form):
 								'Modificar':{},
 								'Ver':{}}
 		self.resetCheckboxes(Form)
+
+
 
 	# al seleccionar guardar se llevara a cabo el comando en la base de datos
 	#	ejemplo: GRANT SELECT (col1), INSERT (col1,col2) ON mydb.mytbl TO 'someuser'@'somehost';

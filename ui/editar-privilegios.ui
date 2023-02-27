@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1440</width>
-    <height>847</height>
+    <width>721</width>
+    <height>541</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -88,7 +88,6 @@ color: rgb(149, 117, 61);</string>
        </property>
       </widget>
      </item>
-    
      <item row="9" column="0">
       <widget class="QComboBox" name="accioneslist">
        <property name="styleSheet">
@@ -210,6 +209,34 @@ QPushButton:pressed {
        </property>
        <property name="text">
         <string>    Guardar    </string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_guardado_exitoso">
+       <property name="styleSheet">
+        <string notr="true">font: 12pt;
+color: green;</string>
+       </property>
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>
