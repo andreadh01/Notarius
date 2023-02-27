@@ -1,8 +1,8 @@
 import mysql.connector
 
-def obtener_conexion():
+def obtener_conexion(user='root', pwd=''):
     return mysql.connector.connect(host='localhost',
-                           user='root',
-                           password='',
+                           user=user,
+                           password=pwd,
                            database='notarius'
                            )
