@@ -110,7 +110,6 @@ class AgregarRegistro(Form, Base):
             name_label = f'label_{i}'
             
             tipo_dato = propiedades_columnas[i][1]
-            tipo_dato = tipo_dato.decode("utf-8")
             print(tipo_dato)
             auto_increment = propiedades_columnas[i][5]
             if auto_increment != 'auto_increment':
