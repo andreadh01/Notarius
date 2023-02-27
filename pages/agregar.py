@@ -1,5 +1,6 @@
 from PyQt5 import QtGui, uic,QtWidgets, QtCore
 import os
+import re
 
 from bdConexion import obtener_conexion
 
@@ -33,60 +34,7 @@ class AgregarRegistro(Form, Base):
         print(lista_tablas)
         self.tablaslist.addItems(lista_tablas)
     
-    # Metodo para crear el input dependiendo del tipo de dato de las columnas				
-	# Tipos de datos: 
-	# ints, dates, varchar, timestamp, decimal, enum
-    # def crearInput(self, tipo_dato, name):
-        # if 'int' or 'tinyint' in tipo_dato:
-        #     setattr(self, name, QtWidgets.QSpinBox(self.Form))
-        #     attr = getattr(self,name)
-        #     attr.setStyleSheet("\n"
-		# 	"font: 75 16pt;\n"
-		# 	"color: rgb(149, 117, 61);")
-        #     attr.setObjectName(name)
-        #     return (attr)		
-        # elif 'date' in tipo_dato:
-        #     setattr(self, name, QtWidgets.QDateEdit(self.Form))
-        #     attr = getattr(self,name)
-        #     attr.setStyleSheet("\n"
-		# 	"font: 75 16pt;\n"
-		# 	"color: rgb(149, 117, 61);")
-        #     attr.setObjectName(name)
-        #     return (attr)		
-        # elif 'varchar' in tipo_dato:
-        #     setattr(self, name, QtWidgets.QLineEdit(self.Form))
-        #     attr = getattr(self,name)
-        #     attr.setStyleSheet("\n"
-		# 	"font: 75 16pt;\n"
-		# 	"color: rgb(149, 117, 61);")
-        #     attr.setObjectName(name)
-        #     return (attr)
-        # elif 'decimal' in tipo_dato:
-        #     setattr(self, name, QtWidgets.QDoubleSpinBox(self.Form))
-        #     attr = getattr(self,name)
-        #     attr.setStyleSheet("\n"
-		# 	"font: 75 16pt;\n"
-		# 	"color: rgb(149, 117, 61);")
-        #     attr.setObjectName(name)
-        #     return (attr)
-        # elif 'enum' in tipo_dato:
-        #     setattr(self, name, QtWidgets.QComboBox(self.Form))
-        #     attr = getattr(self,name)
-        #     attr.setStyleSheet("\n"
-		# 	"font: 75 16pt;\n"
-		# 	"color: rgb(149, 117, 61);")
-        #     attr.setObjectName(name)
-        #     return (attr)
-        # elif 'timestamp' in tipo_dato:
-        #     setattr(self, name, QtWidgets.QDateEdit(self.Form))
-        #     attr = getattr(self,name)
-        #     attr.setStyleSheet("\n"
-		# 	"font: 75 16pt;\n"
-		# 	"color: rgb(149, 117, 61);")
-        #     attr.setObjectName(name)
-        #     return (attr)		
 			
-
  	# en esta funcion se van a actualizar los checkbox de las columnas de la pantalla editar privilegios
     def setupColumns(self, Form):
         # se eliminan los combobox anteriores
@@ -110,10 +58,8 @@ class AgregarRegistro(Form, Base):
             name_label = f'label_{i}'
             
             tipo_dato = propiedades_columnas[i][1]
-            print(tipo_dato)
             auto_increment = propiedades_columnas[i][5]
             if auto_increment != 'auto_increment':
-                # setattr(self, name_lineEdit, QtWidgets.QLineEdit(Form))
                 setattr(self, name_label, QtWidgets.QLabel(Form))
                 # Label
                 attr_label = getattr(self,name_label)
@@ -124,65 +70,82 @@ class AgregarRegistro(Form, Base):
                 attr_label.setText(col+': ')
                 self.gridLayout.addWidget(attr_label, i+1, 1, 1, 1)
                 self.cols.append(attr_label)
+                widget = self.crearInput(tipo_dato, name_input)
+                self.gridLayout.addWidget(widget, i+1, 2, 1, 1)
+                self.cols.append(widget)
 
-                if 'int' in tipo_dato:
-                    setattr(self, name_input, QtWidgets.QSpinBox(Form))
-                    attr = getattr(self,name_input)
-                    attr.setStyleSheet("\n"
-					"font: 75 16pt;\n"
-					"color: rgb(149, 117, 61);")
-                    attr.setObjectName(name_input)
-                elif 'date' in tipo_dato:
-                    setattr(self, name_input, QtWidgets.QDateEdit(Form))
-                    attr = getattr(self,name_input)
-                    attr.setStyleSheet("\n"
-					"font: 75 16pt;\n"
-					"color: rgb(149, 117, 61);")
-                    attr.setObjectName(name_input)
-                elif 'varchar' in tipo_dato:
-                    setattr(self, name_input, QtWidgets.QLineEdit(Form))
-                    attr = getattr(self,name_input)
-                    attr.setStyleSheet("\n"
-					"font: 75 16pt;\n"
-					"color: rgb(149, 117, 61);")
-                    attr.setObjectName(name_input)
-                elif 'decimal' in tipo_dato:
-                    setattr(self, name_input, QtWidgets.QDoubleSpinBox(Form))
-                    attr = getattr(self,name_input)
-                    attr.setStyleSheet("\n"
-					"font: 75 16pt;\n"
-					"color: rgb(149, 117, 61);")
-                    attr.setObjectName(name_input)
-                elif 'enum' in tipo_dato:
-                    setattr(self, name_input, QtWidgets.QComboBox(Form))
-                    attr = getattr(self,name_input)
-                    attr.setStyleSheet("\n"
-					"font: 75 16pt;\n"
-					"color: rgb(149, 117, 61);")
-                    attr.setObjectName(name_input)
-                elif 'timestamp' in tipo_dato:
-                    setattr(self, name_input, QtWidgets.QDateEdit(Form))
-                    attr = getattr(self,name_input)
-                    attr.setStyleSheet("\n"
-                    "font: 75 16pt;\n"
-                    "color: rgb(149, 117, 61);")
-                    attr.setObjectName(name_input)
+
+    def crearInput(self,tipo_dato,name_input):
+        if 'int' in tipo_dato:   
+            setattr(self, name_input, QtWidgets.QSpinBox())
+            attr = getattr(self,name_input)
+            attr.setStyleSheet("\n"
+            "font: 75 16pt;\n"
+            "color: rgb(149, 117, 61);")
+            attr.setObjectName(name_input)
+            if 'tinyint' in tipo_dato:
+                attr.setMaximum(127)
+            else:
+                attr.setMaximum(2147483647)
+            return attr
+        elif 'date' in tipo_dato:
+            setattr(self, name_input, QtWidgets.QDateEdit())
+            attr = getattr(self,name_input)
+            attr.setCalendarPopup(True)
+            attr.setStyleSheet("\n"
+            "font: 75 16pt;\n"
+            "color: rgb(149, 117, 61);")
+            attr.setObjectName(name_input)
+            return attr
+        elif 'varchar' in tipo_dato:
+            setattr(self, name_input, QtWidgets.QLineEdit())
+            attr = getattr(self,name_input)
+            attr.setStyleSheet("\n"
+            "font: 75 16pt;\n"
+            "color: rgb(149, 117, 61);")
+            attr.setObjectName(name_input)
+            max_value = self.limpiarString(tipo_dato)
+            attr.setMaxLength(int(max_value))
+            return attr
+        elif 'decimal' in tipo_dato:
+            setattr(self, name_input, QtWidgets.QDoubleSpinBox())
+            attr = getattr(self,name_input)
+            attr.setStyleSheet("\n"
+            "font: 75 16pt;\n"
+            "color: rgb(149, 117, 61);")
+            attr.setObjectName(name_input)
+            attr.setMaximum(99999999.99)
+            return attr
+        elif 'enum' in tipo_dato:
+            setattr(self, name_input, QtWidgets.QComboBox())
+            attr = getattr(self,name_input)
+            attr.setStyleSheet("\n"
+            "font: 75 16pt;\n"
+            "color: rgb(149, 117, 61);")
+            attr.setObjectName(name_input)
+            re_pattern = re.compile(r"[^a-z, ()]", re.I)
+            opciones = re.sub(re_pattern, "", tipo_dato)            
+            opciones = opciones.replace('enum(','').replace(')','')
+            opciones = opciones.split(',')
+            attr.addItems(opciones)
+            return attr
+        elif 'timestamp' in tipo_dato:
+            print(Form)
+            setattr(self, name_input, QtWidgets.QDateTimeEdit())
+            attr = getattr(self,name_input)
+            attr.setCalendarPopup(True)
+            #attr.setDisplayFormat("yyyy-mm-dd HH:mm:ss")
+            attr.setStyleSheet("\n"
+            "font: 75 16pt;\n"
+            "color: rgb(149, 117, 61);")
+            attr.setObjectName(name_input)
+            return attr
                     
-				
-				
-                # creandoInput = self.crearInput(tipo_dato, name_input)
-                self.gridLayout.addWidget(attr, i+1, 2, 1, 1)
-                self.cols.append(attr)
-				
-				# Line Edit
-                # attr_lineEdit = getattr(self,name_lineEdit)
-                # attr_lineEdit.setStyleSheet("\n"
-				# "font: 75 16pt;\n"
-				# "color: rgb(149, 117, 61);")
-                # attr_lineEdit.setText("")
-                # attr_lineEdit.setObjectName(name_label)
-                # self.gridLayout.addWidget(attr_lineEdit, i+1, 2, 1, 1)
-                # self.cols.append(attr_lineEdit)
+
+    def limpiarString(self,cadena_sucia):
+        string_limpio = re.sub("[^0-9]","",cadena_sucia)
+        return string_limpio
+
 
     def resetCombobox(self, Form):
         for obj in self.cols:
