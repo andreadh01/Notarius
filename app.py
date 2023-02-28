@@ -6,6 +6,7 @@ from PyQt5.QtGui import QPixmap
 from bdConexion import obtener_conexion
 from functools import partial
 from pages.editarprivilegios import EditarPrivilegios
+from pages.registrarusuario import RegistrarUsuario
 
 class WelcomeScreen(QDialog):
     def __init__(self):
@@ -118,8 +119,8 @@ class Dashboard(Base, Form):
         for i, button in enumerate(buttons):
             button.clicked.connect(partial(self.stackedWidget.setCurrentIndex,i))
             button.clicked.connect(partial(self.findChild(EditarPrivilegios).label_guardado_exitoso.setText,""))
-            button.clicked.connect(partial(self.findChild(EditarPrivilegios).label_exito.setText,""))
-            button.clicked.connect(partial(self.findChild(EditarPrivilegios).label_error.setText,""))
+            button.clicked.connect(partial(self.findChild(RegistrarUsuario).label_exito.setText,""))
+            button.clicked.connect(partial(self.findChild(RegistrarUsuario).label_error.setText,""))
 
 
 # main
