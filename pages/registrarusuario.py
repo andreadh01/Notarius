@@ -5,7 +5,7 @@ from bdConexion import obtener_conexion
 from functools import partial
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/agregar-usuario-dialog.ui")))
+Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/agregar-usuario.ui")))
 
 class RegistrarUsuario(Form, Base):
     cols=[]
@@ -132,6 +132,7 @@ class RegistrarUsuario(Form, Base):
                 self.generarGrants(nombre_usuario)
                 cur.close()
                 conn.close()
+                
                 self.lineEdit_nombreusuario.setText("")
                 self.lineEdit_contrasenausuario.setText("")
                 self.label_error.setText("")

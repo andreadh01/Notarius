@@ -77,8 +77,8 @@ color: rgb(141, 110, 58);</string>
        <property name="styleSheet">
         <string notr="true">QComboBox{
 border: 1px solid #95753d;
-background-color: #white;
-font: 75 11pt &quot;MS Shell Dlg 2&quot;;
+background-color: white;
+font: 75 14pt;
 color: rgb(149, 117, 61);
 }</string>
        </property>

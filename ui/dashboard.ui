@@ -30,8 +30,6 @@
        <string/>
       </property>
      </widget>
-     <widget class="EditarRegistro" name="editarregistro"/>
-
     </widget>
    </item>
    <item row="0" column="0">
@@ -148,7 +146,7 @@ QPushButton:pressed {
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="botonEditarReg">
+        <widget class="QPushButton" name="botonextra">
          <property name="font">
           <font>
            <pointsize>14</pointsize>
@@ -175,7 +173,7 @@ QPushButton:pressed {
 }</string>
          </property>
          <property name="text">
-          <string>Editar registro</string>
+          <string>Extra</string>
          </property>
          <property name="icon">
           <iconset>
@@ -295,7 +293,7 @@ QPushButton:pressed {
 	color: rgb(141, 110, 58);
 	border: none;
 height: 25px;
-	font: 14pt &quot;MS Shell Dlg 2&quot;;
+	font: 14pt ;
 }
 
 QPushButton:hover {
