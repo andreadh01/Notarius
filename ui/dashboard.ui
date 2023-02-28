@@ -31,7 +31,6 @@
       </property>
      </widget>
      <widget class="EditarRegistro" name="editarregistro"/>
-
     </widget>
    </item>
    <item row="0" column="0">
@@ -286,35 +285,6 @@ QPushButton:pressed {
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_eliminar_usuario">
-         <property name="whatsThis">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;Eliminar Usuario&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-	color: rgb(141, 110, 58);
-	border: none;
-height: 25px;
-	font: 14pt &quot;MS Shell Dlg 2&quot;;
-}
-
-QPushButton:hover {
-	background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}
-
-QPushButton:pressed {
-    border-style: inset;
-    background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}</string>
-         </property>
-         <property name="text">
-          <string>Eliminar Usuario</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="botonEditarPrivilegios">
          <property name="font">
           <font>
@@ -479,11 +449,11 @@ QPushButton:pressed {
    <container>1</container>
   </customwidget>
   <customwidget>
-    <class>EditarRegistro</class>
-    <extends>QWidget</extends>
-    <header>pages/editarregistro</header>
-    <container>1</container>
-   </customwidget>
+   <class>EditarRegistro</class>
+   <extends>QWidget</extends>
+   <header>pages/editarregistro</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <resources/>
  <connections/>

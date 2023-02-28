@@ -189,26 +189,6 @@ class Ui_QDialog(object):
 "}")
         self.botonRegistrar.setObjectName("botonRegistrar")
         self.verticalLayout_6.addWidget(self.botonRegistrar)
-        self.pushButton_eliminar_usuario = QtWidgets.QPushButton(QDialog)
-        self.pushButton_eliminar_usuario.setStyleSheet("QPushButton {\n"
-"    color: rgb(141, 110, 58);\n"
-"    border: none;\n"
-"height: 25px;\n"
-"    font: 14pt \"MS Shell Dlg 2\";\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background-color: rgb(149, 117, 61);\n"
-"    color: rgb(255, 255, 255);\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    border-style: inset;\n"
-"    background-color: rgb(149, 117, 61);\n"
-"    color: rgb(255, 255, 255);\n"
-"}")
-        self.pushButton_eliminar_usuario.setObjectName("pushButton_eliminar_usuario")
-        self.verticalLayout_6.addWidget(self.pushButton_eliminar_usuario)
         self.botonEditarPrivilegios = QtWidgets.QPushButton(QDialog)
         font = QtGui.QFont()
         font.setPointSize(14)
@@ -287,8 +267,6 @@ class Ui_QDialog(object):
         self.pushButton_9.setText(_translate("QDialog", "Importar Excel"))
         self.botonAgregar.setText(_translate("QDialog", "Agregar Registro"))
         self.botonRegistrar.setText(_translate("QDialog", "Agregar Usuario"))
-        self.pushButton_eliminar_usuario.setWhatsThis(_translate("QDialog", "<html><head/><body><p><span style=\" font-size:14pt;\">Eliminar Usuario</span></p><p><br/></p></body></html>"))
-        self.pushButton_eliminar_usuario.setText(_translate("QDialog", "Eliminar Usuario"))
         self.botonEditarPrivilegios.setText(_translate("QDialog", "Editar Privilegios"))
         self.pushButton.setText(_translate("QDialog", "Cerrar Sesión"))
 from pages.agregar import AgregarRegistro
