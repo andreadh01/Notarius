@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QDialog, QApplication, QWidget
 from PyQt5.QtGui import QPixmap
 from bdConexion import obtener_conexion
 from functools import partial
+from pages.editarprivilegios import EditarPrivilegios
 
 class WelcomeScreen(QDialog):
     def __init__(self):
@@ -108,14 +109,18 @@ class CreateAccScreen(QDialog):
 #         self.image.setPixmap(QPixmap('placeholder.png'))
 
 Form, Base = uic.loadUiType("ui/dashboard.ui")
-
+        
 class Dashboard(Base, Form):
-	def __init__(self, parent=None):
-		super(self.__class__, self).__init__(parent)
-		self.setupUi(self)
-		buttons = (self.botonTabla,self.botonAgregar, self.botonEditarPrivilegios, self.botonRegistrar)
-		for i, button in enumerate(buttons):
-			button.clicked.connect(partial(self.stackedWidget.setCurrentIndex, i))
+    def __init__(self, parent=None):
+        super(self.__class__, self).__init__(parent)
+        self.setupUi(self)
+        buttons = (self.botonTabla,self.botonAgregar, self.botonEditarPrivilegios, self.botonRegistrar)
+        for i, button in enumerate(buttons):
+            button.clicked.connect(partial(self.stackedWidget.setCurrentIndex,i))
+            button.clicked.connect(partial(self.findChild(EditarPrivilegios).label_guardado_exitoso.setText,""))
+            button.clicked.connect(partial(self.findChild(EditarPrivilegios).label_exito.setText,""))
+            button.clicked.connect(partial(self.findChild(EditarPrivilegios).label_error.setText,""))
+
 
 # main
 app = QApplication(sys.argv)
