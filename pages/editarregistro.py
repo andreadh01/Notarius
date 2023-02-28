@@ -11,9 +11,11 @@ class EditarRegistro(Form, Base):
     cols = []
     camposCambiados = {}
     pri_key = ()
-    def __init__(self, parent=None):
+    def __init__(self, parent=None,user='root', password=''):
         super(self.__class__,self).__init__(parent)
         self.setupUi(self)
+        self.user = user
+        self.password = password
             # se mandan llamar los metodos al correr el programa
         #self.setupInputs(self)
         self.pushButton_cancelar.clicked.connect(self.changePage)
@@ -22,7 +24,7 @@ class EditarRegistro(Form, Base):
     def setupInputs(self, Form, tabla, registro):
         # se eliminan los inputs anteriores
         self.resetCombobox(self)
-        conn = obtener_conexion()
+        conn = obtener_conexion(self.user,self.password)
         cur = conn.cursor()
         query = f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME= '{tabla}' AND TABLE_SCHEMA='notarius'"
         cur.execute(query)
@@ -67,7 +69,7 @@ class EditarRegistro(Form, Base):
     def getRegistro(self, Form, index, tabla, col):
         print('nombreeee '+tabla)
         self.tablaLabel.setText(tabla)
-        conn = obtener_conexion()
+        conn = obtener_conexion(self.user,self.password)
         cur = conn.cursor(dictionary=True)
         query = f"SELECT * FROM {tabla} WHERE {col}='{index}'"
         cur.execute(query)
@@ -190,7 +192,7 @@ class EditarRegistro(Form, Base):
         
     def actualizarRegistro(self):
         tabla = self.tablaLabel.text()
-        conn = obtener_conexion()
+        conn = obtener_conexion(self.user,self.password)
         cur = conn.cursor()
         query = f"UPDATE {tabla} set "
 
@@ -206,7 +208,7 @@ class EditarRegistro(Form, Base):
         conn.close()
         self.changePage()
     #     print(registro)
-    #     conn = obtener_conexion()
+    #     conn = obtener_conexion(self.user,self.password)
     #     cur = conn.cursor()
     #     query = 'SELECT * FROM {} WHERE {'columna_0'}='{valor_col_0}''
     #     cur.execute(query)

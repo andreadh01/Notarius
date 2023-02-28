@@ -1,4 +1,4 @@
-from PyQt5 import QtGui, uic,QtWidgets, QtCore
+from PyQt5 import uic,QtWidgets
 import os
 import re
 
@@ -11,9 +11,11 @@ Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/agregar-registros.u
 class AgregarRegistro(Form, Base):
     cols=[]
     
-    def __init__(self, parent=None):
+    def __init__(self, parent=None,user='root', password=''):
         super(self.__class__,self).__init__(parent)
         self.setupUi(self)
+        self.user = user
+        self.password = password
         # se mandan llamar los metodos al correr el programa
         self.setupTables(self)
         self.setupColumns(self)
@@ -23,7 +25,7 @@ class AgregarRegistro(Form, Base):
 
 	# en esta funcion se van a cargar las tablas de la base de datos al combobox de tablas
     def setupTables(self, Form):
-        conn = obtener_conexion()
+        conn = obtener_conexion(self.user,self.password)
         cur = conn.cursor()
         query = 'SHOW TABLES'
         cur.execute(query)
@@ -31,7 +33,7 @@ class AgregarRegistro(Form, Base):
         cur.close()
         conn.close()
         lista_tablas = [tabla[0] for tabla in tablas[:-1]]
-        print(lista_tablas)
+        #print(lista_tablas)
         self.tablaslist.addItems(lista_tablas)
     
 			
@@ -39,7 +41,7 @@ class AgregarRegistro(Form, Base):
     def setupColumns(self, Form):
         # se eliminan los combobox anteriores
         self.resetCombobox(self)
-        conn = obtener_conexion()
+        conn = obtener_conexion(self.user,self.password)
         cur = conn.cursor()
         tabla_seleccionada = self.tablaslist.currentText()
         query = ' SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME= \''+tabla_seleccionada+'\''
@@ -48,7 +50,7 @@ class AgregarRegistro(Form, Base):
         query = f'DESCRIBE {tabla_seleccionada}'
         cur.execute(query)
         propiedades_columnas = cur.fetchall()
-        print(propiedades_columnas)
+        #print(propiedades_columnas)
         cur.close()
         conn.close()
         lista_columnas = [col[0] for col in columnas]
@@ -130,7 +132,6 @@ class AgregarRegistro(Form, Base):
             attr.addItems(opciones)
             return attr
         elif 'timestamp' in tipo_dato:
-            print(Form)
             setattr(self, name_input, QtWidgets.QDateTimeEdit())
             attr = getattr(self,name_input)
             attr.setCalendarPopup(True)

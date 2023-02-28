@@ -1,8 +1,10 @@
-from PyQt5 import QtGui, uic, QtWidgets, QtCore
+from PyQt5 import uic, QtWidgets
 from pages.editarprivilegios import EditarPrivilegios
 import os
 from bdConexion import obtener_conexion
 from functools import partial
+
+from pages.verusuario import VerUsuario
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/agregar-usuario.ui")))
@@ -13,9 +15,11 @@ class RegistrarUsuario(Form, Base):
                             'Modificar':{},
                             'Ver':{}}
     
-    def __init__(self, parent=None):
+    def __init__(self, parent=None,user='root', password=''):
         super(self.__class__,self).__init__(parent)
         self.setupUi(self)
+        self.user = user
+        self.password = password
         # se mandan llamar los metodos al correr el programa
         self.setupTables(self)
         self.setupColumns(self)
@@ -27,7 +31,7 @@ class RegistrarUsuario(Form, Base):
 
 	# en esta funcion se van a cargar las tablas de la base de datos al combobox de tablas
     def setupTables(self, Form):
-        conn = obtener_conexion()
+        conn = obtener_conexion(self.user,self.password)
         cur = conn.cursor()
         query = 'SHOW TABLES'
         cur.execute(query)
@@ -35,17 +39,17 @@ class RegistrarUsuario(Form, Base):
         cur.close()
         conn.close()
         lista_tablas = [tabla[0] for tabla in tablas]
-        print(lista_tablas)
+        #print(lista_tablas)
         self.tablaslist.addItems(lista_tablas)
     
  	# en esta funcion se van a actualizar los checkbox de las columnas de la pantalla editar privilegios
     def setupColumns(self, Form):
         # se eliminan los combobox anteriores
         self.resetCombobox(self)
-        conn = obtener_conexion()
+        conn = obtener_conexion(self.user,self.password)
         cur = conn.cursor()
         tabla_seleccionada = self.tablaslist.currentText()
-        query = ' SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME= \''+tabla_seleccionada+'\''
+        query = f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME= '{tabla_seleccionada}' AND TABLE_SCHEMA='notarius'"
         cur.execute(query)
         columnas = cur.fetchall()
         cur.close()
@@ -119,7 +123,7 @@ class RegistrarUsuario(Form, Base):
             self.label_error.setText("Por favor ingrese datos en ambas casillas")
             self.label_exito.setText("")
         else:
-            conn = obtener_conexion()
+            conn = obtener_conexion(self.user,self.password)
             cur = conn.cursor()
             if self.isUsuarioRepetido(nombre_usuario, cur):
                 self.label_error.setText("El usuario ingresado ya existe")
@@ -138,11 +142,12 @@ class RegistrarUsuario(Form, Base):
                 self.label_error.setText("")
                 self.label_exito.setText("Usuario registrado exitosamente")
                 self.parent().findChild(EditarPrivilegios).usuarioslist.addItem(nombre_usuario)
+                self.parent().findChild(VerUsuario).setupTable(self.parent().findChild(VerUsuario))
                 self.limpiarDict()
 
     def generarGrants(self,nombre_usuario):
         query = f""
-        conn = obtener_conexion()
+        conn = obtener_conexion(self.user,self.password)
         cur = conn.cursor()
         for llave,accion in self.diccionario_permisos.items():
             if llave == 'Agregar': permiso='INSERT'
@@ -151,7 +156,7 @@ class RegistrarUsuario(Form, Base):
             for nombre_tabla,columnas in accion.items():
                 for nombre_columna,checked in columnas.items():
                     if checked:
-                        query=f"GRANT {permiso} ({nombre_columna}) ON {nombre_tabla} TO '{nombre_usuario}'@'localhost';"
+                        query=f"GRANT {permiso} ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost';"
                         cur.execute(query)
         cur.close()
         conn.close()
