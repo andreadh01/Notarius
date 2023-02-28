@@ -39,6 +39,9 @@ class Ui_QDialog(object):
         self.editarregistro = EditarRegistro()
         self.editarregistro.setObjectName("editarregistro")
         self.stackedWidget.addWidget(self.editarregistro)
+        self.verusuario = VerUsuario()
+        self.verusuario.setObjectName("verusuario")
+        self.stackedWidget.addWidget(self.verusuario)
         self.gridLayout.addWidget(self.stackedWidget, 0, 1, 1, 1)
         self.verticalLayout_5 = QtWidgets.QVBoxLayout()
         self.verticalLayout_5.setObjectName("verticalLayout_5")
@@ -113,13 +116,13 @@ class Ui_QDialog(object):
         self.botonEditarReg.setIcon(icon1)
         self.botonEditarReg.setObjectName("botonEditarReg")
         self.verticalLayout_6.addWidget(self.botonEditarReg)
-        self.pushButton_9 = QtWidgets.QPushButton(QDialog)
+        self.botonUsuario = QtWidgets.QPushButton(QDialog)
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(False)
         font.setWeight(50)
-        self.pushButton_9.setFont(font)
-        self.pushButton_9.setStyleSheet("QPushButton {\n"
+        self.botonUsuario.setFont(font)
+        self.botonUsuario.setStyleSheet("QPushButton {\n"
 "    color: rgb(141, 110, 58);\n"
 "    border: none;\n"
 "    height: 25px;\n"
@@ -137,9 +140,9 @@ class Ui_QDialog(object):
 "}")
         icon2 = QtGui.QIcon()
         icon2.addPixmap(QtGui.QPixmap("c:\\Users\\Estefy\\Documents\\Notarius2.0\\Notarius\\ui\\file-excel-2-fill.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButton_9.setIcon(icon2)
-        self.pushButton_9.setObjectName("pushButton_9")
-        self.verticalLayout_6.addWidget(self.pushButton_9)
+        self.botonUsuario.setIcon(icon2)
+        self.botonUsuario.setObjectName("botonUsuario")
+        self.verticalLayout_6.addWidget(self.botonUsuario)
         self.botonAgregar = QtWidgets.QPushButton(QDialog)
         font = QtGui.QFont()
         font.setPointSize(14)
@@ -264,7 +267,7 @@ class Ui_QDialog(object):
 "<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:30pt; color:rgb(141, 110, 58);\">Notarius</span></p></body></html>"))
         self.botonTabla.setText(_translate("QDialog", "Tabla"))
         self.botonEditarReg.setText(_translate("QDialog", "Editar registro"))
-        self.pushButton_9.setText(_translate("QDialog", "Importar Excel"))
+        self.botonUsuario.setText(_translate("QDialog", "Usuarios"))
         self.botonAgregar.setText(_translate("QDialog", "Agregar Registro"))
         self.botonRegistrar.setText(_translate("QDialog", "Agregar Usuario"))
         self.botonEditarPrivilegios.setText(_translate("QDialog", "Editar Privilegios"))
@@ -274,3 +277,4 @@ from pages.editarprivilegios import EditarPrivilegios
 from pages.editarregistro import EditarRegistro
 from pages.registrarusuario import RegistrarUsuario
 from pages.vertabla import VerTabla
+from pages.verusuario import VerUsuario
