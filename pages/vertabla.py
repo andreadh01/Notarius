@@ -3,6 +3,8 @@ from PyQt5 import QtGui, uic
 from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView
 from PyQt5.QtWidgets import QMessageBox, QAbstractItemView,QPushButton
 from bdConexion import obtener_conexion
+
+from pages.editarregistro import EditarRegistro
 import os
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -16,7 +18,8 @@ class VerTabla(Base, Form):
 		self.setupTableList(self)
 		self.setupTable(self)
 		self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
-		self.tableslist.itemSelectionChanged.connect(partial(self.setupTable,self))
+		self.tableslist.itemSelectionChanged.connect(partial(self.setupTable, self))
+		#self.modificar.clicked.connect(self.parent().findChild(EditarRegistro).usuarioslist)
 
 
 	# en este metodo se agregan las tablas disponibles para el usuario a una lista	
@@ -36,6 +39,7 @@ class VerTabla(Base, Form):
 	def setupTable(self, Form):
 		self.tableWidget.setRowCount(0)
 		self.tableWidget.setColumnCount(0)
+		print(self.parent())
 		tabla_name = self.tableslist.currentItem().text()
 		conn = obtener_conexion()
 		query = f"SELECT * FROM {tabla_name}"
@@ -45,10 +49,8 @@ class VerTabla(Base, Form):
 		cur.close()
 		conn.close()
 		header = ["Modificar"]+list(tabla[0].keys())
-		print(header)
 		self.tableWidget.setColumnCount(len(header))
 		self.tableWidget.setHorizontalHeaderLabels(header)
-
 		for dic in tabla:
 			col = 1
 			button = self.createButton(self)
@@ -56,6 +58,7 @@ class VerTabla(Base, Form):
 			self.tableWidget.setRowCount(rows + 1)
 			# se agrega un boton modificar que al hacer clic mandara a la pagina modificar registro
 			self.tableWidget.setCellWidget(rows,0,button)
+			button.clicked.connect(lambda *args, self=self, row=rows: self.changePage(self,row))
 			for val in dic.values():
 				self.tableWidget.setItem(rows, col, QTableWidgetItem(str(val)))
 				col +=1
@@ -63,6 +66,7 @@ class VerTabla(Base, Form):
 		self.tableWidget.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents);
 	
 	def createButton(self, Form):
+  
 		button = QPushButton(self.tableWidget)
 		button.setObjectName("modificar")
 		button.setText("Modificar")
@@ -81,4 +85,11 @@ class VerTabla(Base, Form):
 "    background-color: rgb(103, 80, 41);\n"
 "    color: rgb(255, 255, 255);\n"
 "}")
+
 		return button
+	
+	def changePage(self, Form, row):
+		index = self.tableWidget.item(row,1).text()
+		self.parent().findChild(EditarRegistro).createLabels(EditarRegistro, index)
+		self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(EditarRegistro)))
+  
