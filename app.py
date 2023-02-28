@@ -6,6 +6,8 @@ from PyQt5.QtGui import QPixmap
 from bdConexion import obtener_conexion
 from functools import partial
 from pages.vertabla import VerTabla
+from pages.editarprivilegios import EditarPrivilegios
+from pages.registrarusuario import RegistrarUsuario
 
 class WelcomeScreen(QDialog):
     def __init__(self):
@@ -49,14 +51,18 @@ class WelcomeScreen(QDialog):
                 self.user.setText('')
 
 Form, Base = uic.loadUiType("ui/dashboard.ui")
-
+        
 class Dashboard(Base, Form):
-	def __init__(self, parent=None):
-		super(self.__class__, self).__init__(parent)
-		self.setupUi(self)
-		buttons = (self.botonTabla,self.botonAgregar, self.botonEditarPrivilegios, self.botonRegistrar, self.botonEditarReg)
-		for i, button in enumerate(buttons):
-			button.clicked.connect(partial(self.stackedWidget.setCurrentIndex, i))
+    def __init__(self, parent=None):
+        super(self.__class__, self).__init__(parent)
+        self.setupUi(self)
+        buttons = (self.botonTabla,self.botonAgregar, self.botonEditarPrivilegios, self.botonRegistrar,self.botonEditarReg)
+        for i, button in enumerate(buttons):
+            button.clicked.connect(partial(self.stackedWidget.setCurrentIndex,i))
+            button.clicked.connect(partial(self.findChild(EditarPrivilegios).label_guardado_exitoso.setText,""))
+            button.clicked.connect(partial(self.findChild(RegistrarUsuario).label_exito.setText,""))
+            button.clicked.connect(partial(self.findChild(RegistrarUsuario).label_error.setText,""))
+
 
 # main
 app = QApplication(sys.argv)
