@@ -30,6 +30,8 @@
        <string/>
       </property>
      </widget>
+     <widget class="EditarRegistro" name="editarregistro"/>
+
     </widget>
    </item>
    <item row="0" column="0">
@@ -146,7 +148,7 @@ QPushButton:pressed {
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_6">
+        <widget class="QPushButton" name="botonEditarReg">
          <property name="font">
           <font>
            <pointsize>14</pointsize>
@@ -173,7 +175,7 @@ QPushButton:pressed {
 }</string>
          </property>
          <property name="text">
-          <string>Historial</string>
+          <string>Editar registro</string>
          </property>
          <property name="icon">
           <iconset>
@@ -447,6 +449,12 @@ QPushButton:pressed {
    <header>pages/registrarusuario</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+    <class>EditarRegistro</class>
+    <extends>QWidget</extends>
+    <header>pages/editarregistro</header>
+    <container>1</container>
+   </customwidget>
  </customwidgets>
  <resources/>
  <connections/>
