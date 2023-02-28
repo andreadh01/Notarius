@@ -56,7 +56,7 @@ class Dashboard(Base, Form):
     def __init__(self, parent=None):
         super(self.__class__, self).__init__(parent)
         self.setupUi(self)
-        buttons = (self.botonTabla,self.botonAgregar, self.botonEditarPrivilegios, self.botonRegistrar,self.botonEditarReg)
+        buttons = (self.botonTabla,self.botonAgregar, self.botonEditarPrivilegios, self.botonRegistrar)
         for i, button in enumerate(buttons):
             button.clicked.connect(partial(self.stackedWidget.setCurrentIndex,i))
             button.clicked.connect(partial(self.findChild(EditarPrivilegios).label_guardado_exitoso.setText,""))

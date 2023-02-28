@@ -48,7 +48,8 @@ class VerTabla(Base, Form):
 		tabla = cur.fetchall()
 		cur.close()
 		conn.close()
-		header = ["Modificar"]+list(tabla[0].keys())
+		columnas = list(tabla[0].keys())
+		header = ["Modificar"]+columnas
 		self.tableWidget.setColumnCount(len(header))
 		self.tableWidget.setHorizontalHeaderLabels(header)
 		for dic in tabla:
@@ -58,7 +59,7 @@ class VerTabla(Base, Form):
 			self.tableWidget.setRowCount(rows + 1)
 			# se agrega un boton modificar que al hacer clic mandara a la pagina modificar registro
 			self.tableWidget.setCellWidget(rows,0,button)
-			button.clicked.connect(lambda *args, self=self, row=rows: self.changePage(self,row))
+			button.clicked.connect(lambda *args, self=self, row=rows, tabla=tabla_name, col=columnas[0]: self.changePage(self,row,tabla, col))
 			for val in dic.values():
 				self.tableWidget.setItem(rows, col, QTableWidgetItem(str(val)))
 				col +=1
@@ -88,8 +89,10 @@ class VerTabla(Base, Form):
 
 		return button
 	
-	def changePage(self, Form, row):
+	def changePage(self, Form, row,tabla, col):
 		index = self.tableWidget.item(row,1).text()
-		self.parent().findChild(EditarRegistro).createLabels(EditarRegistro, index)
+		editar = EditarRegistro()
+		self.parent().addWidget(editar)
+		self.parent().findChild(EditarRegistro).getRegistro(editar, index, tabla, col)
 		self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(EditarRegistro)))
   
