@@ -17,8 +17,9 @@ class AgregarRegistro(Form, Base):
         # se mandan llamar los metodos al correr el programa
         self.setupTables(self)
         self.setupColumns(self)
-        # cada que se actualice el combobox de tablas, se actualizan los checkbox de las columnas
+        # cada que se actualice el combobox de tablas, se actualizan los labels de las columnas y se agregan sus debidos inputs
         self.tablaslist.currentTextChanged.connect(self.setupColumns)
+        self.pushButton_confirmar.clicked.connect(self.guardarRegistro)
         self.pushButton_cancelar.clicked.connect(self.cancelarRegistro)
 
 	# en esta funcion se van a cargar las tablas de la base de datos al combobox de tablas
@@ -35,7 +36,7 @@ class AgregarRegistro(Form, Base):
         self.tablaslist.addItems(lista_tablas)
     
 			
- 	# en esta funcion se van a actualizar los checkbox de las columnas de la pantalla editar privilegios
+ 	# en esta funcion se van a actualizar los labels y se agregaran los inputs segun los labels de las columnas
     def setupColumns(self, Form):
         # se eliminan los combobox anteriores
         self.resetCombobox(self)
@@ -71,10 +72,11 @@ class AgregarRegistro(Form, Base):
                 self.gridLayout.addWidget(attr_label, i+1, 1, 1, 1)
                 self.cols.append(attr_label)
                 widget = self.crearInput(tipo_dato, name_input)
+                print(widget)
                 self.gridLayout.addWidget(widget, i+1, 2, 1, 1)
                 self.cols.append(widget)
 
-
+    # Metodo para crear los input para cada columna que se necesita registrar segun la tabla seleccionada
     def crearInput(self,tipo_dato,name_input):
         if 'int' in tipo_dato:   
             setattr(self, name_input, QtWidgets.QSpinBox())
@@ -153,6 +155,37 @@ class AgregarRegistro(Form, Base):
             obj.deleteLater()
             del obj
         self.cols = []
+
+    def guardarRegistro(self):
+        nombre_usuario = self.lineEdit_nombreusuario.text()
+        contrasena = self.lineEdit_contrasenausuario.text()
+        rol = self.formatRol(self.comboBox_roles.currentText())
+        if len(nombre_usuario) > 100:
+            self.label_error.setText("El nombre de usuario no debe superar 100 caracteres")
+            self.label_exito.setText("")
+        elif len(contrasena) > 300:
+            self.label_error.setText("La contraseña no debe superar los 300 caracteres")
+            self.label_exito.setText("")
+        elif len(contrasena)==0 or len(nombre_usuario)==0:
+            self.label_error.setText("Por favor ingrese datos en ambas casillas")
+            self.label_exito.setText("")
+        else:
+            conn = obtener_conexion()
+            cur = conn.cursor()
+            if self.isUsuarioRepetido(nombre_usuario, cur):
+                self.label_error.setText("El usuario ingresado ya existe")
+                self.label_exito.setText("")
+            else:
+                query = f"INSERT INTO usuario(nombre_usuario,contrasena,rol) VALUES('{nombre_usuario}','{contrasena}','{rol}')"
+                cur.execute(query)
+                query = f"CREATE USER '{nombre_usuario}'@'localhost' IDENTIFIED BY '{contrasena}'"
+                cur.execute(query)
+                self.generarGrants(nombre_usuario)
+                cur.close()
+                conn.close()
+                self.label_error.setText("")
+                self.label_exito.setText("Registro guardado exitosamente")
+                self.limpiarDict()
 
     def cancelarRegistro(self):
         self.lineEdit_nombreusuario.setText("")
