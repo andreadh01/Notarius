@@ -59,13 +59,45 @@ QPushButton:pressed {
       </spacer>
      </item>
      <item>
+      <widget class="QLineEdit" name="line_edit_busqueda_presupuesto"/>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBox_busqueda_presupuesto">
+       <item>
+        <property name="text">
+         <string/>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>no_escritura</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>proyectista</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>nombre cliente</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>no_presupuesto</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>40</width>
+         <width>30</width>
          <height>20</height>
         </size>
        </property>
