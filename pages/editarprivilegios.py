@@ -20,6 +20,7 @@ class EditarPrivilegios(Base, Form):
 		self.setupUsers(self)
 		self.setupTables(self)
 		self.setupColumns(self)
+		self.showGrants()
 
 		self.button_guardar.clicked.connect(self.guardarCambios)
 
@@ -28,6 +29,61 @@ class EditarPrivilegios(Base, Form):
 		self.tablaslist.currentTextChanged.connect(self.setupColumns)
 		self.accioneslist.currentTextChanged.connect(self.resetCheckboxes)
   
+	def showGrants(self):
+		conn = obtener_conexion()
+		cur = conn.cursor()
+		usuario_seleccionado = self.usuarioslist.currentText()
+		query=f"SHOW GRANTS FOR '{usuario_seleccionado}'@'localhost';"
+		cur.execute(query)
+		permisos = cur.fetchall()
+		cur.close()
+		conn.close()
+		lista_permisos = [permisos[0] for permisos in permisos[1:]]
+		self.limpiar_lista_permisos(lista_permisos)
+	
+	def limpiar_lista_permisos(self, lista_permisos):
+		for texto in lista_permisos:
+			select_i = texto.find("SELECT")
+			insert_i = texto.find("INSERT")
+			update_i = texto.find("UPDATE")
+			notarius_i = texto.find("notarius")
+			to_i = texto.find("TO")
+
+			nombre_tabla = texto[notarius_i+11:to_i-2]
+			print("La tabla es:",nombre_tabla)
+			if "SELECT" in texto:
+				par_i = texto.index(')')
+				subcadena_select = texto[select_i:par_i]
+				subcadena_select = subcadena_select.replace("(","")
+				par_i=texto.find(')', texto.find(')')+1)
+				subcadena_insert = texto[insert_i:par_i]
+				subcadena_insert = subcadena_insert.replace("(","")
+				par_i = texto.rfind(')')
+				subcadena_update = texto[update_i:par_i]
+				subcadena_update = subcadena_update.replace("(","")
+			else:
+				par_i = texto.index(')')
+				subcadena_insert = texto[insert_i:par_i]
+				subcadena_insert = subcadena_insert.replace("(","")
+				par_i = texto.rfind(')')
+				subcadena_update = texto[update_i:par_i]
+				subcadena_update = subcadena_update.replace("(","")
+			permiso_select = (subcadena_select.replace(", ",",")).split(" ")
+			permiso_insert = (subcadena_insert.replace(", ",",")).split(" ")
+			permiso_update = (subcadena_update.replace(", ",",")).split(" ")
+
+			permiso_select.append(nombre_tabla)
+			permiso_insert.append(nombre_tabla)
+			permiso_update.append(nombre_tabla)
+			print(permiso_select)
+			print(permiso_insert)
+			print(permiso_update)
+
+			#ya tomé ejnergias ya comi 
+
+
+			
+
 
 	def guardarCambios(self):
 		usuario_seleccionado = self.usuarioslist.currentText()

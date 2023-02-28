@@ -31,6 +31,7 @@
       </property>
      </widget>
      <widget class="EditarRegistro" name="editarregistro"/>
+     <widget class="VerUsuario" name="verusuario"/>
     </widget>
    </item>
    <item row="0" column="0">
@@ -183,7 +184,7 @@ QPushButton:pressed {
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_9">
+        <widget class="QPushButton" name="botonUsuario">
          <property name="font">
           <font>
            <pointsize>14</pointsize>
@@ -210,7 +211,7 @@ QPushButton:pressed {
 }</string>
          </property>
          <property name="text">
-          <string>Importar Excel</string>
+          <string>Usuarios</string>
          </property>
          <property name="icon">
           <iconset>
@@ -454,6 +455,12 @@ QPushButton:pressed {
    <header>pages/editarregistro</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+    <class>VerUsuario</class>
+    <extends>QWidget</extends>
+    <header>pages/verusuario</header>
+    <container>1</container>
+   </customwidget>
  </customwidgets>
  <resources/>
  <connections/>

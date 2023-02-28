@@ -35,7 +35,7 @@ class RegistrarUsuario(Form, Base):
         cur.close()
         conn.close()
         lista_tablas = [tabla[0] for tabla in tablas]
-        print(lista_tablas)
+        #print(lista_tablas)
         self.tablaslist.addItems(lista_tablas)
     
  	# en esta funcion se van a actualizar los checkbox de las columnas de la pantalla editar privilegios
