@@ -31,7 +31,7 @@ class AgregarRegistro(Form, Base):
         cur.close()
         conn.close()
         lista_tablas = [tabla[0] for tabla in tablas[:-1]]
-        print(lista_tablas)
+        #print(lista_tablas)
         self.tablaslist.addItems(lista_tablas)
     
 			
@@ -48,7 +48,7 @@ class AgregarRegistro(Form, Base):
         query = f'DESCRIBE {tabla_seleccionada}'
         cur.execute(query)
         propiedades_columnas = cur.fetchall()
-        print(propiedades_columnas)
+        #print(propiedades_columnas)
         cur.close()
         conn.close()
         lista_columnas = [col[0] for col in columnas]
@@ -130,7 +130,6 @@ class AgregarRegistro(Form, Base):
             attr.addItems(opciones)
             return attr
         elif 'timestamp' in tipo_dato:
-            print(Form)
             setattr(self, name_input, QtWidgets.QDateTimeEdit())
             attr = getattr(self,name_input)
             attr.setCalendarPopup(True)
