@@ -25,6 +25,9 @@ def showGrants(user, pwd):
 	
 def limpiar_lista_permisos(lista_permisos):
 	for texto in lista_permisos:
+		subcadena_select = ''
+		subcadena_insert = ''
+		subcadena_update = ''
 		if 'GRANT ALL PRIVILEGES ON `notarius`.*' in texto: 
 			dict_permisos['usuario'] = {'SELECT':'','INSERT':'','UPDATE':''}
 			return
@@ -37,7 +40,7 @@ def limpiar_lista_permisos(lista_permisos):
 		nombre_tabla = texto[notarius_i+11:to_i-2]
 		print(texto)
 		if "SELECT" in texto:
-			par_i = texto.index(')')
+			par_i = texto.find(')')
 			subcadena_select = texto[select_i:par_i]
 			subcadena_select = subcadena_select.replace("(","")
 			par_i=texto.find(')', texto.find(')')+1)
@@ -47,7 +50,7 @@ def limpiar_lista_permisos(lista_permisos):
 			subcadena_update = texto[update_i:par_i]
 			subcadena_update = subcadena_update.replace("(","")
 		else:
-			par_i = texto.index(')')
+			par_i = texto.find(')')
 			subcadena_insert = texto[insert_i:par_i]
 			subcadena_insert = subcadena_insert.replace("(","")
 			par_i = texto.rfind(')')

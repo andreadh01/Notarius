@@ -159,36 +159,50 @@ class AgregarRegistro(Form, Base):
         self.cols = []
 
     def guardarRegistro(self):
-        nombre_usuario = self.lineEdit_nombreusuario.text()
-        contrasena = self.lineEdit_contrasenausuario.text()
-        rol = self.formatRol(self.comboBox_roles.currentText())
-        if len(nombre_usuario) > 100:
-            self.label_error.setText("El nombre de usuario no debe superar 100 caracteres")
-            self.label_exito.setText("")
-        elif len(contrasena) > 300:
-            self.label_error.setText("La contraseña no debe superar los 300 caracteres")
-            self.label_exito.setText("")
-        elif len(contrasena)==0 or len(nombre_usuario)==0:
-            self.label_error.setText("Por favor ingrese datos en ambas casillas")
-            self.label_exito.setText("")
-        else:
-            conn = obtener_conexion()
-            cur = conn.cursor()
-            if self.isUsuarioRepetido(nombre_usuario, cur):
-                self.label_error.setText("El usuario ingresado ya existe")
-                self.label_exito.setText("")
+        print(type(self.cols[0]))
+        user, pwd = getUsuarioLogueado()
+        nombre_columnas = []
+        inputs = []
+        tabla_seleccionada = self.tablaslist.currentText()
+        query = f'INSERT INTO {tabla_seleccionada} ('
+        for elemento in self.cols:
+            if elemento.__class__.__name__=='QLabel':
+                nombre_columnas.append(elemento.text().replace(": ",""))
             else:
-                query = f"INSERT INTO usuario(nombre_usuario,contrasena,rol) VALUES('{nombre_usuario}','{contrasena}','{rol}')"
-                cur.execute(query)
-                query = f"CREATE USER '{nombre_usuario}'@'localhost' IDENTIFIED BY '{contrasena}'"
-                cur.execute(query)
-                self.generarGrants(nombre_usuario)
-                cur.close()
-                conn.close()
-                self.label_error.setText("")
-                self.label_exito.setText("Registro guardado exitosamente")
-                self.limpiarDict()
+                if elemento.__class__.__name__ == 'QSpinBox':
+                    inputs.append(elemento.value())
+                elif elemento.__class__.__name__ == 'QDateEdit':
+                    inputs.append(elemento.date().toString("yyyy-MM-dd"))
+                elif elemento.__class__.__name__ == 'QLineEdit':
+                    inputs.append(elemento.text())
+                elif elemento.__class__.__name__ == 'QDoubleSpinBox':
+                    inputs.append(elemento.value())
+                elif elemento.__class__.__name__ == 'QComboBox':
+                    inputs.append(elemento.currentText())
+                elif elemento.__class__.__name__ == 'QDateTimeEdit':
+                    inputs.append(elemento.dateTime().toString("yyyy-MM-dd hh:mm:ss"))
 
+        for columna in nombre_columnas:
+            query += f"{columna},"
+        query += ") VALUES ("
+        for dato in inputs:
+            if dato.__class__.__name__ == 'str':
+                query += f"'{dato}',"
+            else:
+                query += f"{dato},"
+        query += ");"
+        query = query.replace(",)",")")
+        print(query)
+
+        conn = obtener_conexion(user,pwd)
+        cur = conn.cursor()
+        cur.execute(query)
+        conn.commit()
+        cur.close()
+        conn.close()
+        self.label_exito.setText("Registro guardado exitosamente")
+                
+        #insert into {nombre_tabla} (cols[0]) cols[1]
     def cancelarRegistro(self):
         self.lineEdit_nombreusuario.setText("")
         self.lineEdit_contrasenausuario.setText("")

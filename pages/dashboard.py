@@ -8,12 +8,12 @@ import importlib
 Form, Base = uic.loadUiType("ui/dashboard.ui")
 
 class Dashboard(Base, Form):
-    lista_botones = []
+    lista_botones = ['VerTabla','AgregarRegistro','VerUsuario','EditarPrivilegios','RegistrarUsuario']
     
     def __init__(self, parent=None):
         super(self.__class__, self).__init__(parent)
         self.setupUi(self)
-        self.checarPermisos()
+        #self.checarPermisos()
         self.setupButtons(self)
         #self.stackedWidget.setCurrentIndex(self.stackedWidget.currentIndex()+1)
         # for i, button in enumerate(self.lista_botones):

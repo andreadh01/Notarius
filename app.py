@@ -27,7 +27,6 @@ class WelcomeScreen(QtWidgets.QDialog):
             self.error.setText("Porfavor escribe tu usuario o contraseña")
             self.passwordfield.setText('')
             self.user.setText('')
-
         else:
             conn = obtener_conexion(user, password)
             saveSession(user, password)
