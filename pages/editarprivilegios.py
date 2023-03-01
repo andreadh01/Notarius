@@ -3,6 +3,8 @@ import os
 from bdConexion import obtener_conexion
 from functools import partial
 
+from usuarios import getUsuarioLogueado
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/editar-privilegios.ui")))
 
@@ -12,16 +14,15 @@ class EditarPrivilegios(Base, Form):
 	diccionario_permisos = {'Agregar':{},
 							'Modificar':{},
 							'Ver':{}}
-	def __init__(self, parent=None,user='root', password=''):
+	def __init__(self, parent=None):
 		super(self.__class__, self).__init__(parent)
 		self.setupUi(self)
-		self.user = user
-		self.password = password
+
 		# se mandan llamar los metodos al correr el programa
 		self.setupUsers(self)
 		self.setupTables(self)
 		self.setupColumns(self)
-		self.showGrants()
+		#self.showGrants()
 
 		self.button_guardar.clicked.connect(self.guardarCambios)
 
@@ -30,57 +31,57 @@ class EditarPrivilegios(Base, Form):
 		self.tablaslist.currentTextChanged.connect(self.setupColumns)
 		self.accioneslist.currentTextChanged.connect(self.resetCheckboxes)
   
-	def showGrants(self):
-		conn = obtener_conexion(self.user,self.password)
-		cur = conn.cursor()
-		usuario_seleccionado = self.usuarioslist.currentText()
-		query=f"SHOW GRANTS FOR '{usuario_seleccionado}'@'localhost';"
-		cur.execute(query)
-		permisos = cur.fetchall()
-		cur.close()
-		conn.close()
-		lista_permisos = [permisos[0] for permisos in permisos[1:]]
-		self.limpiar_lista_permisos(lista_permisos)
+	# def showGrants(self):
+	# 	conn = obtener_conexion(self.user,self.password)
+	# 	cur = conn.cursor()
+	# 	usuario_seleccionado = self.usuarioslist.currentText()
+	# 	query=f"SHOW GRANTS FOR '{usuario_seleccionado}'@'localhost';"
+	# 	cur.execute(query)
+	# 	permisos = cur.fetchall()
+	# 	cur.close()
+	# 	conn.close()
+	# 	lista_permisos = [permisos[0] for permisos in permisos[1:]]
+	# 	self.limpiar_lista_permisos(lista_permisos)
 	
-	def limpiar_lista_permisos(self, lista_permisos):
-		for texto in lista_permisos:
-			select_i = texto.find("SELECT")
-			insert_i = texto.find("INSERT")
-			update_i = texto.find("UPDATE")
-			notarius_i = texto.find("notarius")
-			to_i = texto.find("TO")
+	# def limpiar_lista_permisos(self, lista_permisos):
+	# 	for texto in lista_permisos:
+	# 		select_i = texto.find("SELECT")
+	# 		insert_i = texto.find("INSERT")
+	# 		update_i = texto.find("UPDATE")
+	# 		notarius_i = texto.find("notarius")
+	# 		to_i = texto.find("TO")
 
-			nombre_tabla = texto[notarius_i+11:to_i-2]
-			print("La tabla es:",nombre_tabla)
-			if "SELECT" in texto:
-				par_i = texto.index(')')
-				subcadena_select = texto[select_i:par_i]
-				subcadena_select = subcadena_select.replace("(","")
-				par_i=texto.find(')', texto.find(')')+1)
-				subcadena_insert = texto[insert_i:par_i]
-				subcadena_insert = subcadena_insert.replace("(","")
-				par_i = texto.rfind(')')
-				subcadena_update = texto[update_i:par_i]
-				subcadena_update = subcadena_update.replace("(","")
-			else:
-				par_i = texto.index(')')
-				subcadena_insert = texto[insert_i:par_i]
-				subcadena_insert = subcadena_insert.replace("(","")
-				par_i = texto.rfind(')')
-				subcadena_update = texto[update_i:par_i]
-				subcadena_update = subcadena_update.replace("(","")
-			permiso_select = (subcadena_select.replace(", ",",")).split(" ")
-			permiso_insert = (subcadena_insert.replace(", ",",")).split(" ")
-			permiso_update = (subcadena_update.replace(", ",",")).split(" ")
+	# 		nombre_tabla = texto[notarius_i+11:to_i-2]
+	# 		print("La tabla es:",nombre_tabla)
+	# 		if "SELECT" in texto:
+	# 			par_i = texto.index(')')
+	# 			subcadena_select = texto[select_i:par_i]
+	# 			subcadena_select = subcadena_select.replace("(","")
+	# 			par_i=texto.find(')', texto.find(')')+1)
+	# 			subcadena_insert = texto[insert_i:par_i]
+	# 			subcadena_insert = subcadena_insert.replace("(","")
+	# 			par_i = texto.rfind(')')
+	# 			subcadena_update = texto[update_i:par_i]
+	# 			subcadena_update = subcadena_update.replace("(","")
+	# 		else:
+	# 			par_i = texto.index(')')
+	# 			subcadena_insert = texto[insert_i:par_i]
+	# 			subcadena_insert = subcadena_insert.replace("(","")
+	# 			par_i = texto.rfind(')')
+	# 			subcadena_update = texto[update_i:par_i]
+	# 			subcadena_update = subcadena_update.replace("(","")
+	# 		permiso_select = (subcadena_select.replace(", ",",")).split(" ")
+	# 		permiso_insert = (subcadena_insert.replace(", ",",")).split(" ")
+	# 		permiso_update = (subcadena_update.replace(", ",",")).split(" ")
 
-			permiso_select.append(nombre_tabla)
-			permiso_insert.append(nombre_tabla)
-			permiso_update.append(nombre_tabla)
-			print(permiso_select)
-			print(permiso_insert)
-			print(permiso_update)
+	# 		permiso_select.append(nombre_tabla)
+	# 		permiso_insert.append(nombre_tabla)
+	# 		permiso_update.append(nombre_tabla)
+	# 		print(permiso_select)
+	# 		print(permiso_insert)
+	# 		print(permiso_update)
 
-			#ya tomé ejnergias ya comi 
+	# 		#ya tomé ejnergias ya comi 
 
 
 			
@@ -94,7 +95,8 @@ class EditarPrivilegios(Base, Form):
 
 	# en esta funcion se van a cargar los usuarios de la base de datos al combobox de usuarios
 	def setupUsers(self, Form):
-		conn = obtener_conexion(self.user,self.password)
+		user, pwd = getUsuarioLogueado()
+		conn = obtener_conexion(user,pwd)
 		cur = conn.cursor()
 		query = 'SELECT nombre_usuario FROM usuario'
 		cur.execute(query)
@@ -106,7 +108,8 @@ class EditarPrivilegios(Base, Form):
 
 	# en esta funcion se van a cargar las tablas de la base de datos al combobox de tablas
 	def setupTables(self, Form):
-		conn = obtener_conexion(self.user,self.password)
+		user, pwd = getUsuarioLogueado()
+		conn = obtener_conexion(user,pwd)
 		cur = conn.cursor()
 		query = 'SHOW TABLES'
 		cur.execute(query)
@@ -120,7 +123,8 @@ class EditarPrivilegios(Base, Form):
 	def setupColumns(self, Form):
 		# se eliminan los combobox anteriores
 		self.resetCombobox(self)
-		conn = obtener_conexion(self.user,self.password)
+		user, pwd = getUsuarioLogueado()
+		conn = obtener_conexion(user,pwd)
 		cur = conn.cursor()
 		tabla_seleccionada = self.tablaslist.currentText()
 		query = f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME= '{tabla_seleccionada}' AND TABLE_SCHEMA='notarius'"
@@ -147,7 +151,8 @@ class EditarPrivilegios(Base, Form):
 
 	def generarGrants(self,nombre_usuario):
 		query = f""
-		conn = obtener_conexion(self.user,self.password)
+		user, pwd = getUsuarioLogueado()
+		conn = obtener_conexion(user,pwd)
 		cur = conn.cursor()
 		for llave,accion in self.diccionario_permisos.items():
 			if llave == 'Agregar': permiso='INSERT'

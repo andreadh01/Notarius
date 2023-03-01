@@ -3,6 +3,7 @@ import os
 import re
 
 from bdConexion import obtener_conexion
+from usuarios import getUsuarioLogueado
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/agregar-registros.ui")))
@@ -11,11 +12,9 @@ Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/agregar-registros.u
 class AgregarRegistro(Form, Base):
     cols=[]
     
-    def __init__(self, parent=None,user='root', password=''):
+    def __init__(self, parent=None):
         super(self.__class__,self).__init__(parent)
         self.setupUi(self)
-        self.user = user
-        self.password = password
         # se mandan llamar los metodos al correr el programa
         self.setupTables(self)
         self.setupColumns(self)
@@ -26,14 +25,15 @@ class AgregarRegistro(Form, Base):
 
 	# en esta funcion se van a cargar las tablas de la base de datos al combobox de tablas
     def setupTables(self, Form):
-        conn = obtener_conexion(self.user,self.password)
+        user, pwd = getUsuarioLogueado()
+        conn = obtener_conexion(user,pwd)
         cur = conn.cursor()
         query = 'SHOW TABLES'
         cur.execute(query)
         tablas = cur.fetchall()
         cur.close()
         conn.close()
-        lista_tablas = [tabla[0] for tabla in tablas[:-1]]
+        lista_tablas = [tabla[0] for tabla in tablas]
         #print(lista_tablas)
         self.tablaslist.addItems(lista_tablas)
     
@@ -42,10 +42,11 @@ class AgregarRegistro(Form, Base):
     def setupColumns(self, Form):
         # se eliminan los combobox anteriores
         self.resetCombobox(self)
-        conn = obtener_conexion(self.user,self.password)
+        user, pwd = getUsuarioLogueado()
+        conn = obtener_conexion(user,pwd)
         cur = conn.cursor()
         tabla_seleccionada = self.tablaslist.currentText()
-        query = ' SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME= \''+tabla_seleccionada+'\''
+        query = f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME='{tabla_seleccionada}' AND TABLE_SCHEMA='notarius'"
         cur.execute(query)
         columnas = cur.fetchall()
         query = f'DESCRIBE {tabla_seleccionada}'

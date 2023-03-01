@@ -6,7 +6,8 @@ from PyQt5.QtGui import QStandardItemModel,QStandardItem
 from bdConexion import obtener_conexion
 import os
 
-from pages.editarregistro import EditarRegistro
+from pages.EditarRegistro import EditarRegistro
+from usuarios import getUsuarioLogueado
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/ver-tabla.ui")))
@@ -14,10 +15,8 @@ Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/ver-tabla.ui")))
 
 
 class VerTabla(Base, Form):
-	def __init__(self, parent=None,user='root', password=''):
+	def __init__(self, parent=None):
 		super(self.__class__, self).__init__(parent)
-		self.user = user
-		self.password = password
 		self.setupUi(self)
 		self.comboBox_busqueda_presupuesto.setEnabled(False)
 		self.line_edit_busqueda_presupuesto.setEnabled(False)
@@ -31,7 +30,8 @@ class VerTabla(Base, Form):
 
 	# en este metodo se agregan las tablas disponibles para el usuario a una lista	
 	def setupTableList(self,Form):
-		conn = obtener_conexion(self.user,self.password)
+		user, pwd = getUsuarioLogueado()
+		conn = obtener_conexion(user,pwd)
 		cur = conn.cursor()
 		query = 'SHOW TABLES'
 		cur.execute(query)
@@ -48,7 +48,9 @@ class VerTabla(Base, Form):
 		self.tableWidget.setColumnCount(0)
 		tabla_name = self.tableslist.currentItem().text()
 		self.bloquearBusqueda(tabla_name)
-		conn = obtener_conexion(self.user,self.password)
+		user, pwd = getUsuarioLogueado()
+		print(user,pwd)
+		conn = obtener_conexion(user,pwd)
 		query = f"SELECT * FROM {tabla_name}"
 		cur = conn.cursor(dictionary=True)
 		cur.execute(query)
@@ -98,7 +100,8 @@ class VerTabla(Base, Form):
 	# en esta funcion se van a ordenar las columnas en el diccionario para crear diccionario de diccionarios
 	def crearDiccionario(self, diccionario:dict, tabla_seleccionada:str, campo_seleccionado:int)->dict:
 		# conexion a base de datos
-		conn = obtener_conexion(self.user,self.password)
+		user, pwd = getUsuarioLogueado()
+		conn = obtener_conexion(user,pwd)
 		cur = conn.cursor()
 		query1 = f"SELECT *  FROM {tabla_seleccionada} limit 2;"
 		cur.execute(query1)

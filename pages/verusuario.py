@@ -5,17 +5,16 @@ from bdConexion import obtener_conexion
 
 import os
 
-from pages.editarprivilegios import EditarPrivilegios
+from pages.EditarPrivilegios import EditarPrivilegios
+from usuarios import getUsuarioLogueado
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/ver-usuario.ui")))
 
 
 class VerUsuario(Base, Form):
-	def __init__(self, parent=None,user='root', password=''):
+	def __init__(self, parent=None):
 		super(self.__class__, self).__init__(parent)
-		self.user = user
-		self.password = password
 		self.setupUi(self)
 		self.setupTable(self)
 		self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -26,7 +25,8 @@ class VerUsuario(Base, Form):
 		self.tableWidget.setRowCount(0)
 		self.tableWidget.setColumnCount(0)
 		print(self.parent())
-		conn = obtener_conexion(self.user,self.password)
+		user, pwd = getUsuarioLogueado()
+		conn = obtener_conexion(user,pwd)
 		query = f"SELECT * FROM usuario" 
 		cur = conn.cursor(dictionary=True)
 		cur.execute(query)
@@ -75,7 +75,8 @@ class VerUsuario(Base, Form):
 	
 	def eliminarusuarios(self, Form, row):
 		index = self.tableWidget.item(row,1).text()
-		conn = obtener_conexion(self.user,self.password)
+		user, pwd = getUsuarioLogueado()
+		conn = obtener_conexion(user,pwd)
 		cur = conn.cursor()
 		query = f"select nombre_usuario from usuario where id='{index}'"
 		cur.execute(query)
@@ -88,5 +89,6 @@ class VerUsuario(Base, Form):
 		cur.close()
 		conn.commit()
 		conn.close()
-		self.parent().findChild(EditarPrivilegios).usuarioslist.setupUsers(self.parent().findChild(EditarPrivilegios))
+		item = self.parent().findChild(EditarPrivilegios).usuarioslist.findText(user[0])
+		self.parent().findChild(EditarPrivilegios).usuarioslist.removeItem(item)
 		self.setupTable(self)

@@ -1,10 +1,11 @@
-from PyQt5 import uic, QtWidgets
-from pages.editarprivilegios import EditarPrivilegios
+from PyQt5 import uic, QtWidgets, QtCore
+from pages.EditarPrivilegios import EditarPrivilegios
 import os
 from bdConexion import obtener_conexion
 from functools import partial
 
-from pages.verusuario import VerUsuario
+from pages.VerUsuario import VerUsuario
+from usuarios import getUsuarioLogueado
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/agregar-usuario.ui")))
@@ -15,11 +16,9 @@ class RegistrarUsuario(Form, Base):
                             'Modificar':{},
                             'Ver':{}}
     
-    def __init__(self, parent=None,user='root', password=''):
+    def __init__(self, parent=None):
         super(self.__class__,self).__init__(parent)
         self.setupUi(self)
-        self.user = user
-        self.password = password
         # se mandan llamar los metodos al correr el programa
         self.setupTables(self)
         self.setupColumns(self)
@@ -31,7 +30,8 @@ class RegistrarUsuario(Form, Base):
 
 	# en esta funcion se van a cargar las tablas de la base de datos al combobox de tablas
     def setupTables(self, Form):
-        conn = obtener_conexion(self.user,self.password)
+        user, pwd = getUsuarioLogueado()
+        conn = obtener_conexion(user,pwd)
         cur = conn.cursor()
         query = 'SHOW TABLES'
         cur.execute(query)
@@ -46,7 +46,8 @@ class RegistrarUsuario(Form, Base):
     def setupColumns(self, Form):
         # se eliminan los combobox anteriores
         self.resetCombobox(self)
-        conn = obtener_conexion(self.user,self.password)
+        user, pwd = getUsuarioLogueado()
+        conn = obtener_conexion(user,pwd)
         cur = conn.cursor()
         tabla_seleccionada = self.tablaslist.currentText()
         query = f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME= '{tabla_seleccionada}' AND TABLE_SCHEMA='notarius'"
@@ -123,7 +124,8 @@ class RegistrarUsuario(Form, Base):
             self.label_error.setText("Por favor ingrese datos en ambas casillas")
             self.label_exito.setText("")
         else:
-            conn = obtener_conexion(self.user,self.password)
+            user, pwd = getUsuarioLogueado()
+            conn = obtener_conexion(user,pwd)
             cur = conn.cursor()
             if self.isUsuarioRepetido(nombre_usuario, cur):
                 self.label_error.setText("El usuario ingresado ya existe")
@@ -141,13 +143,17 @@ class RegistrarUsuario(Form, Base):
                 self.lineEdit_contrasenausuario.setText("")
                 self.label_error.setText("")
                 self.label_exito.setText("Usuario registrado exitosamente")
+                timer = QtCore.QTimer()
+                timer.timeout.connect(partial(self.label_exito.setText,''))
+                timer.start(1000)
                 self.parent().findChild(EditarPrivilegios).usuarioslist.addItem(nombre_usuario)
                 self.parent().findChild(VerUsuario).setupTable(self.parent().findChild(VerUsuario))
                 self.limpiarDict()
 
     def generarGrants(self,nombre_usuario):
         query = f""
-        conn = obtener_conexion(self.user,self.password)
+        user, pwd = getUsuarioLogueado()
+        conn = obtener_conexion(user,pwd)
         cur = conn.cursor()
         for llave,accion in self.diccionario_permisos.items():
             if llave == 'Agregar': permiso='INSERT'
