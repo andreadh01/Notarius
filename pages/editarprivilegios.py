@@ -20,7 +20,7 @@ class EditarPrivilegios(Base, Form):
 		self.setupUsers(self)
 		self.setupTables(self)
 		self.setupColumns(self)
-		self.showGrants()
+		#self.showGrants()
 
 		self.button_guardar.clicked.connect(self.guardarCambios)
 
@@ -29,17 +29,17 @@ class EditarPrivilegios(Base, Form):
 		self.tablaslist.currentTextChanged.connect(self.setupColumns)
 		self.accioneslist.currentTextChanged.connect(self.resetCheckboxes)
   
-	def showGrants(self):
-		conn = obtener_conexion()
-		cur = conn.cursor()
-		usuario_seleccionado = self.usuarioslist.currentText()
-		query=f"SHOW GRANTS FOR '{usuario_seleccionado}'@'localhost';"
-		cur.execute(query)
-		permisos = cur.fetchall()
-		cur.close()
-		conn.close()
-		lista_permisos = [permisos[0] for permisos in permisos[1:]]
-		self.limpiar_lista_permisos(lista_permisos)
+	# def showGrants(self):
+	# 	conn = obtener_conexion()
+	# 	cur = conn.cursor()
+	# 	usuario_seleccionado = self.usuarioslist.currentText()
+	# 	query=f"SHOW GRANTS FOR '{usuario_seleccionado}'@'localhost';"
+	# 	cur.execute(query)
+	# 	permisos = cur.fetchall()
+	# 	cur.close()
+	# 	conn.close()
+	# 	lista_permisos = [permisos[0] for permisos in permisos[1:]]
+	# 	self.limpiar_lista_permisos(lista_permisos)
 	
 	def limpiar_lista_permisos(self, lista_permisos):
 		for texto in lista_permisos:

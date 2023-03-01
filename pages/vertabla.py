@@ -92,18 +92,18 @@ class VerTabla(Base, Form):
 		return button
 
 	# en esta funcion se van a ordenar las columnas en el diccionario para crear diccionario de diccionarios
-	def crearDiccionario(self, diccionario:dict, tabla_seleccionada:str, campo_seleccionado:int)->dict:
-		# conexion a base de datos
-		conn = obtener_conexion()
-		cur = conn.cursor()
-		query1 = f"SELECT *  FROM {tabla_seleccionada} limit 2;"
-		cur.execute(query1)
-		contenido_tabla = cur.fetchall()
-		for i,items in enumerate(contenido_tabla):
-			diccionario[contenido_tabla[i][campo_seleccionado]] = items
-		cur.close()
-		conn.close()
-		return diccionario
+	# def crearDiccionario(self, diccionario:dict, tabla_seleccionada:str, campo_seleccionado:int)->dict:
+	# 	# conexion a base de datos
+	# 	conn = obtener_conexion()
+	# 	cur = conn.cursor()
+	# 	query1 = f"SELECT *  FROM {tabla_seleccionada};"
+	# 	cur.execute(query1)
+	# 	contenido_tabla = cur.fetchall()
+	# 	for i,items in enumerate(contenido_tabla):
+	# 		diccionario[contenido_tabla[i][campo_seleccionado]] = items
+	# 	cur.close()
+	# 	conn.close()
+	# 	return diccionario
 	
 	def bloquearBusqueda(self, table_name:str):
 		if table_name == 'presupuesto' or table_name == 'escritura' or table_name == 'juridico':
@@ -115,21 +115,35 @@ class VerTabla(Base, Form):
 
 	#esta función crea el table view, esta funcion se encargará de obtener el valor del combobox y de ejecutar el proceso de busqueda
 	def busqueda(self):
+
 		comboValue = self.comboBox_busqueda_presupuesto.currentText()
 		tabla_name = self.tableslist.currentItem().text()
 		if comboValue == "no_presupuesto":
+			conn = obtener_conexion()
+			curdict = conn.cursor(dictionary=True)
+			cur = conn.cursor()
+			query1 = f"SELECT *  FROM {tabla_name};"
+			cur.execute(query1)
+			contenido_tabla = cur.fetchall()
+			query2 = f"DESCRIBE {tabla_name}"
+			cur.execute(query2)
+			headers_notFiltered = cur.fetchall()
+			headers = []
+			for items in headers_notFiltered:
+				headers.append(items[0])
+
 			if self.tableWidget != None:
 				self.tableWidget.deleteLater()
 				self.tableWidget = None
-			diccionario_presupuesto={}
-			diccionario_presupuesto=self.crearDiccionario(diccionario_presupuesto,tabla_name,0)
-			#lista_llaves= list(diccionario_presupuesto.keys())
-			companies = ('Hola', 'Jared', 'Como', 'Estas')
-			model = QStandardItemModel(len(companies),1)
-			model.setHorizontalHeaderLabels(['Company'])
-			for row, company in enumerate(companies):
-				item = QStandardItem(company)
-				model.setItem(row, 0, item)
+
+			contenido_tabla2 = contenido_tabla.copy()
+			model = QStandardItemModel(len(contenido_tabla),len(contenido_tabla2.pop()))
+			model.setHorizontalHeaderLabels(headers)
+			for row, tupla in enumerate(contenido_tabla):
+				for column, field in enumerate(tupla):
+					field = str(field)
+					item = QStandardItem(field)
+					model.setItem(row, column, item)
 			filter_proxy_model = QSortFilterProxyModel()
 			filter_proxy_model.setSourceModel(model)
 			filter_proxy_model.setFilterCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
@@ -138,13 +152,56 @@ class VerTabla(Base, Form):
 			self.line_edit_busqueda_presupuesto.textChanged.connect(filter_proxy_model.setFilterRegExp)
 
 			table=QTableView()
-			table.setStyleSheet('font-size: 35px;')
+			table.setStyleSheet('font-size: 15px;')
 			table.setModel(filter_proxy_model)
 			
 			self.horizontalLayout.addWidget(table)
 
 		if comboValue == "":
-			self.setupTable(self)
+			if self.QTableView != None:
+				self.QTableView.deleteLater()
+				self.QTableView = None
+			self.__init__()
 
-		if comboValue == "no_escritura":
-			print("hola mundo")
+			
+
+		if comboValue == "proyectista":
+			conn = obtener_conexion()
+			curdict = conn.cursor(dictionary=True)
+			cur = conn.cursor()
+			query1 = f"SELECT *  FROM {tabla_name};"
+			cur.execute(query1)
+			contenido_tabla = cur.fetchall()
+			query2 = f"DESCRIBE {tabla_name}"
+			cur.execute(query2)
+			headers_notFiltered = cur.fetchall()
+			headers = []
+			for items in headers_notFiltered:
+				headers.append(items[0])
+
+			if self.tableWidget != None:
+				self.tableWidget.deleteLater()
+				self.tableWidget = None
+
+
+			contenido_tabla2 = contenido_tabla.copy()
+			model = QStandardItemModel(len(contenido_tabla),len(contenido_tabla2.pop()))
+			model.setHorizontalHeaderLabels(headers)
+			for row, tupla in enumerate(contenido_tabla):
+				for column, field in enumerate(tupla):
+					field = str(field)
+					item = QStandardItem(field)
+					model.setItem(row, column, item)
+			filter_proxy_model = QSortFilterProxyModel()
+			filter_proxy_model.setSourceModel(model)
+			filter_proxy_model.setFilterCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+			filter_proxy_model.setFilterKeyColumn(1)
+
+			self.line_edit_busqueda_presupuesto.textChanged.connect(filter_proxy_model.setFilterRegExp)
+
+			table=QTableView()
+			table.setStyleSheet('font-size: 15px;')
+			table.setModel(filter_proxy_model)
+			
+			self.horizontalLayout.addWidget(table)
+			
