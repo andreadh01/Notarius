@@ -23,15 +23,14 @@
    <item row="0" column="1">
     <widget class="QStackedWidget" name="stackedWidget">
      <widget class="VerTabla" name="vertabla"/>
-     <widget class="AgregarRegistro" name="agregar"/>
+     <!-- <widget class="AgregarRegistro" name="agregar"/>
      <widget class="EditarPrivilegios" name="editarprivilegios"/>
      <widget class="RegistrarUsuario" name="registrarusuario">
       <property name="whatsThis">
        <string/>
       </property>
      </widget>
-     <widget class="EditarRegistro" name="editarregistro"/>
-     <widget class="VerUsuario" name="verusuario"/>
+     <widget class="VerUsuario" name="verusuario"/> -->
     </widget>
    </item>
    <item row="0" column="0">
@@ -100,227 +99,8 @@ p, li { white-space: pre-wrap; }
       </spacer>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_6">
-       <item>
-        <widget class="QPushButton" name="botonTabla">
-         <property name="font">
-          <font>
-           <pointsize>14</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="autoFillBackground">
-          <bool>false</bool>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-	color: rgb(141, 110, 58);
-	border: none;
-	height: 25px;
-
-}
-
-QPushButton:hover {
-	background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}
-QPushButton:pressed {
-    border-style: inset;
-    background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}
-</string>
-         </property>
-         <property name="text">
-          <string>Tabla</string>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>bar-chart-box-line.png</normaloff>bar-chart-box-line.png</iconset>
-         </property>
-         <property name="autoDefault">
-          <bool>false</bool>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="botonEditarReg">
-         <property name="font">
-          <font>
-           <pointsize>14</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-	color: rgb(141, 110, 58);
-	border: none;
-	height: 25px;
-}
-
-QPushButton:hover {
-	background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}
-
-QPushButton:pressed {
-    border-style: inset;
-    background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}</string>
-         </property>
-         <property name="text">
-          <string>Editar registro</string>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>file-history-fill.png</normaloff>file-history-fill.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="botonUsuario">
-         <property name="font">
-          <font>
-           <pointsize>14</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-	color: rgb(141, 110, 58);
-	border: none;
-	height: 25px;
-}
-
-QPushButton:hover {
-	background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}
-
-QPushButton:pressed {
-    border-style: inset;
-    background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}</string>
-         </property>
-         <property name="text">
-          <string>Usuarios</string>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>file-excel-2-fill.png</normaloff>file-excel-2-fill.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="botonAgregar">
-         <property name="font">
-          <font>
-           <pointsize>14</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-	color: rgb(141, 110, 58);
-	border: none;
-height: 25px;
-}
-
-QPushButton:hover {
-	background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}
-
-QPushButton:pressed {
-    border-style: inset;
-    background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}</string>
-         </property>
-         <property name="text">
-          <string>Agregar Registro</string>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>profile-line.png</normaloff>profile-line.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="botonRegistrar">
-         <property name="font">
-          <font>
-           <pointsize>14</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-	color: rgb(141, 110, 58);
-	border: none;
-height: 25px;
-}
-
-QPushButton:hover {
-	background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}
-
-QPushButton:pressed {
-    border-style: inset;
-    background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}</string>
-         </property>
-         <property name="text">
-          <string>Agregar Usuario</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="botonEditarPrivilegios">
-         <property name="font">
-          <font>
-           <pointsize>14</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-	color: rgb(141, 110, 58);
-	border: none;
-height: 25px;
-}
-
-QPushButton:hover {
-	background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}
-
-QPushButton:pressed {
-    border-style: inset;
-    background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}</string>
-         </property>
-         <property name="text">
-          <string>Editar Privilegios</string>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>edit-2-fill.png</normaloff>edit-2-fill.png</iconset>
-         </property>
-        </widget>
-       </item>
+      <layout class="QVBoxLayout" name="buttonsLayout">
+       
       </layout>
      </item>
      <item>
@@ -425,42 +205,44 @@ QPushButton:pressed {
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>AgregarRegistro</class>
-   <extends>QWidget</extends>
-   <header>pages/agregar</header>
-   <container>1</container>
-  </customwidget>
+  
   <customwidget>
    <class>VerTabla</class>
    <extends>QWidget</extends>
-   <header>pages/vertabla</header>
+   <header>pages/VerTabla</header>
    <container>1</container>
   </customwidget>
   <customwidget>
+    <class>AgregarRegistro</class>
+    <extends>QWidget</extends>
+    <header>pages/AgregarRegistro</header>
+    <container>1</container>
+   </customwidget>
+   <customwidget>
+    <class>VerUsuario</class>
+    <extends>QWidget</extends>
+    <header>pages/VerUsuario</header>
+    <container>1</container>
+   </customwidget>
+  <customwidget>
    <class>EditarPrivilegios</class>
    <extends>QWidget</extends>
-   <header>pages/editarprivilegios</header>
+   <header>pages/EditarPrivilegios</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>RegistrarUsuario</class>
    <extends>QWidget</extends>
-   <header>pages/registrarusuario</header>
+   <header>pages/RegistrarUsuario</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>EditarRegistro</class>
    <extends>QWidget</extends>
-   <header>pages/editarregistro</header>
+   <header>pages/EditarRegistro</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-    <class>VerUsuario</class>
-    <extends>QWidget</extends>
-    <header>pages/verusuario</header>
-    <container>1</container>
-   </customwidget>
+  
  </customwidgets>
  <resources/>
  <connections/>

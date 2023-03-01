@@ -1,11 +1,13 @@
 from functools import partial
 from PyQt5 import QtGui, uic
-from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView, QTableView, QVBoxLayout
-from PyQt5.QtWidgets import QMessageBox, QAbstractItemView,QPushButton
+from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView, QTableView, QAbstractItemView,QPushButton
 from PyQt5.QtCore import Qt,QSortFilterProxyModel
 from PyQt5.QtGui import QStandardItemModel,QStandardItem
 from bdConexion import obtener_conexion
 import os
+
+from pages.EditarRegistro import EditarRegistro
+from usuarios import getUsuarioLogueado
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/ver-tabla.ui")))
@@ -28,7 +30,8 @@ class VerTabla(Base, Form):
 
 	# en este metodo se agregan las tablas disponibles para el usuario a una lista	
 	def setupTableList(self,Form):
-		conn = obtener_conexion()
+		user, pwd = getUsuarioLogueado()
+		conn = obtener_conexion(user,pwd)
 		cur = conn.cursor()
 		query = 'SHOW TABLES'
 		cur.execute(query)
@@ -45,15 +48,17 @@ class VerTabla(Base, Form):
 		self.tableWidget.setColumnCount(0)
 		tabla_name = self.tableslist.currentItem().text()
 		self.bloquearBusqueda(tabla_name)
-		conn = obtener_conexion()
+		user, pwd = getUsuarioLogueado()
+		print(user,pwd)
+		conn = obtener_conexion(user,pwd)
 		query = f"SELECT * FROM {tabla_name}"
 		cur = conn.cursor(dictionary=True)
 		cur.execute(query)
 		tabla = cur.fetchall()
 		cur.close()
 		conn.close()
-		header = ["Modificar"]+list(tabla[0].keys())
-		print(header)
+		columnas = list(tabla[0].keys())
+		header = ["Modificar"]+columnas
 		self.tableWidget.setColumnCount(len(header))
 		self.tableWidget.setHorizontalHeaderLabels(header)
 
@@ -64,6 +69,7 @@ class VerTabla(Base, Form):
 			self.tableWidget.setRowCount(rows + 1)
 			# se agrega un boton modificar que al hacer clic mandara a la pagina modificar registro
 			self.tableWidget.setCellWidget(rows,0,button)
+			button.clicked.connect(lambda *args, self=self, row=rows, tabla=tabla_name, col=columnas[0]: self.changePage(self,row,tabla, col))
 			for val in dic.values():
 				self.tableWidget.setItem(rows, col, QTableWidgetItem(str(val)))
 				col +=1
@@ -105,6 +111,13 @@ class VerTabla(Base, Form):
 	# 	conn.close()
 	# 	return diccionario
 	
+	def changePage(self, Form, row,tabla, col):
+		index = self.tableWidget.item(row,1).text()
+		editar = EditarRegistro()
+		self.parent().addWidget(editar)
+		self.parent().findChild(EditarRegistro).getRegistro(editar, index, tabla, col)
+		self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(EditarRegistro)))
+  
 	def bloquearBusqueda(self, table_name:str):
 		if table_name == 'presupuesto' or table_name == 'escritura' or table_name == 'juridico':
 			self.comboBox_busqueda_presupuesto.setEnabled(True)

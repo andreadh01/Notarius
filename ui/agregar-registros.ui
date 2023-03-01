@@ -77,8 +77,8 @@ color: rgb(141, 110, 58);</string>
        <property name="styleSheet">
         <string notr="true">QComboBox{
 border: 1px solid #95753d;
-background-color: #white;
-font: 75 11pt &quot;MS Shell Dlg 2&quot;;
+background-color: white;
+font: 75 14pt;
 color: rgb(149, 117, 61);
 }</string>
        </property>
@@ -150,7 +150,7 @@ color: rgb(141, 110, 58);</string>
       </spacer>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="2,0,0">
+      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="2,0,0,0">
        <item>
         <spacer name="verticalSpacer_17">
          <property name="orientation">
@@ -163,6 +163,19 @@ color: rgb(141, 110, 58);</string>
           </size>
          </property>
         </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_exito">
+         <property name="styleSheet">
+          <string notr="true">QLabel {
+               font: 12pt;
+               color: green;
+               }</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pushButton_cancelar">

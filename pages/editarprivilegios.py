@@ -1,8 +1,9 @@
-from lib2to3.pgen2.pgen import generate_grammar
 from PyQt5 import uic,QtWidgets
 import os
 from bdConexion import obtener_conexion
 from functools import partial
+
+from usuarios import getUsuarioLogueado
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/editar-privilegios.ui")))
@@ -16,6 +17,7 @@ class EditarPrivilegios(Base, Form):
 	def __init__(self, parent=None):
 		super(self.__class__, self).__init__(parent)
 		self.setupUi(self)
+
 		# se mandan llamar los metodos al correr el programa
 		self.setupUsers(self)
 		self.setupTables(self)
@@ -26,23 +28,28 @@ class EditarPrivilegios(Base, Form):
 
 		# cada que se actualice el combobox de tablas, se actualizan los checkbox de las columnas
 		self.usuarioslist.currentTextChanged.connect(self.limpiarDict)
+		self.usuarioslist.currentTextChanged.connect(self.showGrants)
 		self.tablaslist.currentTextChanged.connect(self.setupColumns)
 		self.accioneslist.currentTextChanged.connect(self.resetCheckboxes)
   
-	# def showGrants(self):
-	# 	conn = obtener_conexion()
-	# 	cur = conn.cursor()
-	# 	usuario_seleccionado = self.usuarioslist.currentText()
-	# 	query=f"SHOW GRANTS FOR '{usuario_seleccionado}'@'localhost';"
-	# 	cur.execute(query)
-	# 	permisos = cur.fetchall()
-	# 	cur.close()
-	# 	conn.close()
-	# 	lista_permisos = [permisos[0] for permisos in permisos[1:]]
-	# 	self.limpiar_lista_permisos(lista_permisos)
+	def showGrants(self):
+		user, pwd = getUsuarioLogueado()
+		conn = obtener_conexion(user,pwd)
+		cur = conn.cursor()
+		usuario_seleccionado = self.usuarioslist.currentText()
+		query=f"SHOW GRANTS FOR '{usuario_seleccionado}'@'localhost';"
+		cur.execute(query)
+		permisos = cur.fetchall()
+		cur.close()
+		conn.close()
+		lista_permisos = [permisos[0] for permisos in permisos[1:]]
+		self.limpiar_lista_permisos(lista_permisos)
 	
-	def limpiar_lista_permisos(self, lista_permisos):
+	def limpiar_lista_permisos(self,lista_permisos):
 		for texto in lista_permisos:
+			subcadena_insert = ""
+			subcadena_select = ""
+			subcadena_update = ""
 			select_i = texto.find("SELECT")
 			insert_i = texto.find("INSERT")
 			update_i = texto.find("UPDATE")
@@ -52,7 +59,7 @@ class EditarPrivilegios(Base, Form):
 			nombre_tabla = texto[notarius_i+11:to_i-2]
 			print("La tabla es:",nombre_tabla)
 			if "SELECT" in texto:
-				par_i = texto.index(')')
+				par_i = texto.find(')')
 				subcadena_select = texto[select_i:par_i]
 				subcadena_select = subcadena_select.replace("(","")
 				par_i=texto.find(')', texto.find(')')+1)
@@ -62,7 +69,7 @@ class EditarPrivilegios(Base, Form):
 				subcadena_update = texto[update_i:par_i]
 				subcadena_update = subcadena_update.replace("(","")
 			else:
-				par_i = texto.index(')')
+				par_i = texto.find(')')
 				subcadena_insert = texto[insert_i:par_i]
 				subcadena_insert = subcadena_insert.replace("(","")
 				par_i = texto.rfind(')')
@@ -75,15 +82,29 @@ class EditarPrivilegios(Base, Form):
 			permiso_select.append(nombre_tabla)
 			permiso_insert.append(nombre_tabla)
 			permiso_update.append(nombre_tabla)
-			print(permiso_select)
-			print(permiso_insert)
-			print(permiso_update)
-
-			#ya tomé ejnergias ya comi 
+			self.ingresar_datos_diccionario(permiso_select,permiso_insert,permiso_update)
 
 
-			
-
+	def ingresar_datos_diccionario(self,permiso_select,permiso_insert,permiso_update):
+		if len(permiso_select) > 2:
+			columnas = permiso_select[1].split(",")
+			for columna in columnas:
+				if permiso_select[2] not in self.diccionario_permisos['Ver']:
+					self.diccionario_permisos['Ver'][permiso_select[2]] = {}
+				self.diccionario_permisos['Ver'][permiso_select[2]][columna] = True
+		if len(permiso_insert) > 2:
+			columnas = permiso_insert[1].split(",")
+			for columna in columnas:
+				if permiso_insert[2] not in self.diccionario_permisos['Agregar']:
+					self.diccionario_permisos['Agregar'][permiso_insert[2]] = {}
+				self.diccionario_permisos['Agregar'][permiso_insert[2]][columna] = True
+			columnas = permiso_update[1].split(",")
+		if len(permiso_update) > 2:
+			for columna in columnas:
+				if permiso_update[2] not in self.diccionario_permisos['Modificar']:
+					self.diccionario_permisos['Modificar'][permiso_update[2]] = {}
+				self.diccionario_permisos['Modificar'][permiso_update[2]][columna] = True
+		print(self.diccionario_permisos)
 
 	def guardarCambios(self):
 		usuario_seleccionado = self.usuarioslist.currentText()
@@ -93,7 +114,8 @@ class EditarPrivilegios(Base, Form):
 
 	# en esta funcion se van a cargar los usuarios de la base de datos al combobox de usuarios
 	def setupUsers(self, Form):
-		conn = obtener_conexion()
+		user, pwd = getUsuarioLogueado()
+		conn = obtener_conexion(user,pwd)
 		cur = conn.cursor()
 		query = 'SELECT nombre_usuario FROM usuario'
 		cur.execute(query)
@@ -105,7 +127,8 @@ class EditarPrivilegios(Base, Form):
 
 	# en esta funcion se van a cargar las tablas de la base de datos al combobox de tablas
 	def setupTables(self, Form):
-		conn = obtener_conexion()
+		user, pwd = getUsuarioLogueado()
+		conn = obtener_conexion(user,pwd)
 		cur = conn.cursor()
 		query = 'SHOW TABLES'
 		cur.execute(query)
@@ -119,10 +142,11 @@ class EditarPrivilegios(Base, Form):
 	def setupColumns(self, Form):
 		# se eliminan los combobox anteriores
 		self.resetCombobox(self)
-		conn = obtener_conexion()
+		user, pwd = getUsuarioLogueado()
+		conn = obtener_conexion(user,pwd)
 		cur = conn.cursor()
 		tabla_seleccionada = self.tablaslist.currentText()
-		query = ' SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME= \''+tabla_seleccionada+'\''
+		query = f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME= '{tabla_seleccionada}' AND TABLE_SCHEMA='notarius'"
 		cur.execute(query)
 		columnas = cur.fetchall()
 		cur.close()
@@ -146,7 +170,8 @@ class EditarPrivilegios(Base, Form):
 
 	def generarGrants(self,nombre_usuario):
 		query = f""
-		conn = obtener_conexion()
+		user, pwd = getUsuarioLogueado()
+		conn = obtener_conexion(user,pwd)
 		cur = conn.cursor()
 		for llave,accion in self.diccionario_permisos.items():
 			if llave == 'Agregar': permiso='INSERT'
@@ -155,8 +180,11 @@ class EditarPrivilegios(Base, Form):
 			for nombre_tabla,columnas in accion.items():
 				for nombre_columna,checked in columnas.items():
 					if checked:
-						query=f"GRANT {permiso} ({nombre_columna}) ON {nombre_tabla} TO '{nombre_usuario}'@'localhost';"
+						query=f"GRANT {permiso} ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost';"
+						print(query)
 						cur.execute(query)
+		
+		cur.execute('FLUSH PRIVILEGES')
 		cur.close()
 		conn.close()
 

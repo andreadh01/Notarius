@@ -5,8 +5,11 @@ from bdConexion import obtener_conexion
 
 import os
 
+from pages.EditarPrivilegios import EditarPrivilegios
+from usuarios import getUsuarioLogueado
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
-Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/verusuario.ui")))
+Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/ver-usuario.ui")))
 
 
 class VerUsuario(Base, Form):
@@ -22,7 +25,8 @@ class VerUsuario(Base, Form):
 		self.tableWidget.setRowCount(0)
 		self.tableWidget.setColumnCount(0)
 		print(self.parent())
-		conn = obtener_conexion()
+		user, pwd = getUsuarioLogueado()
+		conn = obtener_conexion(user,pwd)
 		query = f"SELECT * FROM usuario" 
 		cur = conn.cursor(dictionary=True)
 		cur.execute(query)
@@ -71,11 +75,20 @@ class VerUsuario(Base, Form):
 	
 	def eliminarusuarios(self, Form, row):
 		index = self.tableWidget.item(row,1).text()
-		conn = obtener_conexion()
+		user, pwd = getUsuarioLogueado()
+		conn = obtener_conexion(user,pwd)
 		cur = conn.cursor()
+		query = f"select nombre_usuario from usuario where id='{index}'"
+		cur.execute(query)
+		user = cur.fetchone()
+		
+		query = f"drop user '{user[0]}'@'localhost';"
+		cur.execute(query)
 		query = f"delete from usuario where id='{index}';"
 		cur.execute(query)
 		cur.close()
 		conn.commit()
 		conn.close()
+		item = self.parent().findChild(EditarPrivilegios).usuarioslist.findText(user[0])
+		self.parent().findChild(EditarPrivilegios).usuarioslist.removeItem(item)
 		self.setupTable(self)

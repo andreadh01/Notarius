@@ -1,8 +1,9 @@
-from PyQt5 import QtGui, uic,QtWidgets, QtCore
+from PyQt5 import uic,QtWidgets
 import os
 import re
 
 from bdConexion import obtener_conexion
+from usuarios import getUsuarioLogueado
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/agregar-registros.ui")))
@@ -17,32 +18,35 @@ class AgregarRegistro(Form, Base):
         # se mandan llamar los metodos al correr el programa
         self.setupTables(self)
         self.setupColumns(self)
-        # cada que se actualice el combobox de tablas, se actualizan los checkbox de las columnas
+        # cada que se actualice el combobox de tablas, se actualizan los labels de las columnas y se agregan sus debidos inputs
         self.tablaslist.currentTextChanged.connect(self.setupColumns)
+        self.pushButton_confirmar.clicked.connect(self.guardarRegistro)
         self.pushButton_cancelar.clicked.connect(self.cancelarRegistro)
 
 	# en esta funcion se van a cargar las tablas de la base de datos al combobox de tablas
     def setupTables(self, Form):
-        conn = obtener_conexion()
+        user, pwd = getUsuarioLogueado()
+        conn = obtener_conexion(user,pwd)
         cur = conn.cursor()
         query = 'SHOW TABLES'
         cur.execute(query)
         tablas = cur.fetchall()
         cur.close()
         conn.close()
-        lista_tablas = [tabla[0] for tabla in tablas[:-1]]
+        lista_tablas = [tabla[0] for tabla in tablas]
         #print(lista_tablas)
         self.tablaslist.addItems(lista_tablas)
     
 			
- 	# en esta funcion se van a actualizar los checkbox de las columnas de la pantalla editar privilegios
+ 	# en esta funcion se van a actualizar los labels y se agregaran los inputs segun los labels de las columnas
     def setupColumns(self, Form):
         # se eliminan los combobox anteriores
         self.resetCombobox(self)
-        conn = obtener_conexion()
+        user, pwd = getUsuarioLogueado()
+        conn = obtener_conexion(user,pwd)
         cur = conn.cursor()
         tabla_seleccionada = self.tablaslist.currentText()
-        query = ' SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME= \''+tabla_seleccionada+'\''
+        query = f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME='{tabla_seleccionada}' AND TABLE_SCHEMA='notarius'"
         cur.execute(query)
         columnas = cur.fetchall()
         query = f'DESCRIBE {tabla_seleccionada}'
@@ -71,10 +75,11 @@ class AgregarRegistro(Form, Base):
                 self.gridLayout.addWidget(attr_label, i+1, 1, 1, 1)
                 self.cols.append(attr_label)
                 widget = self.crearInput(tipo_dato, name_input)
+                print(widget)
                 self.gridLayout.addWidget(widget, i+1, 2, 1, 1)
                 self.cols.append(widget)
 
-
+    # Metodo para crear los input para cada columna que se necesita registrar segun la tabla seleccionada
     def crearInput(self,tipo_dato,name_input):
         if 'int' in tipo_dato:   
             setattr(self, name_input, QtWidgets.QSpinBox())
@@ -153,6 +158,51 @@ class AgregarRegistro(Form, Base):
             del obj
         self.cols = []
 
+    def guardarRegistro(self):
+        print(type(self.cols[0]))
+        user, pwd = getUsuarioLogueado()
+        nombre_columnas = []
+        inputs = []
+        tabla_seleccionada = self.tablaslist.currentText()
+        query = f'INSERT INTO {tabla_seleccionada} ('
+        for elemento in self.cols:
+            if elemento.__class__.__name__=='QLabel':
+                nombre_columnas.append(elemento.text().replace(": ",""))
+            else:
+                if elemento.__class__.__name__ == 'QSpinBox':
+                    inputs.append(elemento.value())
+                elif elemento.__class__.__name__ == 'QDateEdit':
+                    inputs.append(elemento.date().toString("yyyy-MM-dd"))
+                elif elemento.__class__.__name__ == 'QLineEdit':
+                    inputs.append(elemento.text())
+                elif elemento.__class__.__name__ == 'QDoubleSpinBox':
+                    inputs.append(elemento.value())
+                elif elemento.__class__.__name__ == 'QComboBox':
+                    inputs.append(elemento.currentText())
+                elif elemento.__class__.__name__ == 'QDateTimeEdit':
+                    inputs.append(elemento.dateTime().toString("yyyy-MM-dd hh:mm:ss"))
+
+        for columna in nombre_columnas:
+            query += f"{columna},"
+        query += ") VALUES ("
+        for dato in inputs:
+            if dato.__class__.__name__ == 'str':
+                query += f"'{dato}',"
+            else:
+                query += f"{dato},"
+        query += ");"
+        query = query.replace(",)",")")
+        print(query)
+
+        conn = obtener_conexion(user,pwd)
+        cur = conn.cursor()
+        cur.execute(query)
+        conn.commit()
+        cur.close()
+        conn.close()
+        self.label_exito.setText("Registro guardado exitosamente")
+                
+        #insert into {nombre_tabla} (cols[0]) cols[1]
     def cancelarRegistro(self):
         self.lineEdit_nombreusuario.setText("")
         self.lineEdit_contrasenausuario.setText("")
