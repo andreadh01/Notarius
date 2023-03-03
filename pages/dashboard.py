@@ -5,7 +5,10 @@ from pages.EditarPrivilegios import EditarPrivilegios
 from pages.RegistrarUsuario import RegistrarUsuario
 from usuarios import getPermisos
 import importlib
-Form, Base = uic.loadUiType("ui/dashboard.ui")
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/dashboard.ui")))
+
 
 class Dashboard(Base, Form):
     lista_botones = ['VerTabla','AgregarRegistro','VerUsuario','EditarPrivilegios','RegistrarUsuario']
