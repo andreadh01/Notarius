@@ -2,22 +2,45 @@ CREATE DATABASE notarius;
 
 USE notarius;
 
-DROP TABLE IF EXISTS `aviso_definitivo`;
+DROP TABLE IF EXISTS `presupuesto`;
 
-CREATE TABLE `aviso_definitivo` (
-  `escritura_id` int(11) NOT NULL,
-  `folio_rpp` int(11) DEFAULT NULL COMMENT 'Folio del pase a caja de Registro Público',
-  `fecha_presentado` date DEFAULT NULL COMMENT 'Fecha de Ingreso en RPP',
-  `fecha_salida` date DEFAULT NULL COMMENT 'Fecha de entregado por RPP',
-  `fecha_vence` date DEFAULT NULL COMMENT 'Fecha de Vencimiento del aviso (90 dias naturales despues de fecha de presentacion en RPP)',
-  PRIMARY KEY (`escritura_id`),
-  KEY `fk_aviso_definitivo_rpp` (`folio_rpp`),
-  CONSTRAINT `fk_aviso_definitivo_rpp` FOREIGN KEY (`folio_rpp`) REFERENCES `rpp` (`folio_rpp`) ON DELETE NO ACTION ON UPDATE NO ACTION
+CREATE TABLE `presupuesto` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `no_presupuesto` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `proyectista` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Abogado responsable',
+  `proyecto` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'DESCRIPCION DEL TRAMITE',
+  `gestor` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Nombre del gestor encargado del asunto (persona externa de la notaria)',
+  `enajentante` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'PERSONA QUE VENDE, PUEDE QUEDAR EN BLANCO',
+  `adquiriente` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'PERSONA QUE ADQUIERE O CONTRATA EL SERVICIO',
+  `valor_operacion` decimal(10,2) NOT NULL,
+  `monto_honorarios` decimal(10,2) DEFAULT NULL,
+  `fecha_honorarios` date DEFAULT NULL,
+  `cantidad` decimal(10,2) DEFAULT NULL,
+  `mes_de_pago` date DEFAULT NULL COMMENT 'Mes y año en la que se pago la comisión al proyectista',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unq_presupuesto_no_presupuesto` (`no_presupuesto`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `aviso_definitivo` (`escritura_id`, `folio_rpp`, `fecha_presentado`, `fecha_salida`, `fecha_vence`) VALUES (21, 0, '1996-07-08', '1977-05-03', '2000-10-30');
-INSERT INTO `aviso_definitivo` (`escritura_id`, `folio_rpp`, `fecha_presentado`, `fecha_salida`, `fecha_vence`) VALUES (25, 662362675, '1978-10-22', '1973-12-26', '1970-06-20');
-
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('156', 'Miss Jordane Kub', 'Gulgowski and Sons', 'Ms. Elena Jacobs', 'Trent Russel', 'Dr. Reinhold Olson PhD', '18078818.92', '347359.40', '2010-06-22', '9.00', '1982-03-23');
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('164', 'Kali Lindgren', 'Lowe, Fahey and Bergnaum', 'Alexane Crist', 'River Armstrong', 'Viola Runolfsdottir', '55.94', '2.43', '1983-09-19', '76216753.00', '1999-09-02');
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('174', 'Arnold Jerde', 'Kerluke-Zulauf', 'Sigurd Erdman', 'Tremaine Hoppe Sr.', 'Davon Breitenberg', '539.70', '660363.13', '2007-03-16', '9394655.00', '2006-01-17');
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('235', 'Wilma Thiel', 'Herman-Runolfsdottir', 'Ariel Friesen', 'Antonia Wiegand', 'Vida Moen PhD', '0.00', '15200.70', '2019-12-05', '99999999.99', '1992-11-10');
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('243', 'Maximo Predovic', 'Goodwin-Turner', 'Lexie Dach', 'Katheryn Fisher', 'Lawson Towne', '422562.91', '1421502.70', '1994-10-02', '327.00', '2016-02-29');
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('283', 'Randal Hilpert', 'Kuhic and Sons', 'Marion Kozey', 'Zoie Schmeler', 'Ethelyn Sauer', '0.00', '0.00', '2015-10-09', '6483920.00', '2001-10-28');
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('430', 'Hollie Kemmer', 'Yost-Sporer', 'Jess Tillman', 'Lonie Homenick', 'Kip Balistreri Sr.', '5.47', '4525035.92', '1994-01-11', '83993138.00', '2021-05-07');
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('437', 'Prof. Michelle Prosacco III', 'Lockman-Leannon', 'Devyn Beier Jr.', 'Manuel Heller MD', 'Ms. Martine Brakus MD', '9702.83', '597.10', '1982-11-07', '58838.00', '1981-07-09');
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('510', 'Ozella Dibbert IV', 'Pollich Inc', 'Dr. Samara Haag', 'Mara Hessel V', 'Porter Veum', '999123.71', '6094.90', '1996-05-20', '99999999.99', '1976-04-21');
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('636', 'Vernie Ziemann', 'Ullrich and Sons', 'Andres Grady', 'Gaylord Champlin', 'Abbigail Kozey', '471.00', '99999999.99', '1985-04-24', '40599.00', '1972-09-14');
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('662', 'Miss Grace Volkman DDS', 'Spinka Inc', 'Ricky Ryan', 'Gayle Beer', 'Prof. Kaitlin Schumm', '606114.28', '1.86', '1972-07-15', '55053.00', '1986-11-11');
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('673', 'Jerry Mueller', 'Harber-Reichert', 'Reva Gislason', 'Johanna Sawayn PhD', 'Randi Parisian', '0.00', '8.82', '2020-01-12', '81602.00', '1977-09-11');
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('700', 'Mckayla Powlowski', 'Rosenbaum, Beer and Murphy', 'Prof. Porter Larson', 'Samir Schimmel', 'Dr. Janie Leannon', '1535961.35', '2846189.39', '1977-06-01', '569.00', '1990-05-31');
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('761', 'Wilhelm Crooks', 'Gleason-Ward', 'Dr. Angela Rath I', 'Schuyler Wiza', 'Terrance Osinski MD', '3.00', '145853.48', '1977-02-03', '22203.00', '1997-09-29');
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('775', 'Roman Williamson', 'Jacobs Inc', 'Favian Nitzsche', 'Bradly Gibson', 'Dr. Charlotte Reichert', '99999999.99', '466.91', '2020-01-16', '0.00', '2011-01-25');
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('776', 'Regan Schamberger DVM', 'Abbott-Homenick', 'Hollie Rogahn', 'Maurine Kunde', 'Sonya Gerlach', '70095604.46', '4932291.39', '1988-03-17', '41108.00', '1984-01-19');
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('844', 'Daniella Gislason', 'Hilpert-Goyette', 'Ms. Jaunita Leuschke III', 'Dr. Chesley Crona I', 'Miss Hallie Reichert', '0.00', '212.52', '1977-01-23', '89180929.00', '1991-11-06');
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('877', 'Jane Upton', 'Waters Inc', 'Alexie Feil', 'Ali Schuppe', 'Minnie Yost', '171810.09', '1.48', '1986-09-19', '99999999.99', '1980-03-02');
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('910', 'Prof. Maryjane Prosacco', 'Hermann and Sons', 'Ivory Krajcik', 'Ms. Piper Champlin', 'Shanelle Wilderman', '4633.88', '0.00', '2009-08-18', '951886.00', '1995-07-24');
+INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('998', 'Ms. Grace Sawayn V', 'Nicolas Group', 'Malinda Gutmann', 'Dr. Lue Beatty', 'Mrs. Aaliyah Von', '299410.00', '492472.00', '2005-03-29', '52.00', '1993-10-06');
 
 DROP TABLE IF EXISTS `bitacora_depositos`;
 
@@ -57,6 +80,34 @@ INSERT INTO `bitacora_depositos` (`id`, `fecha`, `no_presupuesto`, `concepto`, `
 INSERT INTO `bitacora_depositos` (`id`, `fecha`, `no_presupuesto`, `concepto`, `cantidad`, `observaciones`, `banco`, `tipo`) VALUES (20, '1988-12-05 20:16:25', '998', 'unde', '0.00', 'Molestiae aspernatur earum porro aut officia amet expedita. Perspiciatis cum id culpa beatae. Ea explicabo illum quaerat consequuntur deserunt.', 'Hayes-Hilll', 'honorario');
 
 
+DROP TABLE IF EXISTS `cat_conceptos_pago`;
+
+CREATE TABLE `cat_conceptos_pago` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `concepto` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (1, 'soluta');
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (2, 'sunt');
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (3, 'eius');
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (4, 'in');
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (5, 'earum');
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (6, 'qui');
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (7, 'debitis');
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (8, 'totam');
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (9, 'quos');
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (10, 'consequatur');
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (11, 'accusamus');
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (12, 'eius');
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (13, 'quo');
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (14, 'et');
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (15, 'est');
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (16, 'aut');
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (17, 'ut');
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (18, 'voluptas');
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (19, 'voluptates');
+INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (20, 'eos');
 
 DROP TABLE IF EXISTS `bitacora_pagos`;
 
@@ -97,74 +148,6 @@ INSERT INTO `bitacora_pagos` (`id`, `fecha`, `no_presupuesto`, `concepto_id`, `c
 INSERT INTO `bitacora_pagos` (`id`, `fecha`, `no_presupuesto`, `concepto_id`, `cantidad`, `autorizado_por`, `observaciones`) VALUES (100, '1985-06-19 19:17:57', '998', 20, '453812.42', 'Yadira Powlowski MD', 'Impedit quia voluptatem consectetur eum deserunt. Nihil fuga molestiae accusantium deleniti eos. Soluta id expedita ab et. Quidem quas saepe qui quia.');
 
 
-DROP TABLE IF EXISTS `cat_conceptos_pago`;
-
-CREATE TABLE `cat_conceptos_pago` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `concepto` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (1, 'soluta');
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (2, 'sunt');
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (3, 'eius');
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (4, 'in');
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (5, 'earum');
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (6, 'qui');
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (7, 'debitis');
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (8, 'totam');
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (9, 'quos');
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (10, 'consequatur');
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (11, 'accusamus');
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (12, 'eius');
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (13, 'quo');
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (14, 'et');
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (15, 'est');
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (16, 'aut');
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (17, 'ut');
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (18, 'voluptas');
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (19, 'voluptates');
-INSERT INTO `cat_conceptos_pago` (`id`, `concepto`) VALUES (20, 'eos');
-
-
-
-DROP TABLE IF EXISTS `catastro_calificacion`;
-
-CREATE TABLE `catastro_calificacion` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `vencimiento_td` tinyint(1) DEFAULT NULL COMMENT 'Alerta del vencimiento del traslado de dominio',
-  `no_presupuesto` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `escritura_id` int(11) DEFAULT NULL,
-  `observaciones` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cat_rev` enum('si','en tramite','correccion') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_catastro_calificacion` (`escritura_id`),
-  KEY `fk_catastro_calificacion_presupuesto` (`no_presupuesto`),
-  CONSTRAINT `fk_catastro_calificacion` FOREIGN KEY (`escritura_id`) REFERENCES `escritura` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_catastro_calificacion_presupuesto` FOREIGN KEY (`no_presupuesto`) REFERENCES `presupuesto` (`no_presupuesto`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `catastro_calificacion` (`id`, `vencimiento_td`, `no_presupuesto`, `escritura_id`, `observaciones`, `cat_rev`) VALUES (1, 9, '156', 21, 'Odit aut nihil qui quas qui reprehenderit. Vitae delectus iure sint sint quae repellat. Eum recusandae odio magnam est iure. Nostrum asperiores quisquam voluptas repudiandae magni qui atque sed.', 'si');
-INSERT INTO `catastro_calificacion` (`id`, `vencimiento_td`, `no_presupuesto`, `escritura_id`, `observaciones`, `cat_rev`) VALUES (2, 6, '164', 25, 'Aut sed aut rerum tempora quia earum. Exercitationem dolor accusantium distinctio commodi. Ut est saepe sequi sit dolores.', 'si');
-
-
-DROP TABLE IF EXISTS `catastro_td`;
-
-CREATE TABLE `catastro_td` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `escritura_id` int(11) NOT NULL,
-  `observaciones` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cat_terminado` enum('si','en tramite','correccion') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_catastro_td_escritura` (`escritura_id`),
-  CONSTRAINT `fk_catastro_td_escritura` FOREIGN KEY (`escritura_id`) REFERENCES `escritura` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `catastro_td` (`id`, `escritura_id`, `observaciones`, `cat_terminado`) VALUES (1, 21, 'Assumenda illo nobis commodi cum. Ut consequatur nobis quia a facere nisi perferendis. Consectetur minus illo maiores ullam molestiae repudiandae repellendus.', 'si');
-INSERT INTO `catastro_td` (`id`, `escritura_id`, `observaciones`, `cat_terminado`) VALUES (2, 25, 'Velit consectetur molestias voluptatem. Earum hic velit inventore aliquam. Vitae asperiores consequatur qui odio.', 'correccion');
-
-
-
 DROP TABLE IF EXISTS `desgloce_ppto`;
 
 CREATE TABLE `desgloce_ppto` (
@@ -197,27 +180,6 @@ INSERT INTO `desgloce_ppto` (`no_presupuesto`, `concepto`, `cantidad`, `pagado`)
 INSERT INTO `desgloce_ppto` (`no_presupuesto`, `concepto`, `cantidad`, `pagado`) VALUES ('910', 'et', '219271.17', 0);
 INSERT INTO `desgloce_ppto` (`no_presupuesto`, `concepto`, `cantidad`, `pagado`) VALUES ('998', 'ullam', '1.37', 1);
 
-
-
-DROP TABLE IF EXISTS `direccion_notarias_seguimiento_juicios`;
-
-CREATE TABLE `direccion_notarias_seguimiento_juicios` (
-  `escritura_id` int(11) NOT NULL,
-  `no_oficio_escritura` int(11) DEFAULT NULL,
-  `fecha_envio_escritura` date DEFAULT NULL,
-  `fecha_solicitud_busqueda_testa_dircc` date DEFAULT NULL,
-  `fecha_solicitud_busqueda_testa_rpp` date DEFAULT NULL,
-  `fecha_publicacion_boletin` date DEFAULT NULL,
-  `fecha_publicacion_periodico` date DEFAULT NULL,
-  PRIMARY KEY (`escritura_id`),
-  CONSTRAINT `fk_direccion_notarias_seguimiento_juicios` FOREIGN KEY (`escritura_id`) REFERENCES `escritura` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `direccion_notarias_seguimiento_juicios` (`escritura_id`, `no_oficio_escritura`, `fecha_envio_escritura`, `fecha_solicitud_busqueda_testa_dircc`, `fecha_solicitud_busqueda_testa_rpp`, `fecha_publicacion_boletin`, `fecha_publicacion_periodico`) VALUES (21, 38459576, '1995-11-26', '2007-08-06', '1987-03-11', '1981-08-01', '2000-12-29');
-INSERT INTO `direccion_notarias_seguimiento_juicios` (`escritura_id`, `no_oficio_escritura`, `fecha_envio_escritura`, `fecha_solicitud_busqueda_testa_dircc`, `fecha_solicitud_busqueda_testa_rpp`, `fecha_publicacion_boletin`, `fecha_publicacion_periodico`) VALUES (25, 633786591, '2004-03-09', '1989-08-10', '2016-06-11', '2006-07-09', '1984-05-08');
-
-
-
 DROP TABLE IF EXISTS `escritura`;
 
 CREATE TABLE `escritura` (
@@ -245,7 +207,56 @@ CREATE TABLE `escritura` (
 INSERT INTO `escritura` (`id`, `no_escritura`, `bis`, `no_presupuesto`, `volumen`, `fecha`, `no_expediente`, `sr`, `clave_catastral`, `infonavit`, `entrega_testimonio`, `observaciones`, `fecha_vence`) VALUES (21, 152942070, 0, '156', 17, '1979-11-28', 609, 4, 702, 765, '1991-03-28', 'Est distinctio nisi nam eum. Quaerat officiis error aut quidem aut rem.\nPerferendis qui saepe sed voluptas similique sint. Sed itaque debitis aliquam et. Aut quibusdam consectetur aperiam sed.', '1998-12-31');
 INSERT INTO `escritura` (`id`, `no_escritura`, `bis`, `no_presupuesto`, `volumen`, `fecha`, `no_expediente`, `sr`, `clave_catastral`, `infonavit`, `entrega_testimonio`, `observaciones`, `fecha_vence`) VALUES (25, 46096, 1, '243', 45, '1971-11-03', 361, 0, 597, 923, '2020-05-08', 'Minus omnis perspiciatis minima ut qui. Totam assumenda voluptatem accusantium. Inventore reiciendis ipsam deserunt voluptatibus ea. Possimus qui quod sapiente et laudantium corporis.', '2000-11-12');
 
+DROP TABLE IF EXISTS `catastro_calificacion`;
 
+CREATE TABLE `catastro_calificacion` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `vencimiento_td` tinyint(1) DEFAULT NULL COMMENT 'Alerta del vencimiento del traslado de dominio',
+  `no_presupuesto` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `escritura_id` int(11) DEFAULT NULL,
+  `observaciones` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `cat_rev` enum('si','en tramite','correccion') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_catastro_calificacion` (`escritura_id`),
+  KEY `fk_catastro_calificacion_presupuesto` (`no_presupuesto`),
+  CONSTRAINT `fk_catastro_calificacion` FOREIGN KEY (`escritura_id`) REFERENCES `escritura` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_catastro_calificacion_presupuesto` FOREIGN KEY (`no_presupuesto`) REFERENCES `presupuesto` (`no_presupuesto`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `catastro_calificacion` (`id`, `vencimiento_td`, `no_presupuesto`, `escritura_id`, `observaciones`, `cat_rev`) VALUES (1, 9, '156', 21, 'Odit aut nihil qui quas qui reprehenderit. Vitae delectus iure sint sint quae repellat. Eum recusandae odio magnam est iure. Nostrum asperiores quisquam voluptas repudiandae magni qui atque sed.', 'si');
+INSERT INTO `catastro_calificacion` (`id`, `vencimiento_td`, `no_presupuesto`, `escritura_id`, `observaciones`, `cat_rev`) VALUES (2, 6, '164', 25, 'Aut sed aut rerum tempora quia earum. Exercitationem dolor accusantium distinctio commodi. Ut est saepe sequi sit dolores.', 'si');
+
+DROP TABLE IF EXISTS `catastro_td`;
+
+CREATE TABLE `catastro_td` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `escritura_id` int(11) NOT NULL,
+  `observaciones` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `cat_terminado` enum('si','en tramite','correccion') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_catastro_td_escritura` (`escritura_id`),
+  CONSTRAINT `fk_catastro_td_escritura` FOREIGN KEY (`escritura_id`) REFERENCES `escritura` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `catastro_td` (`id`, `escritura_id`, `observaciones`, `cat_terminado`) VALUES (1, 21, 'Assumenda illo nobis commodi cum. Ut consequatur nobis quia a facere nisi perferendis. Consectetur minus illo maiores ullam molestiae repudiandae repellendus.', 'si');
+INSERT INTO `catastro_td` (`id`, `escritura_id`, `observaciones`, `cat_terminado`) VALUES (2, 25, 'Velit consectetur molestias voluptatem. Earum hic velit inventore aliquam. Vitae asperiores consequatur qui odio.', 'correccion');
+
+DROP TABLE IF EXISTS `direccion_notarias_seguimiento_juicios`;
+
+CREATE TABLE `direccion_notarias_seguimiento_juicios` (
+  `id` int(11) NOT NULL,
+  `no_oficio_escritura` int(11) DEFAULT NULL,
+  `fecha_envio_escritura` date DEFAULT NULL,
+  `fecha_solicitud_busqueda_testa_dircc` date DEFAULT NULL,
+  `fecha_solicitud_busqueda_testa_rpp` date DEFAULT NULL,
+  `fecha_publicacion_boletin` date DEFAULT NULL,
+  `fecha_publicacion_periodico` date DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_direccion_notarias_seguimiento_juicios` FOREIGN KEY (`id`) REFERENCES `escritura` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `direccion_notarias_seguimiento_juicios` (`id`, `no_oficio_escritura`, `fecha_envio_escritura`, `fecha_solicitud_busqueda_testa_dircc`, `fecha_solicitud_busqueda_testa_rpp`, `fecha_publicacion_boletin`, `fecha_publicacion_periodico`) VALUES (21, 38459576, '1995-11-26', '2007-08-06', '1987-03-11', '1981-08-01', '2000-12-29');
+INSERT INTO `direccion_notarias_seguimiento_juicios` (`id`, `no_oficio_escritura`, `fecha_envio_escritura`, `fecha_solicitud_busqueda_testa_dircc`, `fecha_solicitud_busqueda_testa_rpp`, `fecha_publicacion_boletin`, `fecha_publicacion_periodico`) VALUES (25, 633786591, '2004-03-09', '1989-08-10', '2016-06-11', '2006-07-09', '1984-05-08');
 
 DROP TABLE IF EXISTS `facturas`;
 
@@ -272,65 +283,10 @@ INSERT INTO `facturas` (`id`, `no_presupuesto`, `no_factura`, `escritura_id`) VA
 INSERT INTO `facturas` (`id`, `no_presupuesto`, `no_factura`, `escritura_id`) VALUES (9, '510', 67284265, 21);
 INSERT INTO `facturas` (`id`, `no_presupuesto`, `no_factura`, `escritura_id`) VALUES (10, '636', 91, 25);
 
-
-
-DROP TABLE IF EXISTS `fechas_catastro_calif`;
-
-CREATE TABLE `fechas_catastro_calif` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `id_cat_calif` int(11) NOT NULL,
-  `cat_envio_calif` date DEFAULT NULL COMMENT 'Fecha de envio de Traslado de dominio a Catastro para informacion',
-  `cat_regreso_calif` date DEFAULT NULL COMMENT 'Fecha de regreso de Traslado de dominio a Catastro para informacion',
-  `observaciones` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_fechas_catastro_catastro_calificacion` (`id_cat_calif`),
-  CONSTRAINT `fk_fechas_catastro_catastro_calificacion` FOREIGN KEY (`id_cat_calif`) REFERENCES `catastro_calificacion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `fechas_catastro_calif` (`id`, `id_cat_calif`, `cat_envio_calif`, `cat_regreso_calif`, `observaciones`) VALUES (1, 1, '1998-05-06', '1986-12-14', 'Dolore soluta id alias possimus itaque sint iusto. Quasi doloribus beatae molestiae mollitia accusamus reprehenderit. Voluptatem blanditiis et omnis rerum tempore voluptatem.');
-INSERT INTO `fechas_catastro_calif` (`id`, `id_cat_calif`, `cat_envio_calif`, `cat_regreso_calif`, `observaciones`) VALUES (2, 2, '1970-06-26', '1972-04-22', 'Accusamus molestiae ea dolorem eum eos consequuntur sed. Repudiandae in beatae assumenda. Quia dolorum fugit occaecati et. Quasi possimus voluptates dicta adipisci qui cupiditate.');
-INSERT INTO `fechas_catastro_calif` (`id`, `id_cat_calif`, `cat_envio_calif`, `cat_regreso_calif`, `observaciones`) VALUES (3, 1, '1998-09-18', '2005-10-13', 'Assumenda tempora necessitatibus voluptas pariatur. Excepturi dolorem porro accusamus illum quas aut quis sit. Voluptatem consequatur sapiente fuga beatae commodi.');
-
-
-DROP TABLE IF EXISTS `fechas_catastro_td`;
-
-CREATE TABLE `fechas_catastro_td` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `id_cat_td` int(11) NOT NULL,
-  `cat_envio_td` date DEFAULT NULL COMMENT 'Fecha de envio de Traslado de dominio a Catastro',
-  `cat_regreso_td` date DEFAULT NULL COMMENT 'Nombre del regreso de Traslado de dominio (cuando esta terminado)',
-  `observaciones` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unq_fechas_catastro_0_id_cat_td` (`id_cat_td`),
-  CONSTRAINT `fk_fechas_catastro_0_catastro_td` FOREIGN KEY (`id_cat_td`) REFERENCES `catastro_td` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `fechas_catastro_td` (`id`, `id_cat_td`, `cat_envio_td`, `cat_regreso_td`, `observaciones`) VALUES (4, 1, '1993-03-22', '1991-01-29', 'Totam quasi suscipit mollitia necessitatibus. Cumque quo sit voluptates sint dolore aut. Consequatur eos illum ut aliquid eligendi voluptate. Iure repellat ut libero fugit qui.');
-INSERT INTO `fechas_catastro_td` (`id`, `id_cat_td`, `cat_envio_td`, `cat_regreso_td`, `observaciones`) VALUES (5, 2, '1975-06-25', '1997-07-25', 'Velit temporibus dolores veritatis nobis. Qui qui est voluptas incidunt sed perspiciatis. Facilis iure nisi itaque repudiandae animi omnis nostrum deleniti.');
-
-
-
-DROP TABLE IF EXISTS `fechas_rpp`;
-
-CREATE TABLE `fechas_rpp` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `id_rpp` int(11) NOT NULL,
-  `envio_rpp` date DEFAULT NULL COMMENT 'Fecha de Envio a Registro Público',
-  `regreso_rpp` date DEFAULT NULL COMMENT 'Fecha de regreso de Registro Público',
-  `observaciones` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unq_fechas_catastro_0_id_cat_td_0` (`id_rpp`),
-  CONSTRAINT `fk_fechas_catastro_td_0_rpp` FOREIGN KEY (`id_rpp`) REFERENCES `rpp` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `fechas_rpp` (`id`, `id_rpp`, `envio_rpp`, `regreso_rpp`, `observaciones`) VALUES (4, 1, '2011-05-04', '2011-10-13', 'Aut omnis aspernatur labore est corrupti atque. Dolorum ut occaecati consequatur repellat non. Nesciunt repellat aut odio magnam animi vitae.');
-INSERT INTO `fechas_rpp` (`id`, `id_rpp`, `envio_rpp`, `regreso_rpp`, `observaciones`) VALUES (5, 2, '2008-09-15', '2011-12-04', 'Neque illum quisquam accusamus nisi molestias. Enim natus soluta est sed qui sequi soluta.');
-
-
 DROP TABLE IF EXISTS `juridico`;
 
 CREATE TABLE `juridico` (
-  `escritura_id` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `contrato_en_extracto` tinyint(1) DEFAULT NULL,
   `firmas_en_extracto` tinyint(1) DEFAULT NULL,
   `pendientes` tinyint(1) DEFAULT NULL,
@@ -356,53 +312,22 @@ CREATE TABLE `juridico` (
   `isr_enajenacion` tinyint(1) DEFAULT NULL,
   `isr_adquisicion` tinyint(1) DEFAULT NULL,
   `iva` tinyint(1) DEFAULT NULL,
-  PRIMARY KEY (`escritura_id`),
-  CONSTRAINT `fk_juridico_escritura` FOREIGN KEY (`escritura_id`) REFERENCES `escritura` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_juridico_escritura` FOREIGN KEY (`id`) REFERENCES `escritura` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `juridico` (`escritura_id`, `contrato_en_extracto`, `firmas_en_extracto`, `pendientes`, `no_paso`, `otorgamiento`, `firma`, `autorizacion`, `fecha_aviso_renap`, `fecha_envio_dircc`, `uif_poder_irrevocable`, `fecha_aviso_reloat`, `fecha_aviso_dir_not_tpa`, `folios`, `numeracion_folios`, `folio_cancelado`, `fecha_minuta`, `fecha_apendice`, `minuta`, `apendice`, `fecha_entrega_juridico`, `fecha_aviso_portal`, `fecha_cierre_antilavado`, `isr_enajenacion`, `isr_adquisicion`, `iva`) VALUES (21, 9, 5, 1, 9, '1994-05-07', '1983-08-04', '1973-12-04', '1994-06-05', '1972-03-04', '1977-05-21', '1978-07-11', '2006-06-01', 324, '4', 8, '1999-07-06', '1998-02-02', 3, 3, '1988-01-01', '2017-11-30', '1996-06-03', 1, 3, 0);
-INSERT INTO `juridico` (`escritura_id`, `contrato_en_extracto`, `firmas_en_extracto`, `pendientes`, `no_paso`, `otorgamiento`, `firma`, `autorizacion`, `fecha_aviso_renap`, `fecha_envio_dircc`, `uif_poder_irrevocable`, `fecha_aviso_reloat`, `fecha_aviso_dir_not_tpa`, `folios`, `numeracion_folios`, `folio_cancelado`, `fecha_minuta`, `fecha_apendice`, `minuta`, `apendice`, `fecha_entrega_juridico`, `fecha_aviso_portal`, `fecha_cierre_antilavado`, `isr_enajenacion`, `isr_adquisicion`, `iva`) VALUES (25, 9, 1, 5, 0, '1987-10-16', '1995-08-18', '1988-02-08', '2015-07-02', '1971-01-22', '2018-06-01', '1975-02-18', '2013-10-18', 23897038, '4', 1, '1999-11-12', '2015-08-27', 7, 7, '2004-07-28', '2001-08-20', '1980-11-03', 9, 5, 8);
+INSERT INTO `juridico` (`id`, `contrato_en_extracto`, `firmas_en_extracto`, `pendientes`, `no_paso`, `otorgamiento`, `firma`, `autorizacion`, `fecha_aviso_renap`, `fecha_envio_dircc`, `uif_poder_irrevocable`, `fecha_aviso_reloat`, `fecha_aviso_dir_not_tpa`, `folios`, `numeracion_folios`, `folio_cancelado`, `fecha_minuta`, `fecha_apendice`, `minuta`, `apendice`, `fecha_entrega_juridico`, `fecha_aviso_portal`, `fecha_cierre_antilavado`, `isr_enajenacion`, `isr_adquisicion`, `iva`) VALUES (21, 9, 5, 1, 9, '1994-05-07', '1983-08-04', '1973-12-04', '1994-06-05', '1972-03-04', '1977-05-21', '1978-07-11', '2006-06-01', 324, '4', 8, '1999-07-06', '1998-02-02', 3, 3, '1988-01-01', '2017-11-30', '1996-06-03', 1, 3, 0);
+INSERT INTO `juridico` (`id`, `contrato_en_extracto`, `firmas_en_extracto`, `pendientes`, `no_paso`, `otorgamiento`, `firma`, `autorizacion`, `fecha_aviso_renap`, `fecha_envio_dircc`, `uif_poder_irrevocable`, `fecha_aviso_reloat`, `fecha_aviso_dir_not_tpa`, `folios`, `numeracion_folios`, `folio_cancelado`, `fecha_minuta`, `fecha_apendice`, `minuta`, `apendice`, `fecha_entrega_juridico`, `fecha_aviso_portal`, `fecha_cierre_antilavado`, `isr_enajenacion`, `isr_adquisicion`, `iva`) VALUES (25, 9, 1, 5, 0, '1987-10-16', '1995-08-18', '1988-02-08', '2015-07-02', '1971-01-22', '2018-06-01', '1975-02-18', '2013-10-18', 23897038, '4', 1, '1999-11-12', '2015-08-27', 7, 7, '2004-07-28', '2001-08-20', '1980-11-03', 9, 5, 8);
 
+DROP TABLE IF EXISTS `usuario`;
 
-
-DROP TABLE IF EXISTS `presupuesto`;
-
-CREATE TABLE `presupuesto` (
-  `no_presupuesto` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `proyectista` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Abogado responsable',
-  `proyecto` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'DESCRIPCION DEL TRAMITE',
-  `gestor` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Nombre del gestor encargado del asunto (persona externa de la notaria)',
-  `enajentante` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'PERSONA QUE VENDE, PUEDE QUEDAR EN BLANCO',
-  `adquiriente` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'PERSONA QUE ADQUIERE O CONTRATA EL SERVICIO',
-  `valor_operacion` decimal(10,2) NOT NULL,
-  `monto_honorarios` decimal(10,2) DEFAULT NULL,
-  `fecha_honorarios` date DEFAULT NULL,
-  `cantidad` decimal(10,2) DEFAULT NULL,
-  `mes_de_pago` date DEFAULT NULL COMMENT 'Mes y año en la que se pago la comisión al proyectista',
-  UNIQUE KEY `unq_presupuesto_no_presupuesto` (`no_presupuesto`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('156', 'Miss Jordane Kub', 'Gulgowski and Sons', 'Ms. Elena Jacobs', 'Trent Russel', 'Dr. Reinhold Olson PhD', '18078818.92', '347359.40', '2010-06-22', '9.00', '1982-03-23');
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('164', 'Kali Lindgren', 'Lowe, Fahey and Bergnaum', 'Alexane Crist', 'River Armstrong', 'Viola Runolfsdottir', '55.94', '2.43', '1983-09-19', '76216753.00', '1999-09-02');
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('174', 'Arnold Jerde', 'Kerluke-Zulauf', 'Sigurd Erdman', 'Tremaine Hoppe Sr.', 'Davon Breitenberg', '539.70', '660363.13', '2007-03-16', '9394655.00', '2006-01-17');
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('235', 'Wilma Thiel', 'Herman-Runolfsdottir', 'Ariel Friesen', 'Antonia Wiegand', 'Vida Moen PhD', '0.00', '15200.70', '2019-12-05', '99999999.99', '1992-11-10');
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('243', 'Maximo Predovic', 'Goodwin-Turner', 'Lexie Dach', 'Katheryn Fisher', 'Lawson Towne', '422562.91', '1421502.70', '1994-10-02', '327.00', '2016-02-29');
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('283', 'Randal Hilpert', 'Kuhic and Sons', 'Marion Kozey', 'Zoie Schmeler', 'Ethelyn Sauer', '0.00', '0.00', '2015-10-09', '6483920.00', '2001-10-28');
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('430', 'Hollie Kemmer', 'Yost-Sporer', 'Jess Tillman', 'Lonie Homenick', 'Kip Balistreri Sr.', '5.47', '4525035.92', '1994-01-11', '83993138.00', '2021-05-07');
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('437', 'Prof. Michelle Prosacco III', 'Lockman-Leannon', 'Devyn Beier Jr.', 'Manuel Heller MD', 'Ms. Martine Brakus MD', '9702.83', '597.10', '1982-11-07', '58838.00', '1981-07-09');
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('510', 'Ozella Dibbert IV', 'Pollich Inc', 'Dr. Samara Haag', 'Mara Hessel V', 'Porter Veum', '999123.71', '6094.90', '1996-05-20', '99999999.99', '1976-04-21');
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('636', 'Vernie Ziemann', 'Ullrich and Sons', 'Andres Grady', 'Gaylord Champlin', 'Abbigail Kozey', '471.00', '99999999.99', '1985-04-24', '40599.00', '1972-09-14');
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('662', 'Miss Grace Volkman DDS', 'Spinka Inc', 'Ricky Ryan', 'Gayle Beer', 'Prof. Kaitlin Schumm', '606114.28', '1.86', '1972-07-15', '55053.00', '1986-11-11');
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('673', 'Jerry Mueller', 'Harber-Reichert', 'Reva Gislason', 'Johanna Sawayn PhD', 'Randi Parisian', '0.00', '8.82', '2020-01-12', '81602.00', '1977-09-11');
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('700', 'Mckayla Powlowski', 'Rosenbaum, Beer and Murphy', 'Prof. Porter Larson', 'Samir Schimmel', 'Dr. Janie Leannon', '1535961.35', '2846189.39', '1977-06-01', '569.00', '1990-05-31');
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('761', 'Wilhelm Crooks', 'Gleason-Ward', 'Dr. Angela Rath I', 'Schuyler Wiza', 'Terrance Osinski MD', '3.00', '145853.48', '1977-02-03', '22203.00', '1997-09-29');
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('775', 'Roman Williamson', 'Jacobs Inc', 'Favian Nitzsche', 'Bradly Gibson', 'Dr. Charlotte Reichert', '99999999.99', '466.91', '2020-01-16', '0.00', '2011-01-25');
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('776', 'Regan Schamberger DVM', 'Abbott-Homenick', 'Hollie Rogahn', 'Maurine Kunde', 'Sonya Gerlach', '70095604.46', '4932291.39', '1988-03-17', '41108.00', '1984-01-19');
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('844', 'Daniella Gislason', 'Hilpert-Goyette', 'Ms. Jaunita Leuschke III', 'Dr. Chesley Crona I', 'Miss Hallie Reichert', '0.00', '212.52', '1977-01-23', '89180929.00', '1991-11-06');
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('877', 'Jane Upton', 'Waters Inc', 'Alexie Feil', 'Ali Schuppe', 'Minnie Yost', '171810.09', '1.48', '1986-09-19', '99999999.99', '1980-03-02');
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('910', 'Prof. Maryjane Prosacco', 'Hermann and Sons', 'Ivory Krajcik', 'Ms. Piper Champlin', 'Shanelle Wilderman', '4633.88', '0.00', '2009-08-18', '951886.00', '1995-07-24');
-INSERT INTO `presupuesto` (`no_presupuesto`, `proyectista`, `proyecto`, `gestor`, `enajentante`, `adquiriente`, `valor_operacion`, `monto_honorarios`, `fecha_honorarios`, `cantidad`, `mes_de_pago`) VALUES ('998', 'Ms. Grace Sawayn V', 'Nicolas Group', 'Malinda Gutmann', 'Dr. Lue Beatty', 'Mrs. Aaliyah Von', '299410.00', '492472.00', '2005-03-29', '52.00', '1993-10-06');
-
+CREATE TABLE `usuario` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `nombre_usuario` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `contrasena` varchar(300) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `rol` enum('admin','empleado','proyectista','armadores','otro') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Empleados: Martin, Eva y Paulina\nProyectistas:\n Alicia Felix\nMartha Soto\nAbraham Castro\nYesenia\nAna Luisa Rodriguez\nJuan Martin Ruiz\nRene Luna Araiza\nRene Luna Sugich\nGloria';
 
 DROP TABLE IF EXISTS `rpp`;
 
@@ -425,36 +350,68 @@ INSERT INTO `rpp` (`id`, `no_presupuesto`, `escritura_id`, `folio_rpp`, `observa
 INSERT INTO `rpp` (`id`, `no_presupuesto`, `escritura_id`, `folio_rpp`, `observaciones`, `registrada`) VALUES (2, '164', 25, 662362675, 'Explicabo consectetur perferendis debitis est. Et aut a laudantium dolore praesentium voluptatem voluptas quis. Facilis nostrum vel suscipit dolorum fuga nihil porro qui.', 'rechazado');
 
 
+DROP TABLE IF EXISTS `fechas_rpp`;
 
-DROP TABLE IF EXISTS `usuario`;
+CREATE TABLE `fechas_rpp` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_rpp` int(11) NOT NULL,
+  `envio_rpp` date DEFAULT NULL COMMENT 'Fecha de Envio a Registro Público',
+  `regreso_rpp` date DEFAULT NULL COMMENT 'Fecha de regreso de Registro Público',
+  `observaciones` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unq_fechas_catastro_0_id_cat_td_0` (`id_rpp`),
+  CONSTRAINT `fk_fechas_catastro_td_0_rpp` FOREIGN KEY (`id_rpp`) REFERENCES `rpp` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `usuario` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `nombre_usuario` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `contrasena` varchar(300) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `rol` enum('admin','empleado','proyectista','armadores','otro') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Empleados: Martin, Eva y Paulina\nProyectistas:\n Alicia Felix\nMartha Soto\nAbraham Castro\nYesenia\nAna Luisa Rodriguez\nJuan Martin Ruiz\nRene Luna Araiza\nRene Luna Sugich\nGloria';
-
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (1, 'elvera.pfeffer', '726559ca99473fb07205081291f4bfe069e3b0a8131de190dd69a146faa4b0ab', 'empleado');
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (2, 'fay.wisoky', 'e5029185e7dbc237e36cfee98fe9fe2280be563959ac1a28b7d09ce82f2220a8', 'admin');
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (3, 'lyda64', 'c5d79a5856ecb49c4d03db632a8db908230f674d6e064437269764347cce0418', 'admin');
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (4, 'lemuel.cormier', '662dca2f2d858da6a19bb57bfc90490c8c73bef4528a3422dad3081c3d6a32f9', 'admin');
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (5, 'brandy04', '2563ea5a371c23add9fcba27cbec928a2ae125672a730eec71dee317528bda22', 'armadores');
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (6, 'xkeebler', '032ad5edf3fee56710f1265688801ace31d8544a7dc7055218b1a130e4a9a616', 'empleado');
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (7, 'alycia.lynch', '04071bed48bfd93ddf889c8dc9f834d4dbcd9a316a74946fe40338d610d68e63', 'otro');
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (8, 'kiarra31', '11fb49fcd9272752a72efaa90802defce10993d89c3c5ff9c184a3c457d1c678', 'armadores');
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (9, 'beatty.zechariah', 'a1338e0c05219597444b76597b7e39d172f16fcb4880b148257226a570ae020f', 'proyectista');
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (10, 'myra54', '1ffc28e525c5d3fd449ec6b763510ed47a64e99d589d03a011899c4e227d6d5f', 'proyectista');
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (11, 'stracke.merritt', 'bb803d73b136b1d3f58ed86b16021ed8fb2de9c0466b7a8d8c783365a9f198ca', 'empleado');
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (12, 'vonrueden.enrique', '901524cda55b3a8dd6f80b4c2950241bc4756501c83bccd0d3ac6fbcf7506955', 'otro');
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (13, 'sonny42', '76cd4a5699f177a8396cf6f4a78e5f4d88eeb14750b6e0a7f1e35dcc384fc8a2', 'proyectista');
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (14, 'schowalter.rowena', '968c4d2bbbabbd58d1397bc8763249a807e2e68d780768becc8963c417efebc1', 'proyectista');
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (15, 'brunte', '5bfc91a38cc1704593b59d5f1026ea5819f67be46eb6c9e1c257da4b72149edd', 'empleado');
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (16, 'elisha03', '42c44ea9acaac9472340ed46f9e87bb96f91818e02243223fba744ef8930360e', 'admin');
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (17, 'mohamed.murazik', 'd7fcf19ca0d7a588aac319f91ed8091f41b32960eabeae70905eb1e89c667fb3', 'otro');
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (18, 'liliane93', '026b12d202c78c06bed34b92880e46722710b75a1d8af739e9e1282aae2cdba4', 'proyectista');
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (19, 'emmy.hyatt', '094dd14f3a7b7cf62c1507221e41a12f3c020a008b5bb874ebcdcc98e429d047', 'admin');
-INSERT INTO `usuario` (`id`, `nombre_usuario`, `contrasena`, `rol`) VALUES (20, 'kreiger.violet', '081bdb716e33cc3fc37feab1263c2891276c24fd81ca1458c2e42f9fac8f97d5', 'otro');
+INSERT INTO `fechas_rpp` (`id`, `id_rpp`, `envio_rpp`, `regreso_rpp`, `observaciones`) VALUES (4, 1, '2011-05-04', '2011-10-13', 'Aut omnis aspernatur labore est corrupti atque. Dolorum ut occaecati consequatur repellat non. Nesciunt repellat aut odio magnam animi vitae.');
+INSERT INTO `fechas_rpp` (`id`, `id_rpp`, `envio_rpp`, `regreso_rpp`, `observaciones`) VALUES (5, 2, '2008-09-15', '2011-12-04', 'Neque illum quisquam accusamus nisi molestias. Enim natus soluta est sed qui sequi soluta.');
 
 
+DROP TABLE IF EXISTS `fechas_catastro_td`;
+
+CREATE TABLE `fechas_catastro_td` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_cat_td` int(11) NOT NULL,
+  `cat_envio_td` date DEFAULT NULL COMMENT 'Fecha de envio de Traslado de dominio a Catastro',
+  `cat_regreso_td` date DEFAULT NULL COMMENT 'Nombre del regreso de Traslado de dominio (cuando esta terminado)',
+  `observaciones` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unq_fechas_catastro_0_id_cat_td` (`id_cat_td`),
+  CONSTRAINT `fk_fechas_catastro_0_catastro_td` FOREIGN KEY (`id_cat_td`) REFERENCES `catastro_td` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `fechas_catastro_td` (`id`, `id_cat_td`, `cat_envio_td`, `cat_regreso_td`, `observaciones`) VALUES (4, 1, '1993-03-22', '1991-01-29', 'Totam quasi suscipit mollitia necessitatibus. Cumque quo sit voluptates sint dolore aut. Consequatur eos illum ut aliquid eligendi voluptate. Iure repellat ut libero fugit qui.');
+INSERT INTO `fechas_catastro_td` (`id`, `id_cat_td`, `cat_envio_td`, `cat_regreso_td`, `observaciones`) VALUES (5, 2, '1975-06-25', '1997-07-25', 'Velit temporibus dolores veritatis nobis. Qui qui est voluptas incidunt sed perspiciatis. Facilis iure nisi itaque repudiandae animi omnis nostrum deleniti.');
+
+DROP TABLE IF EXISTS `aviso_definitivo`;
+
+CREATE TABLE `aviso_definitivo` (
+  `id` int(11) NOT NULL,
+  `folio_rpp` int(11) DEFAULT NULL COMMENT 'Folio del pase a caja de Registro Público',
+  `fecha_presentado` date DEFAULT NULL COMMENT 'Fecha de Ingreso en RPP',
+  `fecha_salida` date DEFAULT NULL COMMENT 'Fecha de entregado por RPP',
+  `fecha_vence` date DEFAULT NULL COMMENT 'Fecha de Vencimiento del aviso (90 dias naturales despues de fecha de presentacion en RPP)',
+  PRIMARY KEY (`id`),
+  KEY `fk_aviso_definitivo_rpp` (`folio_rpp`),
+  CONSTRAINT `fk_aviso_definitivo_rpp` FOREIGN KEY (`folio_rpp`) REFERENCES `rpp` (`folio_rpp`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `aviso_definitivo` (`id`, `folio_rpp`, `fecha_presentado`, `fecha_salida`, `fecha_vence`) VALUES (21, 0, '1996-07-08', '1977-05-03', '2000-10-30');
+INSERT INTO `aviso_definitivo` (`id`, `folio_rpp`, `fecha_presentado`, `fecha_salida`, `fecha_vence`) VALUES (25, 662362675, '1978-10-22', '1973-12-26', '1970-06-20');
+
+DROP TABLE IF EXISTS `fechas_catastro_calif`;
+
+CREATE TABLE `fechas_catastro_calif` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_cat_calif` int(11) NOT NULL,
+  `cat_envio_calif` date DEFAULT NULL COMMENT 'Fecha de envio de Traslado de dominio a Catastro para informacion',
+  `cat_regreso_calif` date DEFAULT NULL COMMENT 'Fecha de regreso de Traslado de dominio a Catastro para informacion',
+  `observaciones` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_fechas_catastro_catastro_calificacion` (`id_cat_calif`),
+  CONSTRAINT `fk_fechas_catastro_catastro_calificacion` FOREIGN KEY (`id_cat_calif`) REFERENCES `catastro_calificacion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `fechas_catastro_calif` (`id`, `id_cat_calif`, `cat_envio_calif`, `cat_regreso_calif`, `observaciones`) VALUES (1, 1, '1998-05-06', '1986-12-14', 'Dolore soluta id alias possimus itaque sint iusto. Quasi doloribus beatae molestiae mollitia accusamus reprehenderit. Voluptatem blanditiis et omnis rerum tempore voluptatem.');
+INSERT INTO `fechas_catastro_calif` (`id`, `id_cat_calif`, `cat_envio_calif`, `cat_regreso_calif`, `observaciones`) VALUES (2, 2, '1970-06-26', '1972-04-22', 'Accusamus molestiae ea dolorem eum eos consequuntur sed. Repudiandae in beatae assumenda. Quia dolorum fugit occaecati et. Quasi possimus voluptates dicta adipisci qui cupiditate.');
+INSERT INTO `fechas_catastro_calif` (`id`, `id_cat_calif`, `cat_envio_calif`, `cat_regreso_calif`, `observaciones`) VALUES (3, 1, '1998-09-18', '2005-10-13', 'Assumenda tempora necessitatibus voluptas pariatur. Excepturi dolorem porro accusamus illum quas aut quis sit. Voluptatem consequatur sapiente fuga beatae commodi.');
