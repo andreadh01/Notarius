@@ -156,7 +156,7 @@ p, li { white-space: pre-wrap; }
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="logout">
        <property name="styleSheet">
         <string notr="true">QPushButton {
 	color: rgb(141, 110, 58);

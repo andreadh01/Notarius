@@ -3,14 +3,58 @@
 from bdConexion import obtener_conexion
 dict_permisos = {}
 usuario = {'user':'','pwd':''}
+lista_tablas = []
+
 def saveSession(user,pwd):
     global usuario
     usuario["user"] = user
     usuario["pwd"] = pwd
+    listaTablas(user,pwd)
     showGrants(user, pwd)
+    print(dict_permisos)
 
+def clearSession():
+    usuario.clear()
+    dict_permisos.clear()
+    lista_tablas.clear()
+    
 def getUsuarioLogueado():
     return usuario["user"], usuario["pwd"];
+
+def listaTablas(user,pwd):
+		global lista_tablas
+		conn = obtener_conexion(user, pwd)
+		cur = conn.cursor()
+		query = 'SHOW TABLES'
+		cur.execute(query)
+		tablas = cur.fetchall()
+		cur.close()
+		conn.close()
+		lista_tablas = [tabla[0] for tabla in tablas]
+
+def getColumnas(tabla):
+    return dict_permisos[tabla]
+
+def getListaTablas():
+    return lista_tablas
+
+def permisosAdmin():
+    conn = obtener_conexion(usuario["user"],usuario["pwd"])
+    cur = conn.cursor()
+    for tabla in lista_tablas:
+        permisos = {}
+        query=f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME= '{tabla}' AND TABLE_SCHEMA='notarius'"
+        cur.execute(query)
+        columnas = cur.fetchall()
+        lista_columnas = [col[0] for col in columnas]
+        lista_columnas = ','.join(lista_columnas)
+        permisos["SELECT"] = lista_columnas 
+        permisos["INSERT"] = lista_columnas
+        permisos["UPDATE"] = lista_columnas
+        dict_permisos[tabla] = permisos
+        print(dict_permisos)
+    cur.close()
+    conn.close()
 
 def showGrants(user, pwd):
 	conn = obtener_conexion(user,pwd)
@@ -22,14 +66,14 @@ def showGrants(user, pwd):
 	conn.close()
 	lista_permisos = [permisos[0] for permisos in permisos[1:]]
 	limpiar_lista_permisos(lista_permisos)
-	
+
 def limpiar_lista_permisos(lista_permisos):
 	for texto in lista_permisos:
 		subcadena_select = ''
 		subcadena_insert = ''
 		subcadena_update = ''
-		if 'GRANT ALL PRIVILEGES ON `notarius`.*' in texto: 
-			dict_permisos['usuario'] = {'SELECT':'','INSERT':'','UPDATE':''}
+		if 'GRANT ALL' in texto: 
+			permisosAdmin()
 			return
 		permisos = {}
 		select_i = texto.find("SELECT")

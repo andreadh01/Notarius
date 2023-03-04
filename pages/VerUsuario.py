@@ -33,6 +33,7 @@ class VerUsuario(Base, Form):
 		tabla = cur.fetchall()
 		cur.close()
 		conn.close()
+		if bool(tabla) == False: return
 		header = ["Eliminar"]+list(tabla[0].keys())
 		self.tableWidget.setColumnCount(len(header))
 		self.tableWidget.setHorizontalHeaderLabels(header)

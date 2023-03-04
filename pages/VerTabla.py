@@ -7,7 +7,7 @@ from bdConexion import obtener_conexion
 import os
 
 from pages.EditarRegistro import EditarRegistro
-from usuarios import getUsuarioLogueado
+from usuarios import getColumnas, getListaTablas, getUsuarioLogueado
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/ver-tabla.ui")))
@@ -30,15 +30,8 @@ class VerTabla(Base, Form):
 
 	# en este metodo se agregan las tablas disponibles para el usuario a una lista	
 	def setupTableList(self,Form):
-		user, pwd = getUsuarioLogueado()
-		conn = obtener_conexion(user,pwd)
-		cur = conn.cursor()
-		query = 'SHOW TABLES'
-		cur.execute(query)
-		tablas = cur.fetchall()
-		cur.close()
-		conn.close()
-		lista_tablas = [tabla[0] for tabla in tablas]
+		lista_tablas = getListaTablas()
+		print(lista_tablas)
 		self.tableslist.addItems(lista_tablas)
 		self.tableslist.setCurrentRow(0)
 
@@ -48,17 +41,20 @@ class VerTabla(Base, Form):
 		self.tableWidget.setColumnCount(0)
 		tabla_name = self.tableslist.currentItem().text()
 		self.bloquearBusqueda(tabla_name)
+		columnas = getColumnas(tabla_name)["SELECT"]
+		print(tabla_name + 'columnassss:')
+		print(columnas)
 		user, pwd = getUsuarioLogueado()
 		print(user,pwd)
 		conn = obtener_conexion(user,pwd)
-		query = f"SELECT * FROM {tabla_name}"
+		query = f"SELECT {columnas} FROM {tabla_name}"
 		cur = conn.cursor(dictionary=True)
 		cur.execute(query)
 		tabla = cur.fetchall()
 		cur.close()
 		conn.close()
-		columnas = list(tabla[0].keys())
-		header = ["Modificar"]+columnas
+		
+		header = ["Modificar"]+columnas.split(',')
 		self.tableWidget.setColumnCount(len(header))
 		self.tableWidget.setHorizontalHeaderLabels(header)
 

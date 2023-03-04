@@ -1,22 +1,25 @@
 from functools import partial
+import os
 import re
+import sys
 from PyQt5 import QtWidgets, uic,QtGui
 from pages.EditarPrivilegios import EditarPrivilegios
 from pages.RegistrarUsuario import RegistrarUsuario
-from usuarios import getPermisos
+from usuarios import clearSession, getPermisos
 import importlib
 
 Form, Base = uic.loadUiType("ui/dashboard.ui")
 
 
 class Dashboard(Base, Form):
-    lista_botones = ['VerTabla','AgregarRegistro','VerUsuario','EditarPrivilegios','RegistrarUsuario']
+    lista_botones = []
     
     def __init__(self, parent=None):
         super(self.__class__, self).__init__(parent)
         self.setupUi(self)
-        #self.checarPermisos()
+        self.checarPermisos()
         self.setupButtons(self)
+        self.logout.clicked.connect(self.cerrarSesion)
         #self.stackedWidget.setCurrentIndex(self.stackedWidget.currentIndex()+1)
         # for i, button in enumerate(self.lista_botones):
         #     button.clicked.connect(partial(self.stackedWidget.setCurrentIndex,i))
@@ -33,11 +36,16 @@ class Dashboard(Base, Form):
         for tabla, permisos in permisos_usuario.items():
             if permisos['SELECT'] != '' or permisos['UPDATE'] != '': self.lista_botones.append('VerTabla')
             if permisos['INSERT'] != '': self.lista_botones.append('AgregarRegistro')
-            if tabla == 'usuario': self.lista_botones.extend(['VerTabla','VerUsuario','EditarPrivilegios', 'RegistrarUsuario'])
+            if tabla == 'usuario':
+                self.lista_botones.clear() 
+                self.lista_botones.extend(['VerTabla','AgregarRegistro','VerUsuario','EditarPrivilegios', 'RegistrarUsuario'])
+                return
             
             
 
     def setupButtons(self, Form):
+        print('botonesssss')
+        print(self.lista_botones)
         for i, button in enumerate(self.lista_botones):
             print(button)
             btn = self.createButton(self,button)
@@ -83,3 +91,7 @@ class Dashboard(Base, Form):
         print("INDEX  "+str(stacked.indexOf(stacked.findChild(getattr(module, name)))))
         return button
     
+    def cerrarSesion(self):
+        print('AQUIIII')
+        clearSession()
+        os.execl(sys.executable, sys.executable, *sys.argv)
