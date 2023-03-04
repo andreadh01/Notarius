@@ -11,9 +11,8 @@ Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/editar-privilegios.
 
 class EditarPrivilegios(Base, Form):
 	cols = []
-	diccionario_permisos = {'Agregar':{},
-							'Modificar':{},
-							'Ver':{}}
+	diccionario_permisos = {'Ver':{},
+							'Escritura':{}}
 	def __init__(self, parent=None):
 		super(self.__class__, self).__init__(parent)
 		self.setupUi(self)
@@ -174,17 +173,17 @@ class EditarPrivilegios(Base, Form):
 		conn = obtener_conexion(user,pwd)
 		cur = conn.cursor()
 		for llave,accion in self.diccionario_permisos.items():
-			if llave == 'Agregar': permiso='INSERT'
-			elif llave == 'Modificar': permiso='UPDATE'
-			elif llave == 'Ver': permiso='SELECT'
 			for nombre_tabla,columnas in accion.items():
 				for nombre_columna,checked in columnas.items():
 					if checked:
-						query=f"GRANT {permiso} ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost';"
-						print(query)
-						cur.execute(query)
-		
-		cur.execute('FLUSH PRIVILEGES')
+						if llave == 'Ver':
+							query=f"GRANT SELECT ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost';"
+							cur.execute(query)
+						else:
+							query=f"GRANT INSERT ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost';"
+							cur.execute(query)
+							query=f"GRANT UPDATE ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost';"
+							cur.execute(query)                      
 		cur.close()
 		conn.close()
 
@@ -202,28 +201,38 @@ class EditarPrivilegios(Base, Form):
 
 	# este metodo revisa el diccionario de permisos y activa aquellas columnas que estan guardadas como true -Jared
 	def resetCheckboxes(self, Form):
-		for obj in self.cols:
-			if self.tablaslist.currentText() not in self.diccionario_permisos[self.accioneslist.currentText()]:
-				self.diccionario_permisos[self.accioneslist.currentText()][self.tablaslist.currentText()] = {}
-			if obj.text() in self.diccionario_permisos[self.accioneslist.currentText()][self.tablaslist.currentText()]:
-				obj.setChecked(self.diccionario_permisos[self.accioneslist.currentText()][self.tablaslist.currentText()][obj.text()])
-			else:
-				obj.setChecked(False)
+		for permiso in self.diccionario_permisos:
+			for obj in self.cols:
+				if self.tablaslist.currentText() not in self.diccionario_permisos[self.accioneslist.currentText()]:
+					self.diccionario_permisos[self.accioneslist.currentText()][self.tablaslist.currentText()] = {}
+				if obj.text() in self.diccionario_permisos[self.accioneslist.currentText()][self.tablaslist.currentText()]:
+					obj.setChecked(self.diccionario_permisos[self.accioneslist.currentText()][self.tablaslist.currentText()][obj.text()])
+				else:
+					obj.setChecked(False)
 
 	'''
 	En este metodo se guarda si el checkbox fue activado o no.
 	El diccionario se compone por:
-	Acciones (Guardar,Ver,Modificar) -> Nombre de tabla -> Columna: True/False
+	Acciones (Ver, Escritura) -> Nombre de tabla -> Columna: True/False
 	-Jared
 	'''
 	def guardar_opcion(self, obj):
-		self.diccionario_permisos[self.accioneslist.currentText()][self.tablaslist.currentText()][obj.text()] = obj.isChecked()
+		tabla = self.tablaslist.currentText()
+		columna = obj.text()
+		self.diccionario_permisos[self.accioneslist.currentText()][tabla][columna] = obj.isChecked()
+		if self.accioneslist.currentText() == 'Escritura':
+			if tabla not in self.diccionario_permisos['Ver']:
+				self.diccionario_permisos['Ver'][tabla] = {}
+			if columna not in self.diccionario_permisos['Ver'][tabla]:
+				self.diccionario_permisos['Ver'][tabla][columna] = self.diccionario_permisos['Escritura'][tabla][columna]
+			if self.diccionario_permisos['Ver'][tabla][columna] == False and self.diccionario_permisos['Escritura'][tabla][columna]:
+				self.diccionario_permisos['Ver'][tabla][columna] = True
+		print(self.diccionario_permisos)
 
 	#este metodo borra todos los datos del diccionario y desactiva todas las checkboxes. se utiliza al cambiar de usuario a modificar -Jared
 	def limpiarDict(self):
-		self.diccionario_permisos = {'Agregar':{},
-								'Modificar':{},
-								'Ver':{}}
+		self.diccionario_permisos = {'Ver':{},
+								'Escritura':{}}
 		self.resetCheckboxes(Form)
 
 
