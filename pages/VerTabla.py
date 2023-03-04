@@ -7,7 +7,7 @@ from bdConexion import obtener_conexion
 import os
 
 from pages.EditarRegistro import EditarRegistro
-from usuarios import getColumnas, getListaTablas, getUsuarioLogueado
+from usuarios import getListaTablas, getPermisos, getUsuarioLogueado
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/ver-tabla.ui")))
@@ -41,31 +41,34 @@ class VerTabla(Base, Form):
 		self.tableWidget.setColumnCount(0)
 		tabla_name = self.tableslist.currentItem().text()
 		self.bloquearBusqueda(tabla_name)
-		columnas = getColumnas(tabla_name)["SELECT"]
-		print(tabla_name + 'columnassss:')
-		print(columnas)
+		permisos = getPermisos(tabla_name)
 		user, pwd = getUsuarioLogueado()
-		print(user,pwd)
+		print("COLUMNAS DICT")
+		print(permisos["SELECT"])
 		conn = obtener_conexion(user,pwd)
-		query = f"SELECT {columnas} FROM {tabla_name}"
+		select = permisos["SELECT"]
+		query = f"SELECT {select} FROM {tabla_name}"
 		cur = conn.cursor(dictionary=True)
 		cur.execute(query)
 		tabla = cur.fetchall()
 		cur.close()
 		conn.close()
-		
-		header = ["Modificar"]+columnas.split(',')
+		columnas = select.split(',')
+		header = ["Modificar"]+columnas if permisos["UPDATE"] != '' else columnas
+			
 		self.tableWidget.setColumnCount(len(header))
 		self.tableWidget.setHorizontalHeaderLabels(header)
 
 		for dic in tabla:
-			col = 1
-			button = self.createButton(self)
+			col = 0
 			rows = self.tableWidget.rowCount()
 			self.tableWidget.setRowCount(rows + 1)
 			# se agrega un boton modificar que al hacer clic mandara a la pagina modificar registro
-			self.tableWidget.setCellWidget(rows,0,button)
-			button.clicked.connect(lambda *args, self=self, row=rows, tabla=tabla_name, col=columnas[0]: self.changePage(self,row,tabla, col))
+			if permisos["UPDATE"] != '':
+				col = 1
+				button = self.createButton(self)
+				self.tableWidget.setCellWidget(rows,0,button)
+				button.clicked.connect(lambda *args, self=self, row=rows, tabla=tabla_name, col=columnas[0]: self.changePage(self,row,tabla, col))
 			for val in dic.values():
 				self.tableWidget.setItem(rows, col, QTableWidgetItem(str(val)))
 				col +=1

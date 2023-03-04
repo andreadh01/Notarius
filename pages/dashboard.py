@@ -5,7 +5,7 @@ import sys
 from PyQt5 import QtWidgets, uic,QtGui
 from pages.EditarPrivilegios import EditarPrivilegios
 from pages.RegistrarUsuario import RegistrarUsuario
-from usuarios import clearSession, getPermisos
+from usuarios import clearSession, getAllPermisos
 import importlib
 
 Form, Base = uic.loadUiType("ui/dashboard.ui")
@@ -32,7 +32,7 @@ class Dashboard(Base, Form):
 	# si el usuario tiene acceso a agregar un registro en al menos una tabla, agregar botonAgregar
 	# si el usuario tiene acceso a los usuarios, agregar botonEditarPrivilegios, botonUsuarios y botonRegistrar
     def checarPermisos(self):
-        permisos_usuario = getPermisos()
+        permisos_usuario = getAllPermisos()
         for tabla, permisos in permisos_usuario.items():
             if permisos['SELECT'] != '' or permisos['UPDATE'] != '': self.lista_botones.append('VerTabla')
             if permisos['INSERT'] != '': self.lista_botones.append('AgregarRegistro')
