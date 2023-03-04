@@ -1,14 +1,9 @@
 import sys
 from PyQt5.uic import loadUi
-from PyQt5 import QtWidgets, uic
+from PyQt5 import QtWidgets
 from bdConexion import obtener_conexion
-from functools import partial
 from pages.dashboard import Dashboard
-
-from pages.EditarPrivilegios import EditarPrivilegios
-from pages.RegistrarUsuario import RegistrarUsuario
-from pages.VerTabla import VerTabla
-from usuarios import saveSession
+from usuarios import saveSession, tablesToDict
 
 class WelcomeScreen(QtWidgets.QDialog):
     def __init__(self):
@@ -28,19 +23,16 @@ class WelcomeScreen(QtWidgets.QDialog):
         else:
             conn = obtener_conexion(user, password)
             saveSession(user, password)
+            tablesToDict(user, password)
             cur = conn.cursor()
             print("Successfully logged in.")
             dashboard = Dashboard()
-            #tabla = VerTabla(widget)
             widget.addWidget(dashboard)
-            #widget.addWidget(tabla)
-            print('current index')
-            print(widget.currentIndex())
             widget.setCurrentIndex(1)
-            #widget.setCurrentIndex(widget.currentIndex()+1)
             self.error.setText("")
             cur.close()
             conn.close()
+            # CUANDO YA ESTE LISTA APLICACION, SE VA A UTILIZAR EL TRY EXCEPT
             # try:
             #     conn = obtener_conexion(user, password)
             #     saveSession(user, password)
