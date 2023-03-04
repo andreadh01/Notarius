@@ -3,7 +3,7 @@ import re
 from PyQt5 import uic, QtWidgets
 import os
 from bdConexion import obtener_conexion
-from usuarios import getUsuarioLogueado
+from usuarios import getPermisos, getUsuarioLogueado, listaDescribe, updateTable
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/editar-registro.ui")))
@@ -23,20 +23,22 @@ class EditarRegistro(Form, Base):
     def setupInputs(self, Form, tabla, registro):
         # se eliminan los inputs anteriores
         self.resetCombobox(self)
-        user, pwd = getUsuarioLogueado()
-        conn = obtener_conexion(user,pwd)
-        cur = conn.cursor()
-        query = f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME= '{tabla}' AND TABLE_SCHEMA='notarius'"
-        cur.execute(query)
-        columnas = cur.fetchall()
-        query = f'DESCRIBE {tabla}'
-        cur.execute(query)
-        propiedades_columnas = cur.fetchall()
-        print(propiedades_columnas)
-        cur.close()
-        conn.close()
-        lista_columnas = [col[0] for col in columnas]
+        # user, pwd = getUsuarioLogueado()
+        # conn = obtener_conexion(user,pwd)
+        # cur = conn.cursor()
+        columnas = getPermisos(tabla)["UPDATE"]
+        lista_columnas = columnas.split(',')
+        print(tabla)
         print(lista_columnas)
+        propiedades_columnas = listaDescribe(tabla,lista_columnas)
+        # query = f'DESCRIBE {tabla}'
+        # cur.execute(query)
+        # propiedades_columnas = cur.fetchall()
+        # print(propiedades_columnas)
+        # cur.close()
+        # conn.close()
+        
+        
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
             name_input = f"input_{i}"
@@ -182,8 +184,9 @@ class EditarRegistro(Form, Base):
     def changePage(self):
         from pages.VerTabla import VerTabla
         self.camposCambiados.clear()
-        self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(VerTabla)))
         self.parent().findChild(VerTabla).setupTable(self.parent().findChild(VerTabla))
+        self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(VerTabla)))
+        
     
     def actualizarDict(self, col,val):
         tipo = str(type(val))
@@ -208,6 +211,7 @@ class EditarRegistro(Form, Base):
         conn.commit()
         cur.close()
         conn.close()
+        updateTable(tabla)
         self.changePage()
     #     print(registro)
     #     conn = obtener_conexion(self.user,self.password)

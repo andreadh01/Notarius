@@ -3,7 +3,7 @@ import os
 from bdConexion import obtener_conexion
 from functools import partial
 
-from usuarios import getUsuarioLogueado
+from usuarios import getListaTablas, getUsuarioLogueado
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/editar-privilegios.ui")))
@@ -127,15 +127,7 @@ class EditarPrivilegios(Base, Form):
 
 	# en esta funcion se van a cargar las tablas de la base de datos al combobox de tablas
 	def setupTables(self, Form):
-		user, pwd = getUsuarioLogueado()
-		conn = obtener_conexion(user,pwd)
-		cur = conn.cursor()
-		query = 'SHOW TABLES'
-		cur.execute(query)
-		tablas = cur.fetchall()
-		cur.close()
-		conn.close()
-		lista_tablas = [tabla[0] for tabla in tablas]
+		lista_tablas = getListaTablas()
 		self.tablaslist.addItems(lista_tablas)
 	
  	# en esta funcion se van a actualizar los checkbox de las columnas de la pantalla editar privilegios

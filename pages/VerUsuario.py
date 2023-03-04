@@ -6,7 +6,7 @@ from bdConexion import obtener_conexion
 import os
 
 from pages.EditarPrivilegios import EditarPrivilegios
-from usuarios import getUsuarioLogueado
+from usuarios import getUsuarioLogueado, getValoresTabla, updateTable
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/ver-usuario.ui")))
@@ -24,15 +24,7 @@ class VerUsuario(Base, Form):
 	def setupTable(self, Form):
 		self.tableWidget.setRowCount(0)
 		self.tableWidget.setColumnCount(0)
-		print(self.parent())
-		user, pwd = getUsuarioLogueado()
-		conn = obtener_conexion(user,pwd)
-		query = f"SELECT * FROM usuario" 
-		cur = conn.cursor(dictionary=True)
-		cur.execute(query)
-		tabla = cur.fetchall()
-		cur.close()
-		conn.close()
+		tabla = getValoresTabla('usuario')
 		if bool(tabla) == False: return
 		header = ["Eliminar"]+list(tabla[0].keys())
 		self.tableWidget.setColumnCount(len(header))
@@ -92,4 +84,5 @@ class VerUsuario(Base, Form):
 		conn.close()
 		item = self.parent().findChild(EditarPrivilegios).usuarioslist.findText(user[0])
 		self.parent().findChild(EditarPrivilegios).usuarioslist.removeItem(item)
+		updateTable('usuario')
 		self.setupTable(self)

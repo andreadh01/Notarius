@@ -3,7 +3,7 @@ import os
 import re
 
 from bdConexion import obtener_conexion
-from usuarios import getUsuarioLogueado
+from usuarios import getListaTablas, getPermisos, getUsuarioLogueado, listaDescribe
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/agregar-registros.ui")))
@@ -25,15 +25,7 @@ class AgregarRegistro(Form, Base):
 
 	# en esta funcion se van a cargar las tablas de la base de datos al combobox de tablas
     def setupTables(self, Form):
-        user, pwd = getUsuarioLogueado()
-        conn = obtener_conexion(user,pwd)
-        cur = conn.cursor()
-        query = 'SHOW TABLES'
-        cur.execute(query)
-        tablas = cur.fetchall()
-        cur.close()
-        conn.close()
-        lista_tablas = [tabla[0] for tabla in tablas]
+        lista_tablas = getListaTablas()
         #print(lista_tablas)
         self.tablaslist.addItems(lista_tablas)
     
@@ -42,20 +34,12 @@ class AgregarRegistro(Form, Base):
     def setupColumns(self, Form):
         # se eliminan los combobox anteriores
         self.resetCombobox(self)
-        user, pwd = getUsuarioLogueado()
-        conn = obtener_conexion(user,pwd)
-        cur = conn.cursor()
-        tabla_seleccionada = self.tablaslist.currentText()
-        query = f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME='{tabla_seleccionada}' AND TABLE_SCHEMA='notarius'"
-        cur.execute(query)
-        columnas = cur.fetchall()
-        query = f'DESCRIBE {tabla_seleccionada}'
-        cur.execute(query)
-        propiedades_columnas = cur.fetchall()
-        #print(propiedades_columnas)
-        cur.close()
-        conn.close()
-        lista_columnas = [col[0] for col in columnas]
+        tabla = self.tablaslist.currentText()
+        columnas = getPermisos(tabla)["INSERT"]
+        lista_columnas = columnas.split(',')
+        print(tabla)
+        print(lista_columnas)
+        propiedades_columnas = listaDescribe(tabla,lista_columnas)
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
             name_input = f"input_{i}"

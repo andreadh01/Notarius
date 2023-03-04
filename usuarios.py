@@ -4,6 +4,7 @@ from bdConexion import obtener_conexion
 dict_permisos = {}
 usuario = {'user':'','pwd':''}
 lista_tablas = []
+all_tablas = {}
 
 def saveSession(user,pwd):
     global usuario
@@ -32,11 +33,25 @@ def listaTablas(user,pwd):
 		conn.close()
 		lista_tablas = [tabla[0] for tabla in tablas]
 
+# devuelve las columnas a las que el usuario tiene acceso (en select, update y insert) en la tabla indicada
 def getPermisos(tabla):
     return dict_permisos[tabla]
 
 def getListaTablas():
     return lista_tablas
+
+def listaDescribe(tabla, columnas):
+    conn = obtener_conexion(usuario["user"],usuario["pwd"])
+    cur = conn.cursor()
+    lista = []
+    for col in columnas:
+        query=f"DESCRIBE {tabla} {col}"
+        cur.execute(query)
+        description = cur.fetchone()
+        lista.append(description)
+    cur.close()
+    conn.close()
+    return lista
 
 def permisosAdmin():
     conn = obtener_conexion(usuario["user"],usuario["pwd"])
@@ -110,3 +125,31 @@ def limpiar_lista_permisos(lista_permisos):
 	
 def getAllPermisos():
 	return dict_permisos
+
+def tablesToDict(user, pwd):
+    dict_permisos = getAllPermisos()
+    conn = obtener_conexion(user,pwd)
+    cur = conn.cursor(dictionary=True)
+    for tabla, permisos in dict_permisos.items():
+        select = permisos["SELECT"]
+        query = f"SELECT {select} FROM {tabla}"
+        cur.execute(query)
+        valores = cur.fetchall()
+        all_tablas[tabla] = valores
+    cur.close()
+    conn.close()
+
+def updateTable(tabla):
+    permisos = getPermisos(tabla)
+    conn = obtener_conexion(usuario["user"],usuario["pwd"])
+    cur = conn.cursor(dictionary=True)
+    select = permisos["SELECT"]
+    query = f"SELECT {select} FROM {tabla}"
+    cur.execute(query)
+    valores = cur.fetchall()
+    all_tablas[tabla] = valores
+    cur.close()
+    conn.close()
+
+def getValoresTabla(tabla):
+    return all_tablas[tabla]

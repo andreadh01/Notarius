@@ -1,5 +1,5 @@
 from functools import partial
-from PyQt5 import QtGui, uic
+from PyQt5 import uic
 from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView, QTableView, QAbstractItemView,QPushButton
 from PyQt5.QtCore import Qt,QSortFilterProxyModel
 from PyQt5.QtGui import QStandardItemModel,QStandardItem
@@ -7,7 +7,7 @@ from bdConexion import obtener_conexion
 import os
 
 from pages.EditarRegistro import EditarRegistro
-from usuarios import getListaTablas, getPermisos, getUsuarioLogueado
+from usuarios import getListaTablas, getPermisos, getValoresTabla
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/ver-tabla.ui")))
@@ -33,7 +33,7 @@ class VerTabla(Base, Form):
 		lista_tablas = getListaTablas()
 		print(lista_tablas)
 		self.tableslist.addItems(lista_tablas)
-		self.tableslist.setCurrentRow(0)
+		if self.tableslist.currentRow() == -1: self.tableslist.setCurrentRow(0)
 
 	# en este metodo se actualizan los datos de la tabla, segun la tabla seleccionada en la lista
 	def setupTable(self,Form):
@@ -42,20 +42,10 @@ class VerTabla(Base, Form):
 		tabla_name = self.tableslist.currentItem().text()
 		self.bloquearBusqueda(tabla_name)
 		permisos = getPermisos(tabla_name)
-		user, pwd = getUsuarioLogueado()
-		print("COLUMNAS DICT")
-		print(permisos["SELECT"])
-		conn = obtener_conexion(user,pwd)
 		select = permisos["SELECT"]
-		query = f"SELECT {select} FROM {tabla_name}"
-		cur = conn.cursor(dictionary=True)
-		cur.execute(query)
-		tabla = cur.fetchall()
-		cur.close()
-		conn.close()
+		tabla = getValoresTabla(tabla_name)
 		columnas = select.split(',')
 		header = ["Modificar"]+columnas if permisos["UPDATE"] != '' else columnas
-			
 		self.tableWidget.setColumnCount(len(header))
 		self.tableWidget.setHorizontalHeaderLabels(header)
 

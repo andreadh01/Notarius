@@ -5,7 +5,7 @@ from bdConexion import obtener_conexion
 from functools import partial
 
 from pages.VerUsuario import VerUsuario
-from usuarios import getUsuarioLogueado
+from usuarios import getListaTablas, getPermisos, getUsuarioLogueado
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/agregar-usuario.ui")))
@@ -30,15 +30,16 @@ class RegistrarUsuario(Form, Base):
 
 	# en esta funcion se van a cargar las tablas de la base de datos al combobox de tablas
     def setupTables(self, Form):
-        user, pwd = getUsuarioLogueado()
-        conn = obtener_conexion(user,pwd)
-        cur = conn.cursor()
-        query = 'SHOW TABLES'
-        cur.execute(query)
-        tablas = cur.fetchall()
-        cur.close()
-        conn.close()
-        lista_tablas = [tabla[0] for tabla in tablas]
+        # user, pwd = getUsuarioLogueado()
+        # conn = obtener_conexion(user,pwd)
+        # cur = conn.cursor()
+        # query = 'SHOW TABLES'
+        # cur.execute(query)
+        # tablas = cur.fetchall()
+        # cur.close()
+        # conn.close()
+        # lista_tablas = [tabla[0] for tabla in tablas]
+        lista_tablas = getListaTablas()
         #print(lista_tablas)
         self.tablaslist.addItems(lista_tablas)
     
@@ -46,16 +47,18 @@ class RegistrarUsuario(Form, Base):
     def setupColumns(self, Form):
         # se eliminan los combobox anteriores
         self.resetCombobox(self)
-        user, pwd = getUsuarioLogueado()
-        conn = obtener_conexion(user,pwd)
-        cur = conn.cursor()
+        # user, pwd = getUsuarioLogueado()
+        # conn = obtener_conexion(user,pwd)
+        # cur = conn.cursor()
         tabla_seleccionada = self.tablaslist.currentText()
-        query = f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME= '{tabla_seleccionada}' AND TABLE_SCHEMA='notarius'"
-        cur.execute(query)
-        columnas = cur.fetchall()
-        cur.close()
-        conn.close()
-        lista_columnas = [col[0] for col in columnas]
+        columnas = getPermisos(tabla_seleccionada)["SELECT"]
+        lista_columnas = columnas.split(',')
+        # query = f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME= '{tabla_seleccionada}' AND TABLE_SCHEMA='notarius'"
+        # cur.execute(query)
+        # columnas = cur.fetchall()
+        # cur.close()
+        # conn.close()
+        # lista_columnas = [col[0] for col in columnas]
         # aqui se crea el widget del checkbox y se agrega al gui
         for i, col in enumerate(lista_columnas):
             name = f"acceso_{i}"
