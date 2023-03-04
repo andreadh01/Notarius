@@ -97,6 +97,11 @@ color: rgb(149, 117, 61);</string>
        </property>
        <item>
         <property name="text">
+         <string> </string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>Ver</string>
         </property>
        </item>
