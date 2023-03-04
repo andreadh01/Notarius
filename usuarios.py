@@ -32,7 +32,7 @@ def listaTablas(user,pwd):
 		conn.close()
 		lista_tablas = [tabla[0] for tabla in tablas]
 
-def getColumnas(tabla):
+def getPermisos(tabla):
     return dict_permisos[tabla]
 
 def getListaTablas():
@@ -108,5 +108,5 @@ def limpiar_lista_permisos(lista_permisos):
 		permisos["UPDATE"] = permiso_update[1] if len(permiso_update) > 1 else ''
 		dict_permisos[nombre_tabla] = permisos
 	
-def getPermisos():
+def getAllPermisos():
 	return dict_permisos
