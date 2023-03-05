@@ -35,12 +35,12 @@ class VerTabla(Base, Form):
 
 	# en este metodo se actualizan los datos de la tabla, segun la tabla seleccionada en la lista
 	def setupTable(self,Form):
-		self.tableWidget.show()
-		self.deactivateLineEdit()
-		#verificar si hay algún objeto QTableView en el layout
-		if hasattr(self, 'tableView'):
-			self.tableView.hide()
-			self.flag = False
+		self.tableWidget.show()#daniel estuvo aqui
+		self.deactivateLineEdit()#daniel estuvo aqui
+		#verificar si hay algún objeto QTableView en el layout#daniel estuvo aqui
+		if hasattr(self, 'tableView'):#daniel estuvo aqui
+			self.tableView.hide()#daniel estuvo aqui
+			self.flag = False#daniel estuvo aqui
 
 		self.tableWidget.setRowCount(0)
 		self.tableWidget.setColumnCount(0)
@@ -60,7 +60,7 @@ class VerTabla(Base, Form):
 			# se agrega un boton modificar que al hacer clic mandara a la pagina modificar registro
 			if permisos["UPDATE"] != '':
 				col = 1
-				button = self.createButton(self)
+				button = self.createButton(self.tableWidget)
 				self.tableWidget.setCellWidget(rows,0,button)
 				button.clicked.connect(lambda *args, self=self, row=rows, tabla=tabla_name, col=columnas[0]: self.changePage(self,row,tabla, col))
 			for val in dic.values():
@@ -68,10 +68,10 @@ class VerTabla(Base, Form):
 				col +=1
 		self.tableWidget.resizeColumnsToContents()
 		self.tableWidget.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-		self.busqueda()
+		self.busqueda()#daniel estuvo aqui
 	
-	def createButton(self, Form):
-		button = QPushButton(self.tableWidget)
+	def createButton(self,table):
+		button = QPushButton(table)
 		button.setObjectName("modificar")
 		button.setText("Modificar")
 		button.setStyleSheet("QPushButton {\n"
@@ -90,20 +90,6 @@ class VerTabla(Base, Form):
 "    color: rgb(255, 255, 255);\n"
 "}")
 		return button
-
-	# en esta funcion se van a ordenar las columnas en el diccionario para crear diccionario de diccionarios
-	# def crearDiccionario(self, diccionario:dict, tabla_seleccionada:str, campo_seleccionado:int)->dict:
-	# 	# conexion a base de datos
-	# 	conn = obtener_conexion()
-	# 	cur = conn.cursor()
-	# 	query1 = f"SELECT *  FROM {tabla_seleccionada};"
-	# 	cur.execute(query1)
-	# 	contenido_tabla = cur.fetchall()
-	# 	for i,items in enumerate(contenido_tabla):
-	# 		diccionario[contenido_tabla[i][campo_seleccionado]] = items
-	# 	cur.close()
-	# 	conn.close()
-	# 	return diccionario
 	
 	def changePage(self, Form, row,tabla, col):
 		index = self.tableWidget.item(row,1).text()
@@ -111,27 +97,38 @@ class VerTabla(Base, Form):
 		self.parent().addWidget(editar)
 		self.parent().findChild(EditarRegistro).getRegistro(editar, index, tabla, col)
 		self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(EditarRegistro)))
-  
-	# def bloquearBusqueda(self, table_name:str):
-	# 	if table_name == 'presupuesto' or table_name == 'escritura' or table_name == 'juridico':
-	# 		self.comboBox_busqueda_presupuesto.setEnabled(True)
-	# 		self.line_edit_busqueda_presupuesto.setEnabled(True)
-	# 	else:
-	# 		self.comboBox_busqueda_presupuesto.setEnabled(False)
-	# 		self.line_edit_busqueda_presupuesto.setEnabled(False)
-
-
-
 
 	#esta funcion obtiene el nombre de la tabla actual seleccionada, y rellena el combobox conforme a los campos de la tabla. Después, se realiza una consulta select para obtener el contenido de la tabla y se inserta en un widget QTableView para obtener su filtrado a travez de la seleccion del campo en el combobox.
 	def busqueda(self):
 		self.fillCombo()
 		#evento para que al presionar el botón de buscar se ejecute el metodo getTableContent()
 		self.pushButton_3.clicked.connect(self.getTableContent)
+		#evento para que al presionar el boton modificar se obtenga el elemento seleccionado en el QTableView, en caso de que no se haya seleccionado ninguno, de un mensaje de error. Además, en el caso de tener seleccionado un elemento se hace un cambio de pagina para poder modificar el registro en cuestion con respecto a su id.
+		self.botonModificar.clicked.connect(self.modificarRegistro)
+	
+	def modificarRegistro(self):
+		#obtener el nombre de la tabla actual
+		tabla_name = self.tableslist.currentItem().text()
+		#obtener el id del registro seleccionado en el QTableView
+		id = self.tableView.selectedIndexes()[0].data()
+		#se obtiene de la lista de campos de la tabla actual
+		id_name = self.tableView.model().headerData(0, Qt.Horizontal)
+		#crear un objeto de la clase EditarRegistro
+		editar = EditarRegistro()
+		#agregar el objeto a la pila de widgets del QStackedWidget
+		self.parent().addWidget(editar)
+		#obtener el objeto EditarRegistro de la pila de widgets del QStackedWidget
+		editar = self.parent().findChild(EditarRegistro)
+		#ejecutar el metodo getRegistro del objeto EditarRegistro
+		editar.getRegistro(editar, id, tabla_name, id_name)
+		#hacer el cambio de pagina al objeto EditarRegistro
+		self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(EditarRegistro)))
+
 
 	def deactivateLineEdit(self):
 		#ocultar el line edit
 		self.line_edit_busqueda_presupuesto.hide()
+		self.botonModificar.hide()#daniel estuvo aqui
 
 	def fillCombo(self):
 		#obtener el nombre de la tabla actual
@@ -183,13 +180,7 @@ class VerTabla(Base, Form):
 		model = QStandardItemModel()
 		#agregar los encabezados al modelo
 		for i in headers_sinFiltro:
-			model.setHorizontalHeaderItem(headers_sinFiltro.index(i),QStandardItem(i[0]))
-		#agregar los registros al modelo con un boton para editar el registro
-		for i,items in enumerate(contenido_tabla):
-			for j in range(len(contenido_tabla[i])):
-				model.setItem(i,j,QStandardItem(str(contenido_tabla[i][j])))
-			model.setItem(i,len(contenido_tabla[i]),QStandardItem("Modificar"))
-		
+			model.setHorizontalHeaderItem(headers_sinFiltro.index(i),QStandardItem(i[0]))		
 		#agregar el widget QTableView al layout
 		if self.flag == False:
 			#crear un nuevo widget QTableView
@@ -198,9 +189,11 @@ class VerTabla(Base, Form):
 			self.flag=True
 		#agregar el modelo al widget QTableView
 		self.tableView.setModel(model)
-		#agregar un evento al widget QTableView para cuando se presiona el boton de editar
-		#esto lo hizo copilot y no se pa que xd o como funciona
-		self.tableView.clicked.connect(lambda: self.changePage(self, self.tableWidget.currentIndex().row(), tabla_name, self.tableWidget.currentIndex().column()))
+		#agregar los registros al modelo con un boton para editar el registro
+		for i,items in enumerate(contenido_tabla):
+			for j in range(len(contenido_tabla[i])):
+				model.setItem(i,j,QStandardItem(str(contenido_tabla[i][j])))
+			
 		#crear un filtro para el widget QTableView
 		proxy = QSortFilterProxyModel()
 		#agregar el modelo al filtro
@@ -209,12 +202,14 @@ class VerTabla(Base, Form):
 		self.tableView.setModel(proxy)
 		######Karo, ponle aqui el cambio de icono al boton de filtro######
 		if self.flagTabla == False:
+			self.botonModificar.show()
 			self.line_edit_busqueda_presupuesto.show()
 			#ocultar el widget tableWidget
 			self.tableWidget.hide()
 			self.tableView.show()
 			self.flagTabla = True
 		else:
+			self.botonModificar.hide()
 			self.line_edit_busqueda_presupuesto.hide()
 			self.tableView.hide()
 			self.tableWidget.show()
