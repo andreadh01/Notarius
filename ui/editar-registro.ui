@@ -6,93 +6,224 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>927</width>
-    <height>847</height>
+    <width>1281</width>
+    <height>584</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true">QDialog {
- background-color:rgb(255, 253, 225);
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="leftMargin">
+    <number>200</number>
+   </property>
+   <property name="topMargin">
+    <number>50</number>
+   </property>
+   <property name="rightMargin">
+    <number>200</number>
+   </property>
+   <property name="bottomMargin">
+    <number>20</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="titulo">
+     <property name="styleSheet">
+      <string notr="true">font: 24pt &quot;Arial Rounded MT Bold&quot;;
+color: #957F5F;
+</string>
+     </property>
+     <property name="text">
+      <string>Editar Registro</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <widget class="QLabel" name="label_tabla">
+       <property name="styleSheet">
+        <string notr="true">font: 18pt &quot;Arial Rounded MT Bold&quot;;
+color: #957F5F;</string>
+       </property>
+       <property name="text">
+        <string>Tabla:</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="styleSheet">
+      <string notr="true">QScrollArea{
+border: none;
+background: white;
+}
+QScrollBar:vertical {
+	border: none;
+    background: white;
+    width: 14px;
+    margin: 15px 0 15px 0;
+	border-radius: 0px;
+ }
 
-}</string>
-  </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,1,0,0">
-   <item>
-    <spacer name="verticalSpacer_9">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+/*  HANDLE BAR VERTICAL */
+QScrollBar::handle:vertical {	
+	background-color: #CCCCCC;
+	min-height: 30px;
+	border-radius: 7px;
+}
+QScrollBar::handle:vertical:hover{	
+	background-color: #666666;
+}
+QScrollBar::handle:vertical:pressed {	
+	background-color: #666666;
+}
+
+/* BTN TOP - SCROLLBAR */
+QScrollBar::sub-line:vertical {
+	border: none;
+	background-color: white;
+	height: 15px;
+	border-top-left-radius: 7px;
+	border-top-right-radius: 7px;
+	subcontrol-position: top;
+	subcontrol-origin: margin;
+}
+QScrollBar::sub-line:vertical:hover {	
+	background-color: white;
+}
+QScrollBar::sub-line:vertical:pressed {	
+	background-color: white
+}
+
+/* BTN BOTTOM - SCROLLBAR */
+QScrollBar::add-line:vertical {
+	border: none;
+	background-color: white
+	height: 15px;
+	border-bottom-left-radius: 7px;
+	border-bottom-right-radius: 7px;
+	subcontrol-position: bottom;
+	subcontrol-origin: margin;
+}
+QScrollBar::add-line:vertical:hover {	
+	background-color: white;
+}
+QScrollBar::add-line:vertical:pressed {	
+	background-color: white;
+}
+
+/* RESET ARROW */
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+	background: none;
+}
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+	background: none;
+}
+</string>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>847</height>
-      </size>
+     <property name="widgetResizable">
+      <bool>true</bool>
      </property>
-    </spacer>
-   </item>
-   <item>
-    <spacer name="horizontalSpacer_3">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
-    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,1,0">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetFixedSize</enum>
-     </property>
-     <item>
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>881</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:white</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="leftMargin">
+        <number>12</number>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
+       <property name="rightMargin">
+        <number>25</number>
        </property>
-      </spacer>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="bottomMargin">
-        <number>100</number>
-       </property>
-       <item>
-        <widget class="QLabel" name="label_tabla">
-         <property name="styleSheet">
-          <string notr="true">font: 12pt &quot;Arial Rounded MT Bold&quot;;
-color: rgb(141, 110, 58);</string>
-         </property>
-         <property name="text">
-          <string>Tabla</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="tablaLabel">
-         <property name="styleSheet">
-          <string notr="true">color: black;</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
       </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <item row="0" column="0">
+      <widget class="QPushButton" name="pushButton_cancelar">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+border-radius: 8px;
+border: 1px solid #957F5F;
+background-color: white;
+color: #957F5F;
+font-size: 16px;
+padding: 10px 30px;
+}
+
+QPushButton:hover {
+	background-color: rgb(116, 91, 47);
+	color: rgb(255, 255, 255);
+	border: 3px solid  rgb(116, 91, 47);
+}
+
+QPushButton:pressed {
+    border-style: inset;
+    background-color: rgb(103, 80, 41);
+	color: rgb(255, 255, 255);
+	border: 3px solid  rgb(103, 80, 41);
+}</string>
+       </property>
+       <property name="text">
+        <string>Cancelar</string>
+       </property>
+      </widget>
      </item>
-     <item>
+     <item row="0" column="2">
+      <widget class="QPushButton" name="pushButton_confirmar">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+border-radius: 8px;
+background-color: #957F5F;
+color: white;
+font-size: 16px;
+padding: 10px 30px;
+}
+
+QPushButton:hover {
+	background-color: rgb(116, 91, 47);
+	color: rgb(255, 255, 255);
+	border: 3px solid  rgb(116, 91, 47);
+}
+
+QPushButton:pressed {
+    border-style: inset;
+    background-color: rgb(103, 80, 41);
+	color: rgb(255, 255, 255);
+	border: 3px solid  rgb(103, 80, 41);
+}</string>
+       </property>
+       <property name="text">
+        <string>Confirmar</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -105,153 +236,7 @@ color: rgb(141, 110, 58);</string>
        </property>
       </spacer>
      </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
-       <item>
-        <widget class="QLabel" name="mensaje">
-         <property name="styleSheet">
-          <string notr="true">color: red;</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_acceso">
-         <property name="styleSheet">
-          <string notr="true">font: 12pt &quot;Arial Rounded MT Bold&quot;;
-color: rgb(141, 110, 58);</string>
-         </property>
-         <property name="text">
-          <string>Columnas</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QGridLayout" name="gridLayout">
-       <property name="bottomMargin">
-        <number>50</number>
-       </property>
-      </layout>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="2,0,0">
-       <item>
-        <spacer name="verticalSpacer_17">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_cancelar">
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-border-radius: 6px;
-border: 3px solid #95753d;
-background-color: #95753d;
-color: white;
-height: 25px;
-}
-
-QPushButton:hover {
-	background-color: rgb(116, 91, 47);
-	color: rgb(255, 255, 255);
-	border: 3px solid  rgb(116, 91, 47);
-}
-
-QPushButton:pressed {
-    border-style: inset;
-    background-color: rgb(103, 80, 41);
-	color: rgb(255, 255, 255);
-	border: 3px solid  rgb(103, 80, 41);
-}</string>
-         </property>
-         <property name="text">
-          <string>Cancelar</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_confirmar">
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-border-radius: 6px;
-border: 3px solid #95753d;
-background-color: #95753d;
-color: white;
-height: 25px;
-}
-
-QPushButton:hover {
-	background-color: rgb(116, 91, 47);
-	color: rgb(255, 255, 255);
-	border: 3px solid  rgb(116, 91, 47);
-}
-
-QPushButton:pressed {
-    border-style: inset;
-    background-color: rgb(103, 80, 41);
-	color: rgb(255, 255, 255);
-	border: 3px solid  rgb(103, 80, 41);
-}</string>
-         </property>
-         <property name="text">
-          <string>Confirmar</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
     </layout>
-   </item>
-   <item>
-    <spacer name="horizontalSpacer_4">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
-    <spacer name="verticalSpacer_16">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>847</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>

@@ -151,10 +151,12 @@ INSERT INTO `bitacora_pagos` (`id`, `fecha`, `no_presupuesto`, `concepto_id`, `c
 DROP TABLE IF EXISTS `desgloce_ppto`;
 
 CREATE TABLE `desgloce_ppto` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `no_presupuesto` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
   `concepto` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `cantidad` decimal(10,2) NOT NULL,
   `pagado` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`id`),
   KEY `fk_desgloce_ppto_presupuesto` (`no_presupuesto`),
   CONSTRAINT `fk_desgloce_ppto_presupuesto` FOREIGN KEY (`no_presupuesto`) REFERENCES `presupuesto` (`no_presupuesto`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='La sumatoria de todas las cantidades relacionadas a un número de presupuesto sera el monto total a pagar.';
@@ -197,14 +199,12 @@ CREATE TABLE `escritura` (
   `observaciones` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `fecha_vence` date DEFAULT NULL COMMENT '60 días hábiles después de la fecha de esccritura',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unq_escritura_no_escritura` (`no_escritura`),
-  UNIQUE KEY `id` (`no_escritura`,`bis`),
-  UNIQUE KEY `unq_escritura_bis` (`bis`),
+  UNIQUE KEY `escritura` (`no_escritura`,`bis`),
   KEY `fk_escritura_presupuesto` (`no_presupuesto`),
   CONSTRAINT `fk_escritura_presupuesto` FOREIGN KEY (`no_presupuesto`) REFERENCES `presupuesto` (`no_presupuesto`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Eva puede editar, agregar y consultar todos los datos de la tabla.\nMartin y Paulina pueden agregar y modificar campos hasta ''no_expediente'', puede visualizar el resto.\nLos demás pueden ver todos los campos, menos ''mes_de_pago'' y ''observaciones''.';
 
-INSERT INTO `escritura` (`id`, `no_escritura`, `bis`, `no_presupuesto`, `volumen`, `fecha`, `no_expediente`, `sr`, `clave_catastral`, `infonavit`, `entrega_testimonio`, `observaciones`, `fecha_vence`) VALUES (21, 152942070, 0, '156', 17, '1979-11-28', 609, 4, 702, 765, '1991-03-28', 'Est distinctio nisi nam eum. Quaerat officiis error aut quidem aut rem.\nPerferendis qui saepe sed voluptas similique sint. Sed itaque debitis aliquam et. Aut quibusdam consectetur aperiam sed.', '1998-12-31');
+INSERT INTO `escritura` (`id`, `no_escritura`, `bis`, `no_presupuesto`, `volumen`, `fecha`, `no_expediente`, `sr`, `clave_catastral`, `infonavit`, `entrega_testimonio`, `observaciones`, `fecha_vence`) VALUES (21, 152942070, 0, '156', 17, '1979-11-28', 609, 1, 702, 765, '1991-03-28', 'Est distinctio nisi nam eum. Quaerat officiis error aut quidem aut rem.\nPerferendis qui saepe sed voluptas similique sint. Sed itaque debitis aliquam et. Aut quibusdam consectetur aperiam sed.', '1998-12-31');
 INSERT INTO `escritura` (`id`, `no_escritura`, `bis`, `no_presupuesto`, `volumen`, `fecha`, `no_expediente`, `sr`, `clave_catastral`, `infonavit`, `entrega_testimonio`, `observaciones`, `fecha_vence`) VALUES (25, 46096, 1, '243', 45, '1971-11-03', 361, 0, 597, 923, '2020-05-08', 'Minus omnis perspiciatis minima ut qui. Totam assumenda voluptatem accusantium. Inventore reiciendis ipsam deserunt voluptatibus ea. Possimus qui quod sapiente et laudantium corporis.', '2000-11-12');
 
 DROP TABLE IF EXISTS `catastro_calificacion`;
@@ -223,8 +223,8 @@ CREATE TABLE `catastro_calificacion` (
   CONSTRAINT `fk_catastro_calificacion_presupuesto` FOREIGN KEY (`no_presupuesto`) REFERENCES `presupuesto` (`no_presupuesto`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `catastro_calificacion` (`id`, `vencimiento_td`, `no_presupuesto`, `escritura_id`, `observaciones`, `cat_rev`) VALUES (1, 9, '156', 21, 'Odit aut nihil qui quas qui reprehenderit. Vitae delectus iure sint sint quae repellat. Eum recusandae odio magnam est iure. Nostrum asperiores quisquam voluptas repudiandae magni qui atque sed.', 'si');
-INSERT INTO `catastro_calificacion` (`id`, `vencimiento_td`, `no_presupuesto`, `escritura_id`, `observaciones`, `cat_rev`) VALUES (2, 6, '164', 25, 'Aut sed aut rerum tempora quia earum. Exercitationem dolor accusantium distinctio commodi. Ut est saepe sequi sit dolores.', 'si');
+INSERT INTO `catastro_calificacion` (`id`, `vencimiento_td`, `no_presupuesto`, `escritura_id`, `observaciones`, `cat_rev`) VALUES (1, 0, '156', 21, 'Odit aut nihil qui quas qui reprehenderit. Vitae delectus iure sint sint quae repellat. Eum recusandae odio magnam est iure. Nostrum asperiores quisquam voluptas repudiandae magni qui atque sed.', 'si');
+INSERT INTO `catastro_calificacion` (`id`, `vencimiento_td`, `no_presupuesto`, `escritura_id`, `observaciones`, `cat_rev`) VALUES (2, 1, '164', 25, 'Aut sed aut rerum tempora quia earum. Exercitationem dolor accusantium distinctio commodi. Ut est saepe sequi sit dolores.', 'si');
 
 DROP TABLE IF EXISTS `catastro_td`;
 
@@ -316,8 +316,8 @@ CREATE TABLE `juridico` (
   CONSTRAINT `fk_juridico_escritura` FOREIGN KEY (`id`) REFERENCES `escritura` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `juridico` (`id`, `contrato_en_extracto`, `firmas_en_extracto`, `pendientes`, `no_paso`, `otorgamiento`, `firma`, `autorizacion`, `fecha_aviso_renap`, `fecha_envio_dircc`, `uif_poder_irrevocable`, `fecha_aviso_reloat`, `fecha_aviso_dir_not_tpa`, `folios`, `numeracion_folios`, `folio_cancelado`, `fecha_minuta`, `fecha_apendice`, `minuta`, `apendice`, `fecha_entrega_juridico`, `fecha_aviso_portal`, `fecha_cierre_antilavado`, `isr_enajenacion`, `isr_adquisicion`, `iva`) VALUES (21, 9, 5, 1, 9, '1994-05-07', '1983-08-04', '1973-12-04', '1994-06-05', '1972-03-04', '1977-05-21', '1978-07-11', '2006-06-01', 324, '4', 8, '1999-07-06', '1998-02-02', 3, 3, '1988-01-01', '2017-11-30', '1996-06-03', 1, 3, 0);
-INSERT INTO `juridico` (`id`, `contrato_en_extracto`, `firmas_en_extracto`, `pendientes`, `no_paso`, `otorgamiento`, `firma`, `autorizacion`, `fecha_aviso_renap`, `fecha_envio_dircc`, `uif_poder_irrevocable`, `fecha_aviso_reloat`, `fecha_aviso_dir_not_tpa`, `folios`, `numeracion_folios`, `folio_cancelado`, `fecha_minuta`, `fecha_apendice`, `minuta`, `apendice`, `fecha_entrega_juridico`, `fecha_aviso_portal`, `fecha_cierre_antilavado`, `isr_enajenacion`, `isr_adquisicion`, `iva`) VALUES (25, 9, 1, 5, 0, '1987-10-16', '1995-08-18', '1988-02-08', '2015-07-02', '1971-01-22', '2018-06-01', '1975-02-18', '2013-10-18', 23897038, '4', 1, '1999-11-12', '2015-08-27', 7, 7, '2004-07-28', '2001-08-20', '1980-11-03', 9, 5, 8);
+INSERT INTO `juridico` (`id`, `contrato_en_extracto`, `firmas_en_extracto`, `pendientes`, `no_paso`, `otorgamiento`, `firma`, `autorizacion`, `fecha_aviso_renap`, `fecha_envio_dircc`, `uif_poder_irrevocable`, `fecha_aviso_reloat`, `fecha_aviso_dir_not_tpa`, `folios`, `numeracion_folios`, `folio_cancelado`, `fecha_minuta`, `fecha_apendice`, `minuta`, `apendice`, `fecha_entrega_juridico`, `fecha_aviso_portal`, `fecha_cierre_antilavado`, `isr_enajenacion`, `isr_adquisicion`, `iva`) VALUES (21, 0, 0, 1, 0, '1994-05-07', '1983-08-04', '1973-12-04', '1994-06-05', '1972-03-04', '1977-05-21', '1978-07-11', '2006-06-01', 324, '4', 1, '1999-07-06', '1998-02-02', 0, 0, '1988-01-01', '2017-11-30', '1996-06-03', 1, 1, 0);
+INSERT INTO `juridico` (`id`, `contrato_en_extracto`, `firmas_en_extracto`, `pendientes`, `no_paso`, `otorgamiento`, `firma`, `autorizacion`, `fecha_aviso_renap`, `fecha_envio_dircc`, `uif_poder_irrevocable`, `fecha_aviso_reloat`, `fecha_aviso_dir_not_tpa`, `folios`, `numeracion_folios`, `folio_cancelado`, `fecha_minuta`, `fecha_apendice`, `minuta`, `apendice`, `fecha_entrega_juridico`, `fecha_aviso_portal`, `fecha_cierre_antilavado`, `isr_enajenacion`, `isr_adquisicion`, `iva`) VALUES (25, 1, 1, 0, 0, '1987-10-16', '1995-08-18', '1988-02-08', '2015-07-02', '1971-01-22', '2018-06-01', '1975-02-18', '2013-10-18', 23897038, '4', 1, '1999-11-12', '2015-08-27', 0, 0, '2004-07-28', '2001-08-20', '1980-11-03', 1, 1, 1);
 
 DROP TABLE IF EXISTS `usuario`;
 

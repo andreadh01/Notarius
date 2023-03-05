@@ -1,5 +1,8 @@
+from datetime import date
 from functools import partial
 from PyQt5 import uic
+import pandas as pd
+#python(suversion) -m pip install pandas
 from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView, QTableView, QAbstractItemView,QPushButton
 from PyQt5.QtCore import Qt,QSortFilterProxyModel
 from PyQt5.QtGui import QStandardItemModel,QStandardItem
@@ -23,8 +26,16 @@ class VerTabla(Base, Form):
 		self.setupTableList(self)
 		self.setupTable(self)
 		self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+		self.pushButton_2.clicked.connect(self.escribirCSV)
 		self.tableslist.itemSelectionChanged.connect(partial(self.setupTable,self))
 
+	def selectTable(self,Form,tabla):
+		#print("resultado")
+		item = self.tableslist.findItems(tabla,Qt.MatchExactly)
+		index =self.tableslist.row(item[0])
+		self.tableslist.setCurrentRow(index)
+		#print(self.tableslist.row(item[0]))
+		#self.tableslist.setCurrentRow(0)
 
 	# en este metodo se agregan las tablas disponibles para el usuario a una lista	
 	def setupTableList(self,Form):
@@ -45,34 +56,46 @@ class VerTabla(Base, Form):
 		self.tableWidget.setColumnCount(0)
 		tabla_name = self.tableslist.currentItem().text()
 		permisos = getPermisos(tabla_name)
-		select = permisos["SELECT"]
+		select = permisos["ver"]
 		tabla = getValoresTabla(tabla_name)
+		#si puede encontrar una manera menos fea de obtener esto en ves de hacer esta variable globar que toma el dic actual dense porfavor. atte; gracida
+		global Diccionario
+		Diccionario = tabla
 		columnas = select.split(',')
-		header = ["Modificar"]+columnas if permisos["UPDATE"] != '' else columnas
+		header = ["Editar"]+columnas if permisos["escritura"] != '' else columnas
 		self.tableWidget.setColumnCount(len(header))
 		self.tableWidget.setHorizontalHeaderLabels(header)
-
+		
 		for dic in tabla:
 			col = 0
 			rows = self.tableWidget.rowCount()
 			self.tableWidget.setRowCount(rows + 1)
 			# se agrega un boton modificar que al hacer clic mandara a la pagina modificar registro
-			if permisos["UPDATE"] != '':
+			if permisos["escritura"] != '':
 				col = 1
 				button = self.createButton(self)
 				self.tableWidget.setCellWidget(rows,0,button)
-				button.clicked.connect(lambda *args, self=self, row=rows, tabla=tabla_name, col=columnas[0]: self.changePage(self,row,tabla, col))
+				button.clicked.connect(lambda *args, self=self, row=rows, tabla=tabla_name: self.changePage(self,row,tabla))
 			for val in dic.values():
 				self.tableWidget.setItem(rows, col, QTableWidgetItem(str(val)))
 				col +=1
 		self.tableWidget.resizeColumnsToContents()
-		self.tableWidget.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
 		self.busqueda()
+		# self.tableWidget.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+		#self.tableWidget.horizontalHeader().setSectionResizeMode(0,QHeaderView.Stretch)
+		#header = self.tableWidget.horizontalHeader()       
+		#header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+		#header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+		#header.setSectionResizeMode(2, QHeaderView.ResizeToContents)self.busqueda()
+		
+		
+		
+		
 	
 	def createButton(self, Form):
 		button = QPushButton(self.tableWidget)
-		button.setObjectName("modificar")
-		button.setText("Modificar")
+		button.setObjectName("editar")
+		button.setText("Editar")
 		button.setStyleSheet("QPushButton {\n"
 "background-color: #d3c393;\n"
 "color: rgb(131, 112, 82);\n"
@@ -104,13 +127,25 @@ class VerTabla(Base, Form):
 	# 	conn.close()
 	# 	return diccionario
 	
-	def changePage(self, Form, row,tabla, col):
-		index = self.tableWidget.item(row,1).text()
+	def changePage(self, Form, row,tabla):
+		index = self.getIndexCell(row)
+		print('INDICEEEE ')
+		print(index)
 		editar = EditarRegistro()
 		self.parent().addWidget(editar)
-		self.parent().findChild(EditarRegistro).getRegistro(editar, index, tabla, col)
+		self.parent().findChild(EditarRegistro).getRegistro(editar, index, tabla, 'id')
 		self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(EditarRegistro)))
   
+	def getIndexCell(self, row):
+		headercount = self.tableWidget.columnCount()
+		for x in range(headercount):
+			headertext = self.tableWidget.horizontalHeaderItem(x).text()
+			print('header')
+			print(headertext)
+			if 'id' == headertext:
+				cell = self.tableWidget.item(row, x).text()  # get cell at row, col
+				return cell
+	
 	# def bloquearBusqueda(self, table_name:str):
 	# 	if table_name == 'presupuesto' or table_name == 'escritura' or table_name == 'juridico':
 	# 		self.comboBox_busqueda_presupuesto.setEnabled(True)
@@ -118,9 +153,6 @@ class VerTabla(Base, Form):
 	# 	else:
 	# 		self.comboBox_busqueda_presupuesto.setEnabled(False)
 	# 		self.line_edit_busqueda_presupuesto.setEnabled(False)
-
-
-
 
 	#esta funcion obtiene el nombre de la tabla actual seleccionada, y rellena el combobox conforme a los campos de la tabla. Después, se realiza una consulta select para obtener el contenido de la tabla y se inserta en un widget QTableView para obtener su filtrado a travez de la seleccion del campo en el combobox.
 	def busqueda(self):
@@ -228,4 +260,19 @@ class VerTabla(Base, Form):
 		proxy.setFilterCaseSensitivity(Qt.CaseInsensitive)
 		#agregar un evento al filtro para cuando se escribe en el line edit
 		self.line_edit_busqueda_presupuesto.textChanged.connect(proxy.setFilterRegExp)
-			
+	def escribirCSV(self):
+		print(Diccionario)
+		tabla = self.tableslist.currentItem().text()
+		path = os.path.expanduser(f"~/NotariusBackup/{tabla}")
+		if not os.path.exists(path): os.makedirs(path)
+
+		path = f"{path}/{date.today()}.csv"
+		if bool(Diccionario)==True:
+			try:
+				df=pd.DataFrame.from_dict(Diccionario)
+				df.to_csv(path,index=False,header=True)
+				self.mensaje.setText(f"Exportado con éxito, en la ruta \"{path}\"")
+			except IOError:
+				self.mensaje.setStyleSheet("color:red;")
+				self.mensaje.setText(f"Hubo un error al exportar la tabla")
+				print("no")
