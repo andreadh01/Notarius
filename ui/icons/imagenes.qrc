@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>carpeta.png</file>
+    <file>undraw_team_up_re_84ok.svg</file>
+  </qresource>
+</RCC>

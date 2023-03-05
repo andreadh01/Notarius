@@ -100,7 +100,7 @@ class RegistrarUsuario(Form, Base):
     '''
     En este metodo se guarda si el checkbox fue activado o no.
     El diccionario se compone por:
-    Acciones (Guardar,Ver,Modificar) -> Nombre de tabla -> Columna: True/False
+    Acciones (Ver, Escritura) -> Nombre de tabla -> Columna: True/False
     -Jared
     '''
     def guardar_opcion(self, obj):
@@ -114,7 +114,6 @@ class RegistrarUsuario(Form, Base):
                 self.diccionario_permisos['Ver'][tabla][columna] = self.diccionario_permisos['Escritura'][tabla][columna]
             if self.diccionario_permisos['Ver'][tabla][columna] == False and self.diccionario_permisos['Escritura'][tabla][columna]:
                 self.diccionario_permisos['Ver'][tabla][columna] = True
-        print(self.diccionario_permisos)
  
 
     #este metodo borra todos los datos del diccionario y desactiva todas las checkboxes. se utiliza al cambiar de usuario a modificar -Jared

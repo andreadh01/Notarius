@@ -1,4 +1,5 @@
 import sys
+from ui.icons import imagenes
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets
 from bdConexion import obtener_conexion

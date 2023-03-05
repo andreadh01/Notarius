@@ -97,17 +97,17 @@ color: rgb(149, 117, 61);</string>
        </property>
        <item>
         <property name="text">
-         <string>Agregar</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Modificar</string>
+         <string> </string>
         </property>
        </item>
        <item>
         <property name="text">
          <string>Ver</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Escritura</string>
         </property>
        </item>
       </widget>
