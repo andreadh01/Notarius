@@ -15,28 +15,13 @@ def crearInput(self,tipo_dato,name_input, registro='',col='',enable=True): # <--
         attr.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         attr.setStyleSheet(inputStylesheet(enable))
         attr.setObjectName(name_input)
-        if 'tinyint' in tipo_dato:
-            attr.setMaximum(127)
-        else:
-            attr.setMaximum(2147483647)
+        attr.setMaximum(2147483647)
         registro = 1 if registro == '' else registro
         
         attr.valueChanged.connect(partial(self.actualizarDict, col))
         attr.setValue(registro)
         attr.setEnabled(enable)    
         return attr
-    # elif 'tinyint' in tipo_dato:
-    #     setattr(self, name_input, QtWidgets.QSpinBox())
-    #     attr = getattr(self,name_input)
-    #     attr.setStyleSheet("\n"
-    #     "font: 75 16pt;\n"
-    #     "color: rgb(149, 117, 61);")
-    #     attr.setObjectName(name_input)
-    #     if 'tinyint' in tipo_dato:
-    #         attr.setMaximum(127)
-    #     else:
-    #         attr.setMaximum(2147483647)
-    #     attr.setValue(registro)
     elif 'date' in tipo_dato:
         setattr(self, name_input, QtWidgets.QDateEdit(self.scrollAreaWidgetContents))
         attr = getattr(self,name_input)
@@ -105,6 +90,29 @@ def crearInput(self,tipo_dato,name_input, registro='',col='',enable=True): # <--
         attr.setDateTime(registro)
         attr.setEnabled(enable)    
         return attr
+
+def crearRadioButton(self,name_input, registro='',col=''):
+        si_radiobutton = f"{name_input}_1"
+        no_radiobutton = f"{name_input}_0"
+        setattr(self, si_radiobutton, QtWidgets.QRadioButton("Si"))
+        setattr(self, no_radiobutton, QtWidgets.QRadioButton("No"))
+        setattr(self, name_input, QtWidgets.QButtonGroup(self))
+        attr=getattr(self,name_input) # Number group
+        r0 = getattr(self,no_radiobutton)
+        attr.addButton(r0)
+        r1 = getattr(self,si_radiobutton)
+        attr.addButton(r1)
+        r1.setStyleSheet("font: 100 16pt 'Arial';\ncolor: #666666")
+        r0.setStyleSheet("font: 100 16pt 'Arial';\ncolor: #666666")
+        r1.toggled.connect(partial(self.actualizarDict, col, True))
+        r0.toggled.connect(partial(self.actualizarDict, col, False))
+        print("rad btn registro")
+        if registro == 1:
+            r1.setChecked(True)
+        else: 
+            r0.setChecked(True)
+        
+        return r0, r1
 
 def inputStylesheet(enable, date=False, combobox=False):
     bg = "white" if enable else "rgba(185, 185, 185, 0.34)"
@@ -197,49 +205,9 @@ QCalendarWidget {
 """
     elif combobox:
         stylesheet = """
-        QComboBox {
-            font: 16pt "Arial";\ncolor: #666666;\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;
-        }
-        QComboBox::drop-down
-{
-     subcontrol-origin: padding;
-     subcontrol-position: top right;
-     width: 15px;
-     color: #666666;
-     background-color: white;
-     border-radius: 8px;
-     padding-left: 10px;
- }
- 
- QListView{
-    border:                 none;
-    outline: none;
-    color:                      #666666;
-    background-color:   white;
-    font-weight:            bold;
-    selection-background-color: #957F5F;
-    selection-color: white;
-    show-decoration-selected: 1;
-    margin-left:                -10px;
-    padding-left    :           15px;
-}
-QComboBox QAbstractItemView::item {
-    border: none;
-    outline: none;
-    padding-left: 5px;
-}
-
-QComboBox QAbstractItemView::item:selected {
-    background: #957F5F;
-    padding-left: 5px;
-}
-
-QComboBox::down-arrow, QSpinBox::down-arrow, QTimeEdit::down-arrow, QDateEdit::down-arrow
-{
-     image: url(ui/icons/arrow-down.png);
-     width: 24px;
-     height: 14px;
-     padding-right: 15px;
+        QComboBox{
+        font: 100 16pt 'Arial';
+color: #666666;
 }
         """
     else:

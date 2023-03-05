@@ -3,14 +3,13 @@ import re
 from PyQt5 import uic, QtWidgets
 import os
 from bdConexion import obtener_conexion
-from pages.components import crearInput
+from pages.components import crearInput, crearRadioButton
 from usuarios import getPermisos, getRegistro, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/editar-registro.ui")))
 
 class EditarRegistro(Form, Base):
-    cols = []
     camposCambiados = {}
     pri_key = ()
     tabla = ''
@@ -25,19 +24,19 @@ class EditarRegistro(Form, Base):
     def setupInputs(self, Form, tabla, registro):
         # se eliminan los inputs anteriores
         self.tabla = tabla
-        columnas = getPermisos(tabla)["Escritura"]
+        columnas = getPermisos(tabla)["escritura"]
         lista_columnas = columnas.split(',')
         print(tabla)
         print(lista_columnas)
         propiedades_columnas = listaDescribe(tabla,lista_columnas)
         print(registro['id'])
         print(registro)
-        
+        layout = self.verticalLayout
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
             name_input = f"input_{i}"
             name_label = f'label_{i}'
-            layout = self.verticalLayout 
+             
             print(col)
             tipo_dato = propiedades_columnas[i][1]
             auto_increment = propiedades_columnas[i][5]
@@ -52,17 +51,18 @@ class EditarRegistro(Form, Base):
             attr_label.setObjectName(name_label)
             attr_label.setText(col+': ')
             layout.addWidget(attr_label)
-            self.cols.append(attr_label)
             if pri == 'PRI': 
                     self.pri_key = (col,registro[col])
                     widget = crearInput(self, tipo_dato, name_input, registro[col],col, enable=False)
                     layout.addWidget(widget)
-                    self.cols.append(widget)
                     print(self.pri_key)
+            elif 'tinyint' in tipo_dato:
+                r0,r1 = crearRadioButton(self, name_input, registro[col],col)
+                layout.addWidget(r0)
+                layout.addWidget(r1)
             else:
                 widget = crearInput(self, tipo_dato, name_input, registro[col],col)
                 layout.addWidget(widget)
-                self.cols.append(widget)
                 
     # este metodo carga el registro seleccionado
     def getRegistro(self, Form, index, tabla, col):

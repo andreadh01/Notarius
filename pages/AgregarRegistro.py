@@ -4,7 +4,7 @@ import os
 import re
 
 from bdConexion import obtener_conexion
-from pages.components import crearInput
+from pages.components import crearInput, crearRadioButton
 from usuarios import getListaTablas, getPermisos, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -38,7 +38,7 @@ class AgregarRegistro(Form, Base):
         self.camposCambiados.clear()
         self.resetCombobox(self)
         tabla = self.tablaslist.currentText()
-        columnas = getPermisos(tabla)["Escritura"]
+        columnas = getPermisos(tabla)["escritura"]
         lista_columnas = columnas.split(',')
         print(tabla)
         print(lista_columnas)
@@ -71,6 +71,12 @@ class AgregarRegistro(Form, Base):
                     widget = crearInput(self, tipo_dato, name_input,registro=index+1,col=col, enable=False)
                     layout.addWidget(widget)
                     self.cols.append(widget)
+            elif 'tinyint' in tipo_dato:
+                r0,r1 = crearRadioButton(self, name_input, col=col)
+                layout.addWidget(r0)
+                layout.addWidget(r1)
+                self.cols.append(r0)
+                self.cols.append(r1)
             else:
                 widget = crearInput(self, tipo_dato, name_input, col=col)
                 layout.addWidget(widget)

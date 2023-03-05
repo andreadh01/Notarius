@@ -34,8 +34,12 @@ class Dashboard(Base, Form):
     def checarPermisos(self):
         permisos_usuario = getAllPermisos()
         for tabla, permisos in permisos_usuario.items():
-            if permisos['Ver'] != '' or permisos['Escritura'] != '': self.lista_botones.append('VerTabla')
-            if permisos['Escritura'] != '': self.lista_botones.append('AgregarRegistro')
+            if permisos['ver'] != '': 
+                if 'VerTabla' not in self.lista_botones:
+                    self.lista_botones.append('VerTabla')
+            if permisos['escritura'] != '': 
+                if 'AgregarRegistro' not in self.lista_botones:
+                    self.lista_botones.append('AgregarRegistro')
             if tabla == 'usuario':
                 self.lista_botones.clear() 
                 self.lista_botones.extend(['VerTabla','AgregarRegistro','VerUsuario','EditarPrivilegios', 'RegistrarUsuario'])
@@ -90,7 +94,7 @@ class Dashboard(Base, Form):
         button.setText(re.sub(r"(\w)([A-Z])", r"\1 \2",name))
         button.clicked.connect(partial(stacked.setCurrentIndex,stacked.indexOf(stacked.findChild(getattr(module, name)))))
         return button
-    
+     
     def cerrarSesion(self):
         clearSession()
         os.execl(sys.executable, sys.executable, *sys.argv)

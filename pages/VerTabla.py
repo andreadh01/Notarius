@@ -56,13 +56,13 @@ class VerTabla(Base, Form):
 		self.tableWidget.setColumnCount(0)
 		tabla_name = self.tableslist.currentItem().text()
 		permisos = getPermisos(tabla_name)
-		select = permisos["Ver"]
+		select = permisos["ver"]
 		tabla = getValoresTabla(tabla_name)
 		#si puede encontrar una manera menos fea de obtener esto en ves de hacer esta variable globar que toma el dic actual dense porfavor. atte; gracida
 		global Diccionario
 		Diccionario = tabla
 		columnas = select.split(',')
-		header = ["Editar"]+columnas if permisos["Escritura"] != '' else columnas
+		header = ["Editar"]+columnas if permisos["escritura"] != '' else columnas
 		self.tableWidget.setColumnCount(len(header))
 		self.tableWidget.setHorizontalHeaderLabels(header)
 		
@@ -71,7 +71,7 @@ class VerTabla(Base, Form):
 			rows = self.tableWidget.rowCount()
 			self.tableWidget.setRowCount(rows + 1)
 			# se agrega un boton modificar que al hacer clic mandara a la pagina modificar registro
-			if permisos["Escritura"] != '':
+			if permisos["escritura"] != '':
 				col = 1
 				button = self.createButton(self)
 				self.tableWidget.setCellWidget(rows,0,button)
