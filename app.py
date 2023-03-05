@@ -4,7 +4,7 @@ from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets
 from bdConexion import obtener_conexion
 from pages.dashboard import Dashboard
-from usuarios import saveSession, tablesToDict
+from usuarios import saveSession, tablaToDict
 
 class WelcomeScreen(QtWidgets.QDialog):
     def __init__(self):
@@ -24,7 +24,7 @@ class WelcomeScreen(QtWidgets.QDialog):
         else:
             conn = obtener_conexion(user, password)
             saveSession(user, password)
-            tablesToDict(user, password)
+            tablaToDict(user, password)
             cur = conn.cursor()
             print("Successfully logged in.")
             dashboard = Dashboard()

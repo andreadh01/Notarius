@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1245</width>
+    <width>1439</width>
     <height>847</height>
    </rect>
   </property>
@@ -34,7 +34,7 @@ color: #957F5F;
 </string>
      </property>
      <property name="text">
-      <string>Editar Privilegios</string>
+      <string>Agregar Usuario</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -134,8 +134,8 @@ QPushButton:pressed {
      <property name="rightMargin">
       <number>100</number>
      </property>
-     <item row="3" column="0">
-      <widget class="QComboBox" name="usuarioslist">
+     <item row="7" column="0">
+      <widget class="QComboBox" name="comboBox_roles">
        <property name="styleSheet">
         <string notr="true">QComboBox{font: 100 16pt 'Arial';
 color: #666666;
@@ -145,16 +145,99 @@ QListView{
 background: white;
 }</string>
        </property>
+       <item>
+        <property name="text">
+         <string>Administrador</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Empleado</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Proyectista</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Armadores</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Otro</string>
+        </property>
+       </item>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_error">
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_5">
        <property name="styleSheet">
-        <string notr="true">font: 14pt &quot;Arial&quot;;
-color:#de574e;</string>
+        <string notr="true">font: 16pt &quot;Arial Rounded MT Bold &quot;;
+color: #666666;</string>
+       </property>
+       <property name="text">
+        <string>Contraseña</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="styleSheet">
+        <string notr="true">font: 16pt &quot;Arial Rounded MT Bold &quot;;
+color: #666666;</string>
+       </property>
+       <property name="text">
+        <string>Rol</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="styleSheet">
+        <string notr="true">font: 16pt &quot;Arial Rounded MT Bold &quot;;
+color: #666666;</string>
+       </property>
+       <property name="text">
+        <string>Usuario</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLineEdit" name="lineEdit_contrasenausuario">
+       <property name="styleSheet">
+        <string notr="true">font: 100 16pt 'Arial';
+color: #666666;
+background-color: white;
+border-radius: 8px;
+border: 1px solid #CCCCCC;
+padding: 10px;</string>
        </property>
        <property name="text">
         <string/>
+       </property>
+       <property name="placeholderText">
+        <string>Contraseña...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLineEdit" name="lineEdit_nombreusuario">
+       <property name="styleSheet">
+        <string notr="true">font: 100 16pt 'Arial';
+color: #666666;
+background-color: white;
+border-radius: 8px;
+border: 1px solid #CCCCCC;
+padding: 10px;</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="placeholderText">
+        <string>Usuario...</string>
        </property>
       </widget>
      </item>
@@ -169,14 +252,14 @@ color: #8fc26b;</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_4">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_error">
        <property name="styleSheet">
-        <string notr="true">font: 16pt &quot;Arial Rounded MT Bold &quot;;
-color: #666666;</string>
+        <string notr="true">font: 14pt &quot;Arial&quot;;
+color:#de574e;</string>
        </property>
        <property name="text">
-        <string>Selecciona un usuario</string>
+        <string/>
        </property>
       </widget>
      </item>
@@ -200,7 +283,7 @@ border: none;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>517</width>
+          <width>614</width>
           <height>44</height>
          </rect>
         </property>
@@ -308,18 +391,18 @@ background:rgba(149,127,95);
      <property name="rightMargin">
       <number>100</number>
      </property>
-     <item row="1" column="0">
+     <item row="2" column="0">
       <widget class="QLabel" name="label_tabla_3">
        <property name="styleSheet">
-        <string notr="true">font: 16pt &quot;Arial Rounded MT Bold &quot;;
-color: #666666;</string>
+        <string notr="true">font: 16pt &quot;Arial&quot;;
+color: #957F5F;</string>
        </property>
        <property name="text">
         <string>Selecciona una tabla</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
+     <item row="3" column="0">
       <widget class="QComboBox" name="tablaslist">
        <property name="styleSheet">
         <string notr="true">QComboBox{font: 100 16pt 'Arial';
@@ -330,11 +413,17 @@ QListView{
 background: white;
 }</string>
        </property>
-       <item>
-        <property name="text">
-         <string>Seleccionar...</string>
-        </property>
-       </item>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label">
+       <property name="styleSheet">
+        <string notr="true">font: 18pt &quot;Arial Rounded MT Bold&quot;;
+color: #957F5F;</string>
+       </property>
+       <property name="text">
+        <string>Agregar permisos</string>
+       </property>
       </widget>
      </item>
     </layout>

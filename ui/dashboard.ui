@@ -15,7 +15,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QDialog {
- background-color:rgb(255, 253, 225);
+ background-color:white;
  
  }</string>
   </property>
@@ -23,14 +23,6 @@
    <item row="0" column="1">
     <widget class="QStackedWidget" name="stackedWidget">
      <widget class="VerTabla" name="vertabla"/>
-     <!-- <widget class="AgregarRegistro" name="agregar"/>
-     <widget class="EditarPrivilegios" name="editarprivilegios"/>
-     <widget class="RegistrarUsuario" name="registrarusuario">
-      <property name="whatsThis">
-       <string/>
-      </property>
-     </widget>
-     <widget class="VerUsuario" name="verusuario"/> -->
     </widget>
    </item>
    <item row="0" column="0">
@@ -99,9 +91,7 @@ p, li { white-space: pre-wrap; }
       </spacer>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="buttonsLayout">
-       
-      </layout>
+      <layout class="QVBoxLayout" name="buttonsLayout"/>
      </item>
      <item>
       <spacer name="verticalSpacer_4">
@@ -205,44 +195,12 @@ QPushButton:pressed {
   </layout>
  </widget>
  <customwidgets>
-  
   <customwidget>
    <class>VerTabla</class>
    <extends>QWidget</extends>
    <header>pages/VerTabla</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-    <class>AgregarRegistro</class>
-    <extends>QWidget</extends>
-    <header>pages/AgregarRegistro</header>
-    <container>1</container>
-   </customwidget>
-   <customwidget>
-    <class>VerUsuario</class>
-    <extends>QWidget</extends>
-    <header>pages/VerUsuario</header>
-    <container>1</container>
-   </customwidget>
-  <customwidget>
-   <class>EditarPrivilegios</class>
-   <extends>QWidget</extends>
-   <header>pages/EditarPrivilegios</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>RegistrarUsuario</class>
-   <extends>QWidget</extends>
-   <header>pages/RegistrarUsuario</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>EditarRegistro</class>
-   <extends>QWidget</extends>
-   <header>pages/EditarRegistro</header>
-   <container>1</container>
-  </customwidget>
-  
  </customwidgets>
  <resources/>
  <connections/>
