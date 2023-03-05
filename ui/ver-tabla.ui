@@ -46,6 +46,17 @@ QPushButton:pressed {
       </widget>
      </item>
      <item>
+      <widget class="QLabel" name="mensaje">
+       <property name="styleSheet">
+        <string notr="true">color: #8fc26b;
+font: 14pt &quot;Arial&quot;;</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
