@@ -165,6 +165,7 @@ padding: 10px
         <string notr="true">QTableWidget {	
             background-color: #fff;
             padding: 10px;
+			font: 14pt &quot;Arial&quot;;
             gridline-color: rgb(44, 49, 60);
             border-bottom: 1px solid rgb(204, 207, 211);
             color:#000;
@@ -189,21 +190,72 @@ padding: 10px
         }
          QScrollBar:vertical {
             border: none;
-            background: rgb(52, 59, 72);
-            width: 14px;
+            background: white;
+            width: 10px;
             margin: 21px 0 21px 0;
-            border-radius: 0px;
+            border-radius: 10px;
          }
         QHeaderView{
-           background-color:#d3c393;
+           background-color:#957F5F;
             border: 1px solid rgb(204, 207, 211);
             border-style: none;
             border-bottom: 1px solid rgb(204, 207, 211);
             border-right: 1px solid rgb(204, 207, 211);
-            color:rgb(130, 110, 74);
-            font-size:15px;
+            color:white;
+            font-size:16px;
             border-radius: 0px;
-        }</string>
+        }
+QScrollBar::handle:vertical {	
+	background-color: #CCCCCC;
+	min-height: 30px;
+	border-radius: 7px;
+}
+QScrollBar::handle:vertical:hover{	
+	background-color: #666666;
+}
+QScrollBar::handle:vertical:pressed {	
+	background-color: #666666;
+}QScrollBar::sub-line:vertical {
+	border: none;
+	background-color: white;
+	height: 15px;
+	border-top-left-radius: 7px;
+	border-top-right-radius: 7px;
+	subcontrol-position: top;
+	subcontrol-origin: margin;
+}
+QScrollBar::sub-line:vertical:hover {	
+	background-color: white;
+}
+QScrollBar::sub-line:vertical:pressed {	
+	background-color: white
+}
+
+/* BTN BOTTOM - SCROLLBAR */
+QScrollBar::add-line:vertical {
+	border: none;
+	background-color: white
+	height: 15px;
+	border-bottom-left-radius: 7px;
+	border-bottom-right-radius: 7px;
+	subcontrol-position: bottom;
+	subcontrol-origin: margin;
+}
+QScrollBar::add-line:vertical:hover {	
+	background-color: white;
+}
+QScrollBar::add-line:vertical:pressed {	
+	background-color: white;
+}
+
+/* RESET ARROW */
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+	background: none;
+}
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+	background: none;
+}
+</string>
        </property>
        <property name="autoScrollMargin">
         <number>30</number>

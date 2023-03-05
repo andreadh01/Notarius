@@ -1,4 +1,5 @@
-from PyQt5 import uic,QtWidgets
+from functools import partial
+from PyQt5 import uic,QtWidgets,QtCore
 import os
 import re
 
@@ -22,7 +23,7 @@ class AgregarRegistro(Form, Base):
         # cada que se actualice el combobox de tablas, se actualizan los labels de las columnas y se agregan sus debidos inputs
         self.tablaslist.currentTextChanged.connect(self.setupColumns)
         self.pushButton_confirmar.clicked.connect(self.guardarRegistro)
-        self.pushButton_cancelar.clicked.connect(self.cancelarRegistro)
+        self.pushButton_cancelar.clicked.connect(self.restartRegistro)
 
 	# en esta funcion se van a cargar las tablas de la base de datos al combobox de tablas
     def setupTables(self, Form):
@@ -34,6 +35,7 @@ class AgregarRegistro(Form, Base):
  	# en esta funcion se van a actualizar los labels y se agregaran los inputs segun los labels de las columnas
     def setupColumns(self, Form):
         # se eliminan los combobox anteriores
+        self.camposCambiados.clear()
         self.resetCombobox(self)
         tabla = self.tablaslist.currentText()
         columnas = getPermisos(tabla)["Escritura"]
@@ -118,12 +120,15 @@ class AgregarRegistro(Form, Base):
         conn.close()
         updateTable(tabla)
         self.label_exito.setText("Registro guardado exitosamente")
+        self.checkThreadTimer = QtCore.QTimer(self)
+        self.checkThreadTimer.setInterval(3000)
+        self.checkThreadTimer.start()
+        self.checkThreadTimer.timeout.connect(partial(self.label_exito.setText,''))
+        self.restartRegistro()
                 
         #insert into {nombre_tabla} (cols[0]) cols[1]
-    def cancelarRegistro(self):
-        self.lineEdit_nombreusuario.setText("")
-        self.lineEdit_contrasenausuario.setText("")
-        self.limpiarDict()
+    def restartRegistro(self):
+        self.setupColumns(self)
 
 	# dentro de este método se podran actualizar los campos de forma dinamica,
 	# segun la tabla que se haya seleccionado	
