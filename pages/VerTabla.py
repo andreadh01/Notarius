@@ -1,3 +1,4 @@
+from datetime import date
 from functools import partial
 from PyQt5 import uic
 import pandas as pd
@@ -260,14 +261,19 @@ class VerTabla(Base, Form):
 		proxy.setFilterCaseSensitivity(Qt.CaseInsensitive)
 		#agregar un evento al filtro para cuando se escribe en el line edit
 		self.line_edit_busqueda_presupuesto.textChanged.connect(proxy.setFilterRegExp)
-	def escribirCSV(self,d,b):
-		print(d)
-		print(b)
+	def escribirCSV(self):
 		print(Diccionario)
 		tabla = self.tableslist.currentItem().text()
+		path = os.path.expanduser(f"~/NotariusBackup/{tabla}")
+		if not os.path.exists(path): os.makedirs(path)
+
+		path = f"{path}/{date.today()}.csv"
 		if bool(Diccionario)==True:
 			try:
 				df=pd.DataFrame.from_dict(Diccionario)
-				df.to_csv(rf'{tabla}',index=False,header=True)		
+				df.to_csv(path,index=False,header=True)
+				self.mensaje.setText(f"Exportado con éxito, en la ruta \"{path}\"")
 			except IOError:
+				self.mensaje.setStyleSheet("color:red;")
+				self.mensaje.setText(f"Hubo un error al exportar la tabla")
 				print("no")
