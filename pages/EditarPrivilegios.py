@@ -10,9 +10,9 @@ Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/editar-privilegios.
 
 
 class EditarPrivilegios(Base, Form):
-	cols = []
-	diccionario_permisos = {'ver':{},
-							'escritura':{}}
+	checkboxList = []
+	diccionario_permisos = {'read':{},
+							'write':{}}
 	def __init__(self, parent=None):
 		super(self.__class__, self).__init__(parent)
 		self.setupUi(self)
@@ -21,7 +21,8 @@ class EditarPrivilegios(Base, Form):
 		self.setupUsers(self)
 		self.setupTables(self)
 		self.setupColumns(self)
-		
+		self.checkBoxAllVer.stateChanged.connect(partial(self.checkAll,"read"))
+		self.checkBoxAllEscribir.stateChanged.connect(partial(self.checkAll,"write"))
 		
 
 		self.button_guardar.clicked.connect(self.guardarCambios)
@@ -33,6 +34,8 @@ class EditarPrivilegios(Base, Form):
 		#self.accioneslist.currentTextChanged.connect(self.resetCheckboxes)
   
 	def showGrants(self):
+		self.checkBoxAllVer.setChecked(False)
+		self.checkBoxAllEscribir.setChecked(False)
 		self.limpiarDict()
 		user, pwd = getUsuarioLogueado()
 		conn = obtener_conexion(user,pwd)
@@ -82,26 +85,33 @@ class EditarPrivilegios(Base, Form):
 		if len(permiso_select) > 2:
 			columnas = permiso_select[1].split(",")
 			for columna in columnas:
-				if permiso_select[2] not in self.diccionario_permisos['ver']:
-					self.diccionario_permisos['ver'][permiso_select[2]] = {}
-				self.diccionario_permisos['ver'][permiso_select[2]][columna] = True
+				if permiso_select[2] not in self.diccionario_permisos['read']:
+					self.diccionario_permisos['read'][permiso_select[2]] = {}
+				self.diccionario_permisos['read'][permiso_select[2]][columna] = True
 		if len(permiso_insert) > 2:
 			columnas = permiso_insert[1].split(",")
 			for columna in columnas:
-				if permiso_insert[2] not in self.diccionario_permisos['escritura']:
-					self.diccionario_permisos['escritura'][permiso_insert[2]] = {}
-				self.diccionario_permisos['escritura'][permiso_insert[2]][columna] = True
+				if permiso_insert[2] not in self.diccionario_permisos['write']:
+					self.diccionario_permisos['write'][permiso_insert[2]] = {}
+				self.diccionario_permisos['write'][permiso_insert[2]][columna] = True
 
 	def guardarCambios(self):
 		usuario_seleccionado = self.usuarioslist.currentText()
 		self.generarGrants(usuario_seleccionado)
+		self.checkBoxAllVer.setChecked(False)
+		self.checkBoxAllEscribir.setChecked(False)
 		self.mensaje.setText("Guardado exitosamente")
 		self.checkThreadTimer = QtCore.QTimer(self)
 		self.checkThreadTimer.setInterval(3000)
 		self.checkThreadTimer.start()
 		self.checkThreadTimer.timeout.connect(partial(self.mensaje.setText,''))
 				
-
+	def checkAll(self,tipo_permiso):
+		for checkbox in self.checkboxList:
+			permiso = checkbox.objectName()
+			permiso = permiso.split('_')[2]
+			if tipo_permiso == permiso:
+				checkbox.setChecked(not checkbox.isChecked())
 	# en esta funcion se van a cargar los usuarios de la base de datos al combobox de usuarios
 	def setupUsers(self, Form):
 		# user, pwd = getUsuarioLogueado()
@@ -126,16 +136,17 @@ class EditarPrivilegios(Base, Form):
 	
  	# en esta funcion se van a actualizar los checkbox de las columnas de la pantalla editar privilegios
 	def setupColumns(self, Form):
+		
 		# se eliminan los combobox anteriores
 		self.resetCombobox(self)		
 		if self.tablaslist.currentIndex() == 0: return
 		tabla_seleccionada = self.tablaslist.currentText()
-		columnas = getPermisos(tabla_seleccionada)["ver"]
+		columnas = getPermisos(tabla_seleccionada)["read"]
 		lista_columnas = columnas.split(',')		
 		# aqui se crea el widget del checkbox y se agrega al gui
 		for i, col in enumerate(lista_columnas):
-			name_ver = f"acceso_{i}_ver"
-			name_escritura = f"acceso_{i}_escritura"
+			name_ver = f"acceso_{i}_read"
+			name_escritura = f"acceso_{i}_write"
 			setattr(self, name_ver, QtWidgets.QCheckBox(Form))
 			setattr(self, name_escritura, QtWidgets.QCheckBox(Form))
 			checkbox_ver = getattr(self,name_ver)
@@ -152,12 +163,12 @@ class EditarPrivilegios(Base, Form):
 			"color: white;")
 			checkbox_escritura.setObjectName(name_escritura)
 			checkbox_escritura.setText(col)
-			# permisos de ver
+			# permisos de read
 			self.verLayout.addWidget(checkbox_ver)
-			# permisos de escritura
+			# permisos de write
 			self.escribirLayout.addWidget(checkbox_escritura)
-			self.cols.append(checkbox_ver)
-			self.cols.append(checkbox_escritura)
+			self.checkboxList.append(checkbox_ver)
+			self.checkboxList.append(checkbox_escritura)
 		# aqui se le asignan los metodos a cada checkbox y se llena el diccionario con las columnas de la tabla - Jared
 		self.connectCheckboxes(self)
 		self.resetCheckboxes(self)
@@ -173,10 +184,10 @@ class EditarPrivilegios(Base, Form):
 			for nombre_tabla,columnas in accion.items():
 				for nombre_columna,checked in columnas.items():
 					if checked:
-						if llave == 'ver':
+						if llave == 'read':
 							query=f"GRANT SELECT ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost';"
 							cur.execute(query)
-						elif llave == 'escritura':
+						elif llave == 'write':
 							query=f"GRANT INSERT ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost';"
 							cur.execute(query)
 							query=f"GRANT UPDATE ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost';"
@@ -185,21 +196,21 @@ class EditarPrivilegios(Base, Form):
 		conn.close()
 
 	def resetCombobox(self, Form):
-		for obj in self.cols:
+		for obj in self.checkboxList:
 			self.gridLayout.removeWidget(obj)
 			obj.deleteLater()
 			del obj
-		self.cols = []
+		self.checkboxList = []
 
 	# este metodo le asigna un metodo a cada checkbox que ejecuta guardar_opcion al ser activado/desactivado - Jared
 	def connectCheckboxes(self, Form):
-		for obj in self.cols:
+		for obj in self.checkboxList:
 			obj.stateChanged.connect(partial(self.guardar_opcion,obj))
 
 	# este metodo revisa el diccionario de permisos y activa aquellas columnas que estan guardadas como true -Jared
 	def resetCheckboxes(self, Form):
 		for permiso in self.diccionario_permisos:
-			for obj in self.cols:
+			for obj in self.checkboxList:
 				permiso = obj.objectName()
 				permiso = permiso.split('_')[2]
 				if self.tablaslist.currentText() not in self.diccionario_permisos[permiso]:
@@ -212,7 +223,7 @@ class EditarPrivilegios(Base, Form):
 	'''
 	En este metodo se guarda si el checkbox fue activado o no.
 	El diccionario se compone por:
-	Acciones (ver, escritura) -> Nombre de tabla -> Columna: True/False
+	Acciones (read, write) -> Nombre de tabla -> Columna: True/False
 	-Jared
 	'''
 	def guardar_opcion(self, obj):
@@ -221,26 +232,28 @@ class EditarPrivilegios(Base, Form):
 		permiso = obj.objectName()
 		permiso = permiso.split('_')[2]
 		self.diccionario_permisos[permiso][tabla][columna] = obj.isChecked()
-		if permiso == 'escritura':
-			if tabla not in self.diccionario_permisos['ver']:
-				self.diccionario_permisos['ver'][tabla] = {}
-			if columna not in self.diccionario_permisos['ver'][tabla]:
-				self.diccionario_permisos['ver'][tabla][columna] = self.diccionario_permisos['escritura'][tabla][columna]
-			if self.diccionario_permisos['ver'][tabla][columna] == False and self.diccionario_permisos['escritura'][tabla][columna]:
-				self.diccionario_permisos['ver'][tabla][columna] = True
+		if permiso == 'write':
+			if tabla not in self.diccionario_permisos['read']:
+				self.diccionario_permisos['read'][tabla] = {}
+			if columna not in self.diccionario_permisos['read'][tabla]:
+				self.diccionario_permisos['read'][tabla][columna] = self.diccionario_permisos['write'][tabla][columna]
+			if self.diccionario_permisos['read'][tabla][columna] == False and self.diccionario_permisos['write'][tabla][columna]:
+				self.diccionario_permisos['read'][tabla][columna] = True
 		print(self.diccionario_permisos)
 
 	#este metodo borra todos los datos del diccionario y desactiva todas las checkboxes. se utiliza al cambiar de usuario a modificar -Jared
 	def limpiarDict(self):
-		self.diccionario_permisos = {'ver':{},
-								'escritura':{}}
+		self.diccionario_permisos = {'read':{},
+								'write':{}}
 		self.tablaslist.setCurrentIndex(0)
 		self.resetCheckboxes(Form)
 		#self.accioneslist.setCurrentIndex(0)
 
 	def reset(self):
-		self.diccionario_permisos = {'ver':{},
-								'escritura':{}}
+		self.checkBoxAllVer.setChecked(False)
+		self.checkBoxAllEscribir.setChecked(False)
+		self.diccionario_permisos = {'read':{},
+								'write':{}}
 		self.showGrants()
 
 	# al seleccionar guardar se llevara a cabo el comando en la base de datos

@@ -38,7 +38,7 @@ class AgregarRegistro(Form, Base):
         self.camposCambiados.clear()
         self.resetCombobox(self)
         tabla = self.tablaslist.currentText()
-        columnas = getPermisos(tabla)["escritura"]
+        columnas = getPermisos(tabla)["write"]
         lista_columnas = columnas.split(',')
         print(tabla)
         print(lista_columnas)
@@ -140,7 +140,7 @@ class AgregarRegistro(Form, Base):
 	# segun la tabla que se haya seleccionado	
 	# def setupUi(self, Form):
 		# print("agregar campos de tabla")
-		# primero se obtendra la tabla seleccionada, por default sera escritura
+		# primero se obtendra la tabla seleccionada, por default sera write
 		# se hara un fetch a la base de datos con todos los campos de esa tabla 
 		# se debe renderizar la pantalla con los inputs de los campos a llenar
 		# si es posible, que existan condiciones para poner el mejor tipo de campo

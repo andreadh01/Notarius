@@ -24,7 +24,7 @@ class EditarRegistro(Form, Base):
     def setupInputs(self, Form, tabla, registro):
         # se eliminan los inputs anteriores
         self.tabla = tabla
-        columnas = getPermisos(tabla)["escritura"]
+        columnas = getPermisos(tabla)["write"]
         lista_columnas = columnas.split(',')
         print(tabla)
         print(lista_columnas)

@@ -56,13 +56,13 @@ class VerTabla(Base, Form):
 		self.tableWidget.setColumnCount(0)
 		tabla_name = self.tableslist.currentItem().text()
 		permisos = getPermisos(tabla_name)
-		select = permisos["ver"]
+		select = permisos["read"]
 		tabla = getValoresTabla(tabla_name)
 		#si puede encontrar una manera menos fea de obtener esto en ves de hacer esta variable globar que toma el dic actual dense porfavor. atte; gracida
 		global Diccionario
 		Diccionario = tabla
 		columnas = select.split(',')
-		header = ["Editar"]+columnas if permisos["escritura"] != '' else columnas
+		header = ["Editar"]+columnas if permisos["write"] != '' else columnas
 		self.tableWidget.setColumnCount(len(header))
 		self.tableWidget.setHorizontalHeaderLabels(header)
 		
@@ -71,7 +71,7 @@ class VerTabla(Base, Form):
 			rows = self.tableWidget.rowCount()
 			self.tableWidget.setRowCount(rows + 1)
 			# se agrega un boton modificar que al hacer clic mandara a la pagina modificar registro
-			if permisos["escritura"] != '':
+			if permisos["write"] != '':
 				col = 1
 				button = self.createButton(self)
 				self.tableWidget.setCellWidget(rows,0,button)
@@ -147,7 +147,7 @@ class VerTabla(Base, Form):
 				return cell
 	
 	# def bloquearBusqueda(self, table_name:str):
-	# 	if table_name == 'presupuesto' or table_name == 'escritura' or table_name == 'juridico':
+	# 	if table_name == 'presupuesto' or table_name == 'write' or table_name == 'juridico':
 	# 		self.comboBox_busqueda_presupuesto.setEnabled(True)
 	# 		self.line_edit_busqueda_presupuesto.setEnabled(True)
 	# 	else:

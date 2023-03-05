@@ -11,9 +11,9 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/registrar-usuario.ui")))
 
 class RegistrarUsuario(Form, Base):
-    cols=[]
-    diccionario_permisos = {'ver':{},
-                            'escritura':{}}
+    checkboxList=[]
+    diccionario_permisos = {'read':{},
+                            'write':{}}
     
     def __init__(self, parent=None):
         super(self.__class__,self).__init__(parent)
@@ -26,6 +26,8 @@ class RegistrarUsuario(Form, Base):
         #self.accioneslist.currentTextChanged.connect(self.resetCheckboxes)
         self.button_guardar.clicked.connect(self.crearUsuario)
         self.pushButton_cancelar.clicked.connect(self.cancelarRegistro)
+        self.checkBoxAllVer.stateChanged.connect(partial(self.checkAll,"read"))
+        self.checkBoxAllEscribir.stateChanged.connect(partial(self.checkAll,"write"))
 
 	# en esta funcion se van a cargar las tablas de la base de datos al combobox de tablas
     def setupTables(self, Form):
@@ -36,15 +38,16 @@ class RegistrarUsuario(Form, Base):
     def setupColumns(self, Form):
         # se eliminan los combobox anteriores
         self.resetCombobox(self)
-
+        self.checkBoxAllVer.setChecked(False)
+        self.checkBoxAllEscribir.setChecked(False)
         tabla_seleccionada = self.tablaslist.currentText()
-        columnas = getPermisos(tabla_seleccionada)["ver"]
+        columnas = getPermisos(tabla_seleccionada)["read"]
         lista_columnas = columnas.split(',')
-
+        
         # aqui se crea el widget del checkbox y se agrega al gui
         for i, col in enumerate(lista_columnas):
-            name_ver = f"acceso_{i}_ver"
-            name_escritura = f"acceso_{i}_escritura"
+            name_ver = f"acceso_{i}_read"
+            name_escritura = f"acceso_{i}_write"
             setattr(self, name_ver, QtWidgets.QCheckBox(Form))
             setattr(self, name_escritura, QtWidgets.QCheckBox(Form))
             checkbox_ver = getattr(self,name_ver)
@@ -61,36 +64,43 @@ class RegistrarUsuario(Form, Base):
             "color: white;")
             checkbox_escritura.setObjectName(name_escritura)
             checkbox_escritura.setText(col)
-            # permisos de ver
+            # permisos de read
             self.verLayout.addWidget(checkbox_ver)
-            # permisos de escritura
+            # permisos de write
             self.escribirLayout.addWidget(checkbox_escritura)
-            self.cols.append(checkbox_ver)
-            self.cols.append(checkbox_escritura)
+            self.checkboxList.append(checkbox_ver)
+            self.checkboxList.append(checkbox_escritura)
         # aqui se le asignan los metodos a cada checkbox y se llena el diccionario con las columnas de la tabla - Jared
         self.connectCheckboxes(self)
         self.resetCheckboxes(self)
 
+    def checkAll(self,tipo_permiso):
+        for checkbox in self.checkboxList:
+            permiso = checkbox.objectName()
+            permiso = permiso.split('_')[2]
+            if tipo_permiso == permiso:
+                checkbox.setChecked(not checkbox.isChecked())
+
     def resetCombobox(self, Form):
-        for obj in self.cols:
+        for obj in self.checkboxList:
             permiso = obj.objectName()
             permiso = permiso.split('_')[2]
-            if 'ver' in permiso: self.verLayout.removeWidget(obj)
+            if 'read' in permiso: self.verLayout.removeWidget(obj)
             else: self.escribirLayout.removeWidget(obj)
             obj.deleteLater()
             del obj
-        self.cols = []
+        self.checkboxList = []
 
 	# este metodo le asigna un metodo a cada checkbox que ejecuta guardar_opcion al ser activado/desactivado - Jared
     def connectCheckboxes(self, Form):
-        for obj in self.cols:
+        for obj in self.checkboxList:
             obj.stateChanged.connect(partial(self.guardar_opcion,obj))
 
 	# este metodo revisa el diccionario de permisos y activa aquellas columnas que estan guardadas como true -Jared
     def resetCheckboxes(self, Form):
         
         for permiso in self.diccionario_permisos:
-            for obj in self.cols:
+            for obj in self.checkboxList:
                 permiso = obj.objectName()
                 permiso = permiso.split('_')[2]
                 if self.tablaslist.currentText() not in self.diccionario_permisos[permiso]:
@@ -103,7 +113,7 @@ class RegistrarUsuario(Form, Base):
     '''
     En este metodo se guarda si el checkbox fue activado o no.
     El diccionario se compone por:
-    Acciones (Guardar,ver,Modificar) -> Nombre de tabla -> Columna: True/False
+    Acciones (Guardar,read,Modificar) -> Nombre de tabla -> Columna: True/False
     -Jared
     '''
     def guardar_opcion(self, obj):
@@ -112,20 +122,20 @@ class RegistrarUsuario(Form, Base):
         tabla = self.tablaslist.currentText()
         columna = obj.text()
         self.diccionario_permisos[permiso][tabla][columna] = obj.isChecked()
-        if permiso == 'escritura':
-            if tabla not in self.diccionario_permisos['ver']:
-                self.diccionario_permisos['ver'][tabla] = {}
-            if columna not in self.diccionario_permisos['ver'][tabla]:
-                self.diccionario_permisos['ver'][tabla][columna] = self.diccionario_permisos['escritura'][tabla][columna]
-            if self.diccionario_permisos['ver'][tabla][columna] == False and self.diccionario_permisos['escritura'][tabla][columna]:
-                self.diccionario_permisos['ver'][tabla][columna] = True
+        if permiso == 'write':
+            if tabla not in self.diccionario_permisos['read']:
+                self.diccionario_permisos['read'][tabla] = {}
+            if columna not in self.diccionario_permisos['read'][tabla]:
+                self.diccionario_permisos['read'][tabla][columna] = self.diccionario_permisos['write'][tabla][columna]
+            if self.diccionario_permisos['read'][tabla][columna] == False and self.diccionario_permisos['write'][tabla][columna]:
+                self.diccionario_permisos['read'][tabla][columna] = True
         print(self.diccionario_permisos)
  
 
     #este metodo borra todos los datos del diccionario y desactiva todas las checkboxes. se utiliza al cambiar de usuario a modificar -Jared
     def limpiarDict(self):
-        self.diccionario_permisos = {'ver':{},
-                                'escritura':{}}
+        self.diccionario_permisos = {'read':{},
+                                'write':{}}
         self.resetCheckboxes(Form)
 
     def crearUsuario(self):
@@ -149,6 +159,8 @@ class RegistrarUsuario(Form, Base):
                 self.label_error.setText("El usuario ingresado ya existe")
                 self.mensaje.setText("")
             else:
+                print('permisossss')
+                print(self.diccionario_permisos.values())
                 query = f"INSERT INTO usuario(nombre_usuario,contrasena,rol) VALUES('{nombre_usuario}','{contrasena}','{rol}')"
                 cur.execute(query)
                 query = f"CREATE USER '{nombre_usuario}'@'localhost' IDENTIFIED BY '{contrasena}'"
@@ -165,9 +177,15 @@ class RegistrarUsuario(Form, Base):
                 self.checkThreadTimer.start()
                 self.checkThreadTimer.timeout.connect(partial(self.mensaje.setText,''))
                 updateTable('usuario')
+                self.checkBoxAllVer.setChecked(False)
+                self.checkBoxAllEscribir.setChecked(False)
                 self.parent().findChild(EditarPrivilegios).usuarioslist.addItem(nombre_usuario)
                 self.parent().findChild(VerUsuario).setupTable(self.parent().findChild(VerUsuario))
                 self.limpiarDict()
+        self.checkThreadTimer = QtCore.QTimer(self)
+        self.checkThreadTimer.setInterval(3000)
+        self.checkThreadTimer.start()
+        self.checkThreadTimer.timeout.connect(partial(self.label_error.setText,''))
 
     def generarGrants(self,nombre_usuario):
         query = f""
@@ -178,7 +196,7 @@ class RegistrarUsuario(Form, Base):
             for nombre_tabla,columnas in accion.items():
                 for nombre_columna,checked in columnas.items():
                     if checked:
-                        if llave == 'ver':
+                        if llave == 'read':
                             query=f"GRANT SELECT ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost';"
                             cur.execute(query)
                         else:
@@ -191,6 +209,8 @@ class RegistrarUsuario(Form, Base):
         conn.close()
     
     def cancelarRegistro(self):
+        self.checkBoxAllVer.setChecked(False)
+        self.checkBoxAllEscribir.setChecked(False)
         self.lineEdit_nombreusuario.setText("")
         self.lineEdit_contrasenausuario.setText("")
         self.limpiarDict()
