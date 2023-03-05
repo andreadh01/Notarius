@@ -5,7 +5,7 @@ dict_permisos = {}
 usuario = {'user':'','pwd':''}
 lista_tablas = []
 all_tablas = {}
-
+all_tablas = {}
 def saveSession(user,pwd):
     global usuario
     usuario["user"] = user
@@ -18,6 +18,8 @@ def clearSession():
     usuario.clear()
     dict_permisos.clear()
     lista_tablas.clear()
+    all_tablas.clear()
+    all_tablas.clear()
     
 def getUsuarioLogueado():
     return usuario["user"], usuario["pwd"];
@@ -63,9 +65,9 @@ def permisosAdmin():
         columnas = cur.fetchall()
         lista_columnas = [col[0] for col in columnas]
         lista_columnas = ','.join(lista_columnas)
-        permisos["SELECT"] = lista_columnas 
-        permisos["INSERT"] = lista_columnas
-        permisos["UPDATE"] = lista_columnas
+        permisos["Ver"] = lista_columnas 
+        permisos["Escritura"] = lista_columnas
+        #permisos["UPDATE"] = lista_columnas
         dict_permisos[tabla] = permisos
         print(dict_permisos)
     cur.close()
@@ -116,22 +118,24 @@ def limpiar_lista_permisos(lista_permisos):
 			subcadena_update = texto[update_i:par_i]
 			subcadena_update = subcadena_update.replace("(","")
 		permiso_select = (subcadena_select.replace(", ",",")).split(" ")
-		permiso_insert = (subcadena_insert.replace(", ",",")).split(" ")
+		#permiso_insert = (subcadena_insert.replace(", ",",")).split(" ")
 		permiso_update = (subcadena_update.replace(", ",",")).split(" ")
-		permisos["INSERT"] = permiso_insert[1] if len(permiso_insert) > 1 else ''
-		permisos["SELECT"] = permiso_select[1] if len(permiso_select) > 1 else ''
-		permisos["UPDATE"] = permiso_update[1] if len(permiso_update) > 1 else ''
+		#lista_columnas = lista_columnas.append('id')
+		#permisos["INSERT"] = permiso_insert[1] if len(permiso_insert) > 1 else ''
+		permisos["Ver"] = permiso_select[1] if len(permiso_select) > 1 else ''
+		permisos["Escritura"] = f"id,{permiso_update[1]}" if len(permiso_update) > 1 else ''
+		#permisos["Escritura"] = f"id,{str(permisos["Escritura"])}"
 		dict_permisos[nombre_tabla] = permisos
 	
 def getAllPermisos():
 	return dict_permisos
 
-def tablesToDict(user, pwd):
+def tablaToDict(user, pwd):
     dict_permisos = getAllPermisos()
     conn = obtener_conexion(user,pwd)
     cur = conn.cursor(dictionary=True)
     for tabla, permisos in dict_permisos.items():
-        select = permisos["SELECT"]
+        select = permisos["Ver"]
         query = f"SELECT {select} FROM {tabla}"
         cur.execute(query)
         valores = cur.fetchall()
@@ -143,7 +147,7 @@ def updateTable(tabla):
     permisos = getPermisos(tabla)
     conn = obtener_conexion(usuario["user"],usuario["pwd"])
     cur = conn.cursor(dictionary=True)
-    select = permisos["SELECT"]
+    select = permisos["Ver"]
     query = f"SELECT {select} FROM {tabla}"
     cur.execute(query)
     valores = cur.fetchall()
@@ -153,3 +157,9 @@ def updateTable(tabla):
 
 def getValoresTabla(tabla):
     return all_tablas[tabla]
+
+def getRegistro(tabla, col, value):
+    for registro in all_tablas[tabla]:
+        if registro[col] == value: 
+            return registro
+    

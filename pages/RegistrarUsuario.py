@@ -50,7 +50,7 @@ class RegistrarUsuario(Form, Base):
         # conn = obtener_conexion(user,pwd)
         # cur = conn.cursor()
         tabla_seleccionada = self.tablaslist.currentText()
-        columnas = getPermisos(tabla_seleccionada)["SELECT"]
+        columnas = getPermisos(tabla_seleccionada)["Ver"]
         lista_columnas = columnas.split(',')
         # query = f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME= '{tabla_seleccionada}' AND TABLE_SCHEMA='notarius'"
         # cur.execute(query)

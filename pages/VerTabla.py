@@ -27,11 +27,17 @@ class VerTabla(Base, Form):
 		self.comboBox_busqueda_presupuesto.currentTextChanged.connect(self.busqueda)
 		# self.line_edit_busqueda_presupuesto.textChanged.connect(self.busqueda)
 
+	def selectTable(self,Form,tabla):
+		#print("resultado")
+		item = self.tableslist.findItems(tabla,Qt.MatchExactly)
+		index =self.tableslist.row(item[0])
+		self.tableslist.setCurrentRow(index)
+		#print(self.tableslist.row(item[0]))
+		#self.tableslist.setCurrentRow(0)
 
 	# en este metodo se agregan las tablas disponibles para el usuario a una lista	
 	def setupTableList(self,Form):
 		lista_tablas = getListaTablas()
-		print(lista_tablas)
 		self.tableslist.addItems(lista_tablas)
 		if self.tableslist.currentRow() == -1: self.tableslist.setCurrentRow(0)
 
@@ -42,33 +48,42 @@ class VerTabla(Base, Form):
 		tabla_name = self.tableslist.currentItem().text()
 		self.bloquearBusqueda(tabla_name)
 		permisos = getPermisos(tabla_name)
-		select = permisos["SELECT"]
+		select = permisos["Ver"]
 		tabla = getValoresTabla(tabla_name)
 		columnas = select.split(',')
-		header = ["Modificar"]+columnas if permisos["UPDATE"] != '' else columnas
+		header = ["Editar"]+columnas if permisos["Escritura"] != '' else columnas
 		self.tableWidget.setColumnCount(len(header))
 		self.tableWidget.setHorizontalHeaderLabels(header)
-
+		
 		for dic in tabla:
 			col = 0
 			rows = self.tableWidget.rowCount()
 			self.tableWidget.setRowCount(rows + 1)
 			# se agrega un boton modificar que al hacer clic mandara a la pagina modificar registro
-			if permisos["UPDATE"] != '':
+			if permisos["Escritura"] != '':
 				col = 1
 				button = self.createButton(self)
 				self.tableWidget.setCellWidget(rows,0,button)
-				button.clicked.connect(lambda *args, self=self, row=rows, tabla=tabla_name, col=columnas[0]: self.changePage(self,row,tabla, col))
+				button.clicked.connect(lambda *args, self=self, row=rows, tabla=tabla_name: self.changePage(self,row,tabla))
 			for val in dic.values():
 				self.tableWidget.setItem(rows, col, QTableWidgetItem(str(val)))
 				col +=1
 		self.tableWidget.resizeColumnsToContents()
-		self.tableWidget.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+		# self.tableWidget.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+		#self.tableWidget.horizontalHeader().setSectionResizeMode(0,QHeaderView.Stretch)
+		#header = self.tableWidget.horizontalHeader()       
+		#header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+		#header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+		#header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+		
+		
+		
+		
 	
 	def createButton(self, Form):
 		button = QPushButton(self.tableWidget)
-		button.setObjectName("modificar")
-		button.setText("Modificar")
+		button.setObjectName("editar")
+		button.setText("Editar")
 		button.setStyleSheet("QPushButton {\n"
 "background-color: #d3c393;\n"
 "color: rgb(131, 112, 82);\n"
@@ -100,13 +115,25 @@ class VerTabla(Base, Form):
 	# 	conn.close()
 	# 	return diccionario
 	
-	def changePage(self, Form, row,tabla, col):
-		index = self.tableWidget.item(row,1).text()
+	def changePage(self, Form, row,tabla):
+		index = self.getIndexCell(row)
+		print('INDICEEEE ')
+		print(index)
 		editar = EditarRegistro()
 		self.parent().addWidget(editar)
-		self.parent().findChild(EditarRegistro).getRegistro(editar, index, tabla, col)
+		self.parent().findChild(EditarRegistro).getRegistro(editar, index, tabla, 'id')
 		self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(EditarRegistro)))
   
+	def getIndexCell(self, row):
+		headercount = self.tableWidget.columnCount()
+		for x in range(headercount):
+			headertext = self.tableWidget.horizontalHeaderItem(x).text()
+			print('header')
+			print(headertext)
+			if 'id' == headertext:
+				cell = self.tableWidget.item(row, x).text()  # get cell at row, col
+				return cell
+	
 	def bloquearBusqueda(self, table_name:str):
 		if table_name == 'presupuesto' or table_name == 'escritura' or table_name == 'juridico':
 			self.comboBox_busqueda_presupuesto.setEnabled(True)

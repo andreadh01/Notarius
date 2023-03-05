@@ -34,8 +34,8 @@ class Dashboard(Base, Form):
     def checarPermisos(self):
         permisos_usuario = getAllPermisos()
         for tabla, permisos in permisos_usuario.items():
-            if permisos['SELECT'] != '' or permisos['UPDATE'] != '': self.lista_botones.append('VerTabla')
-            if permisos['INSERT'] != '': self.lista_botones.append('AgregarRegistro')
+            if permisos['Ver'] != '' or permisos['Escritura'] != '': self.lista_botones.append('VerTabla')
+            if permisos['Escritura'] != '': self.lista_botones.append('AgregarRegistro')
             if tabla == 'usuario':
                 self.lista_botones.clear() 
                 self.lista_botones.extend(['VerTabla','AgregarRegistro','VerUsuario','EditarPrivilegios', 'RegistrarUsuario'])
@@ -48,13 +48,14 @@ class Dashboard(Base, Form):
         print(self.lista_botones)
         for i, button in enumerate(self.lista_botones):
             print(button)
-            btn = self.createButton(self,button)
+            btn = self.createButton(self,button) # <------ funcion de dashboardButton()
+            # agregar boton a stack
             self.buttonsLayout.addWidget(btn)
             #stacked.setCurrentIndex(stacked.indexOf(stacked.findChild(btn)))
             #print(stacked.indexOf(stacked.findChild(btn)))
             #btn.clicked.connect(partial(self.stackedWidget.setCurrentIndex,i+1))
         
-    def createButton(self, Form,name):
+    def createButton(self, Form,name): # cambiar nombre a addToStack
         button = QtWidgets.QPushButton(Form)
         font = QtGui.QFont()
         font.setPointSize(14)
@@ -78,7 +79,7 @@ class Dashboard(Base, Form):
 "    background-color: rgb(149, 117, 61);\n"
 "    color: rgb(255, 255, 255);\n"
 "}\n"
-"")
+"")                                     # <------------ hasta aqui llega dashboardButton()
         module = importlib.import_module(f"pages.{name}")
         print(name, module)
         instance = getattr(module, name)()
@@ -88,10 +89,8 @@ class Dashboard(Base, Form):
         stacked = self.stackedWidget
         button.setText(re.sub(r"(\w)([A-Z])", r"\1 \2",name))
         button.clicked.connect(partial(stacked.setCurrentIndex,stacked.indexOf(stacked.findChild(getattr(module, name)))))
-        print("INDEX  "+str(stacked.indexOf(stacked.findChild(getattr(module, name)))))
         return button
     
     def cerrarSesion(self):
-        print('AQUIIII')
         clearSession()
         os.execl(sys.executable, sys.executable, *sys.argv)

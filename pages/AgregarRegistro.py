@@ -3,7 +3,8 @@ import os
 import re
 
 from bdConexion import obtener_conexion
-from usuarios import getListaTablas, getPermisos, getUsuarioLogueado, listaDescribe
+from pages.components import crearInput
+from usuarios import getListaTablas, getPermisos, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/agregar-registros.ui")))
@@ -11,7 +12,7 @@ Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/agregar-registros.u
 
 class AgregarRegistro(Form, Base):
     cols=[]
-    
+    camposCambiados = {}
     def __init__(self, parent=None):
         super(self.__class__,self).__init__(parent)
         self.setupUi(self)
@@ -35,100 +36,44 @@ class AgregarRegistro(Form, Base):
         # se eliminan los combobox anteriores
         self.resetCombobox(self)
         tabla = self.tablaslist.currentText()
-        columnas = getPermisos(tabla)["INSERT"]
+        columnas = getPermisos(tabla)["Escritura"]
         lista_columnas = columnas.split(',')
         print(tabla)
         print(lista_columnas)
         propiedades_columnas = listaDescribe(tabla,lista_columnas)
+        layout = self.verticalLayout
+        index = getValoresTabla(tabla)[-1]['id']
+        print(getValoresTabla(tabla)[-1])
+        print(getValoresTabla(tabla)[-1]['id'])
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
             name_input = f"input_{i}"
             name_label = f'label_{i}'
-            
+             
+            print(col)
             tipo_dato = propiedades_columnas[i][1]
             auto_increment = propiedades_columnas[i][5]
-            if auto_increment != 'auto_increment':
-                setattr(self, name_label, QtWidgets.QLabel(Form))
-                # Label
-                attr_label = getattr(self,name_label)
-                attr_label.setStyleSheet("\n"
-				"font: 75 16pt;\n"
-				"color: rgb(149, 117, 61);")
-                attr_label.setObjectName(name_label)
-                attr_label.setText(col+': ')
-                self.gridLayout.addWidget(attr_label, i+1, 1, 1, 1)
-                self.cols.append(attr_label)
-                widget = self.crearInput(tipo_dato, name_input)
-                print(widget)
-                self.gridLayout.addWidget(widget, i+1, 2, 1, 1)
+            pri = propiedades_columnas[i][3]
+            setattr(self, name_label, QtWidgets.QLabel(self.scrollAreaWidgetContents))
+            # Label
+            attr_label = getattr(self,name_label)
+            attr_label.setStyleSheet("\n"
+			"font: 75 16pt;\n"
+			"color: #666666;\n" 
+            "font-weight: 700;")
+            attr_label.setObjectName(name_label)
+            attr_label.setText(col+': ')
+            layout.addWidget(attr_label)
+            self.cols.append(attr_label)
+            if pri == 'PRI': 
+                    widget = crearInput(self, tipo_dato, name_input,registro=index+1,col=col, enable=False)
+                    layout.addWidget(widget)
+                    self.cols.append(widget)
+            else:
+                widget = crearInput(self, tipo_dato, name_input, col=col)
+                layout.addWidget(widget)
                 self.cols.append(widget)
 
-    # Metodo para crear los input para cada columna que se necesita registrar segun la tabla seleccionada
-    def crearInput(self,tipo_dato,name_input):
-        if 'int' in tipo_dato:   
-            setattr(self, name_input, QtWidgets.QSpinBox())
-            attr = getattr(self,name_input)
-            attr.setStyleSheet("\n"
-            "font: 75 16pt;\n"
-            "color: rgb(149, 117, 61);")
-            attr.setObjectName(name_input)
-            if 'tinyint' in tipo_dato:
-                attr.setMaximum(127)
-            else:
-                attr.setMaximum(2147483647)
-            return attr
-        elif 'date' in tipo_dato:
-            setattr(self, name_input, QtWidgets.QDateEdit())
-            attr = getattr(self,name_input)
-            attr.setCalendarPopup(True)
-            attr.setStyleSheet("\n"
-            "font: 75 16pt;\n"
-            "color: rgb(149, 117, 61);")
-            attr.setObjectName(name_input)
-            return attr
-        elif 'varchar' in tipo_dato:
-            setattr(self, name_input, QtWidgets.QLineEdit())
-            attr = getattr(self,name_input)
-            attr.setStyleSheet("\n"
-            "font: 75 16pt;\n"
-            "color: rgb(149, 117, 61);")
-            attr.setObjectName(name_input)
-            max_value = self.limpiarString(tipo_dato)
-            attr.setMaxLength(int(max_value))
-            return attr
-        elif 'decimal' in tipo_dato:
-            setattr(self, name_input, QtWidgets.QDoubleSpinBox())
-            attr = getattr(self,name_input)
-            attr.setStyleSheet("\n"
-            "font: 75 16pt;\n"
-            "color: rgb(149, 117, 61);")
-            attr.setObjectName(name_input)
-            attr.setMaximum(99999999.99)
-            return attr
-        elif 'enum' in tipo_dato:
-            setattr(self, name_input, QtWidgets.QComboBox())
-            attr = getattr(self,name_input)
-            attr.setStyleSheet("\n"
-            "font: 75 16pt;\n"
-            "color: rgb(149, 117, 61);")
-            attr.setObjectName(name_input)
-            re_pattern = re.compile(r"[^a-z, ()]", re.I)
-            opciones = re.sub(re_pattern, "", tipo_dato)            
-            opciones = opciones.replace('enum(','').replace(')','')
-            opciones = opciones.split(',')
-            attr.addItems(opciones)
-            return attr
-        elif 'timestamp' in tipo_dato:
-            setattr(self, name_input, QtWidgets.QDateTimeEdit())
-            attr = getattr(self,name_input)
-            attr.setCalendarPopup(True)
-            #attr.setDisplayFormat("yyyy-mm-dd HH:mm:ss")
-            attr.setStyleSheet("\n"
-            "font: 75 16pt;\n"
-            "color: rgb(149, 117, 61);")
-            attr.setObjectName(name_input)
-            return attr
-                    
 
     def limpiarString(self,cadena_sucia):
         string_limpio = re.sub("[^0-9]","",cadena_sucia)
@@ -137,53 +82,41 @@ class AgregarRegistro(Form, Base):
 
     def resetCombobox(self, Form):
         for obj in self.cols:
-            self.gridLayout.removeWidget(obj)
+            self.verticalLayout.removeWidget(obj)
             obj.deleteLater()
             del obj
-        self.cols = []
-
+        self.cols.clear()
+        self.camposCambiados.clear()
+        
+    
+    def actualizarDict(self,col, val):
+        tipo = str(type(val))
+        if 'QDate' in tipo: val = val.toString("yyyy-MM-dd")
+        self.camposCambiados[col] = val
+        print(self.camposCambiados)
+        
     def guardarRegistro(self):
-        print(type(self.cols[0]))
+        tabla = self.tablaslist.currentText()
         user, pwd = getUsuarioLogueado()
-        nombre_columnas = []
-        inputs = []
-        tabla_seleccionada = self.tablaslist.currentText()
-        query = f'INSERT INTO {tabla_seleccionada} ('
-        for elemento in self.cols:
-            if elemento.__class__.__name__=='QLabel':
-                nombre_columnas.append(elemento.text().replace(": ",""))
-            else:
-                if elemento.__class__.__name__ == 'QSpinBox':
-                    inputs.append(elemento.value())
-                elif elemento.__class__.__name__ == 'QDateEdit':
-                    inputs.append(elemento.date().toString("yyyy-MM-dd"))
-                elif elemento.__class__.__name__ == 'QLineEdit':
-                    inputs.append(elemento.text())
-                elif elemento.__class__.__name__ == 'QDoubleSpinBox':
-                    inputs.append(elemento.value())
-                elif elemento.__class__.__name__ == 'QComboBox':
-                    inputs.append(elemento.currentText())
-                elif elemento.__class__.__name__ == 'QDateTimeEdit':
-                    inputs.append(elemento.dateTime().toString("yyyy-MM-dd hh:mm:ss"))
-
-        for columna in nombre_columnas:
-            query += f"{columna},"
-        query += ") VALUES ("
-        for dato in inputs:
-            if dato.__class__.__name__ == 'str':
-                query += f"'{dato}',"
-            else:
-                query += f"{dato},"
-        query += ");"
-        query = query.replace(",)",")")
-        print(query)
-
         conn = obtener_conexion(user,pwd)
         cur = conn.cursor()
-        cur.execute(query)
+        query = f"INSERT INTO {tabla} (" 
+        vals = "values ("
+
+        for i, (col, val) in enumerate(self.camposCambiados.items()):
+            print(val)
+            print(len(self.camposCambiados))
+            if i+1 == len(self.camposCambiados): 
+                query+= f"{col}) "
+                vals+= f"'{val}');"
+            else: 
+                query+=f"{col},"
+                vals+= f"'{val}', "
+        cur.execute(query+vals)
         conn.commit()
         cur.close()
         conn.close()
+        updateTable(tabla)
         self.label_exito.setText("Registro guardado exitosamente")
                 
         #insert into {nombre_tabla} (cols[0]) cols[1]
