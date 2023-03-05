@@ -17,6 +17,7 @@ Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/ver-tabla.ui")))
 class VerTabla(Base, Form):
 	def __init__(self, parent=None):
 		self.flag = False
+		self.flagTabla = False
 		super(self.__class__, self).__init__(parent)
 		self.setupUi(self)
 		self.setupTableList(self)
@@ -125,8 +126,6 @@ class VerTabla(Base, Form):
 	#esta funcion obtiene el nombre de la tabla actual seleccionada, y rellena el combobox conforme a los campos de la tabla. Después, se realiza una consulta select para obtener el contenido de la tabla y se inserta en un widget QTableView para obtener su filtrado a travez de la seleccion del campo en el combobox.
 	def busqueda(self):
 		self.fillCombo()
-		#evento cada que cambie el combobox
-		self.comboBox_busqueda_presupuesto.currentIndexChanged.connect(self.deactivateLineEdit)
 		#evento para que al presionar el botón de buscar se ejecute el metodo getTableContent()
 		self.pushButton_3.clicked.connect(self.getTableContent)
 
@@ -158,7 +157,6 @@ class VerTabla(Base, Form):
 
 	#en el siguiente metodo se obtiene el valor del combobox para realizar una consulta que obtenga todos los registros de la tabla;
 	def getTableContent(self):
-		self.line_edit_busqueda_presupuesto.show()
 		#obtener el nombre de la tabla actual
 		tabla_name = self.tableslist.currentItem().text()
 		#obtener el valor del combobox
@@ -191,8 +189,7 @@ class VerTabla(Base, Form):
 			for j in range(len(contenido_tabla[i])):
 				model.setItem(i,j,QStandardItem(str(contenido_tabla[i][j])))
 			model.setItem(i,len(contenido_tabla[i]),QStandardItem("Modificar"))
-		#ocultar el widget tableWidget
-		self.tableWidget.hide()
+		
 		#agregar el widget QTableView al layout
 		if self.flag == False:
 			#crear un nuevo widget QTableView
@@ -210,7 +207,18 @@ class VerTabla(Base, Form):
 		proxy.setSourceModel(model)
 		#agregar el filtro al widget QTableView
 		self.tableView.setModel(proxy)
-		self.tableView.show()
+		######Karo, ponle aqui el cambio de icono al boton de filtro######
+		if self.flagTabla == False:
+			self.line_edit_busqueda_presupuesto.show()
+			#ocultar el widget tableWidget
+			self.tableWidget.hide()
+			self.tableView.show()
+			self.flagTabla = True
+		else:
+			self.line_edit_busqueda_presupuesto.hide()
+			self.tableView.hide()
+			self.tableWidget.show()
+			self.flagTabla = False
 		#obtener una lista enumerada de los campos de la tabla
 		headers = list(enumerate([i[0] for i in headers_sinFiltro]))
 		print(headers)
