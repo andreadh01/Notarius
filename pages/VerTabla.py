@@ -5,7 +5,7 @@ from PyQt5.QtCore import Qt,QSortFilterProxyModel
 from PyQt5.QtGui import QStandardItemModel,QStandardItem
 from bdConexion import obtener_conexion
 import os
-
+from ui.icons import imagenes
 from pages.EditarRegistro import EditarRegistro
 from usuarios import getListaTablas, getPermisos, getValoresTabla
 
@@ -29,7 +29,6 @@ class VerTabla(Base, Form):
 	# en este metodo se agregan las tablas disponibles para el usuario a una lista	
 	def setupTableList(self,Form):
 		lista_tablas = getListaTablas()
-		print(lista_tablas)
 		self.tableslist.addItems(lista_tablas)
 		if self.tableslist.currentRow() == -1: self.tableslist.setCurrentRow(0)
 
@@ -221,7 +220,6 @@ class VerTabla(Base, Form):
 			self.flagTabla = False
 		#obtener una lista enumerada de los campos de la tabla
 		headers = list(enumerate([i[0] for i in headers_sinFiltro]))
-		print(headers)
 		#agregar un evento al filtro para cuando se cambia el valor del combobox, comparar el valor del combobox con la lista de campos de la tabla para obtener el indice del campo seleccionado
 		for items in headers:
 			if comboValue == items[1]:

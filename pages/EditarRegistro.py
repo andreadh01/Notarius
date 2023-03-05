@@ -2,6 +2,7 @@ from functools import partial
 import re
 from PyQt5 import uic, QtWidgets
 import os
+from ui.icons import imagenes
 from bdConexion import obtener_conexion
 from usuarios import getPermisos, getUsuarioLogueado, listaDescribe, updateTable
 
@@ -28,8 +29,6 @@ class EditarRegistro(Form, Base):
         # cur = conn.cursor()
         columnas = getPermisos(tabla)["UPDATE"]
         lista_columnas = columnas.split(',')
-        print(tabla)
-        print(lista_columnas)
         propiedades_columnas = listaDescribe(tabla,lista_columnas)
         # query = f'DESCRIBE {tabla}'
         # cur.execute(query)
@@ -43,7 +42,6 @@ class EditarRegistro(Form, Base):
         for i, col in enumerate(lista_columnas):
             name_input = f"input_{i}"
             name_label = f'label_{i}'
-            print(col)
             tipo_dato = propiedades_columnas[i][1]
             auto_increment = propiedades_columnas[i][5]
             pri = propiedades_columnas[i][3]
@@ -51,7 +49,6 @@ class EditarRegistro(Form, Base):
             if pri == 'PRI': 
                     disable = True
                     self.pri_key = (col,registro[col])
-                    print(self.pri_key)
             if auto_increment != 'auto_increment':
                 setattr(self, name_label, QtWidgets.QLabel(Form))
                 # Label
@@ -69,7 +66,6 @@ class EditarRegistro(Form, Base):
                 
     # este metodo carga el registro seleccionado
     def getRegistro(self, Form, index, tabla, col):
-        print('nombreeee '+tabla)
         self.tablaLabel.setText(tabla)
         user, pwd = getUsuarioLogueado()
         conn = obtener_conexion(user,pwd)
@@ -79,7 +75,6 @@ class EditarRegistro(Form, Base):
         registro = cur.fetchone()
         cur.close()
         conn.close()
-        print(registro)
         self.setupInputs(self,tabla,registro)
         
     
@@ -155,7 +150,6 @@ class EditarRegistro(Form, Base):
             attr.setCurrentText(registro)
             attr.currentTextChanged.connect(partial(self.actualizarDict, col))
         elif 'timestamp' in tipo_dato:
-            print(Form)
             setattr(self, name_input, QtWidgets.QDateTimeEdit())
             attr = getattr(self,name_input)
             attr.setCalendarPopup(True)
@@ -192,7 +186,6 @@ class EditarRegistro(Form, Base):
         tipo = str(type(val))
         if 'QDate' in tipo: val = val.toString("yyyy-MM-dd")
         self.camposCambiados[col] = val
-        print(self.camposCambiados)
         
     def actualizarRegistro(self):
         tabla = self.tablaLabel.text()
@@ -202,11 +195,8 @@ class EditarRegistro(Form, Base):
         query = f"UPDATE {tabla} set "
 
         for i, (col, val) in enumerate(self.camposCambiados.items()):
-            print(i)
-            print(len(self.camposCambiados))
             if i+1 == len(self.camposCambiados): query+= f"{col}='{val}' WHERE  {self.pri_key[0]}='{self.pri_key[1]}'"
             else: query+= f"{col}='{val}', "
-        print(query)
         cur.execute(query)
         conn.commit()
         cur.close()

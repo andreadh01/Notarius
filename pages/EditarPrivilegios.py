@@ -2,7 +2,7 @@ from PyQt5 import uic,QtWidgets
 import os
 from bdConexion import obtener_conexion
 from functools import partial
-
+from ui.icons import imagenes
 from usuarios import getListaTablas, getUsuarioLogueado
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -56,7 +56,6 @@ class EditarPrivilegios(Base, Form):
 			to_i = texto.find("TO")
 
 			nombre_tabla = texto[notarius_i+11:to_i-2]
-			print("La tabla es:",nombre_tabla)
 			if "SELECT" in texto:
 				par_i = texto.find(')')
 				subcadena_select = texto[select_i:par_i]
@@ -75,7 +74,6 @@ class EditarPrivilegios(Base, Form):
 			permiso_select.append(nombre_tabla)
 			permiso_insert.append(nombre_tabla)
 			self.ingresar_datos_diccionario(permiso_select,permiso_insert)
-		print(self.diccionario_permisos)
 
 
 	def ingresar_datos_diccionario(self,permiso_select,permiso_insert):
@@ -209,7 +207,6 @@ class EditarPrivilegios(Base, Form):
 				self.diccionario_permisos['Ver'][tabla][columna] = self.diccionario_permisos['Escritura'][tabla][columna]
 			if self.diccionario_permisos['Ver'][tabla][columna] == False and self.diccionario_permisos['Escritura'][tabla][columna]:
 				self.diccionario_permisos['Ver'][tabla][columna] = True
-		print(self.diccionario_permisos)
 
 	#este metodo borra todos los datos del diccionario y desactiva todas las checkboxes. se utiliza al cambiar de usuario a modificar -Jared
 	def limpiarDict(self):

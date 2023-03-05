@@ -12,7 +12,6 @@ def saveSession(user,pwd):
     usuario["pwd"] = pwd
     listaTablas(user,pwd)
     showGrants(user, pwd)
-    print(dict_permisos)
 
 def clearSession():
     usuario.clear()
@@ -67,7 +66,6 @@ def permisosAdmin():
         permisos["INSERT"] = lista_columnas
         permisos["UPDATE"] = lista_columnas
         dict_permisos[tabla] = permisos
-        print(dict_permisos)
     cur.close()
     conn.close()
 
@@ -97,7 +95,6 @@ def limpiar_lista_permisos(lista_permisos):
 		notarius_i = texto.find("notarius")
 		to_i = texto.find("TO")
 		nombre_tabla = texto[notarius_i+11:to_i-2]
-		print(texto)
 		if "SELECT" in texto:
 			par_i = texto.find(')')
 			subcadena_select = texto[select_i:par_i]

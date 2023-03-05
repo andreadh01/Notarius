@@ -1,6 +1,7 @@
 from PyQt5 import uic,QtWidgets
 import os
 import re
+from ui.icons import imagenes
 
 from bdConexion import obtener_conexion
 from usuarios import getListaTablas, getPermisos, getUsuarioLogueado, listaDescribe
@@ -37,8 +38,6 @@ class AgregarRegistro(Form, Base):
         tabla = self.tablaslist.currentText()
         columnas = getPermisos(tabla)["INSERT"]
         lista_columnas = columnas.split(',')
-        print(tabla)
-        print(lista_columnas)
         propiedades_columnas = listaDescribe(tabla,lista_columnas)
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
@@ -59,7 +58,6 @@ class AgregarRegistro(Form, Base):
                 self.gridLayout.addWidget(attr_label, i+1, 1, 1, 1)
                 self.cols.append(attr_label)
                 widget = self.crearInput(tipo_dato, name_input)
-                print(widget)
                 self.gridLayout.addWidget(widget, i+1, 2, 1, 1)
                 self.cols.append(widget)
 
@@ -143,7 +141,6 @@ class AgregarRegistro(Form, Base):
         self.cols = []
 
     def guardarRegistro(self):
-        print(type(self.cols[0]))
         user, pwd = getUsuarioLogueado()
         nombre_columnas = []
         inputs = []
@@ -176,7 +173,6 @@ class AgregarRegistro(Form, Base):
                 query += f"{dato},"
         query += ");"
         query = query.replace(",)",")")
-        print(query)
 
         conn = obtener_conexion(user,pwd)
         cur = conn.cursor()

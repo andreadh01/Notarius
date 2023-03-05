@@ -2,7 +2,7 @@ from PyQt5 import  uic
 from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView
 from PyQt5.QtWidgets import QAbstractItemView,QPushButton
 from bdConexion import obtener_conexion
-
+from ui.icons import imagenes
 import os
 
 from pages.EditarPrivilegios import EditarPrivilegios

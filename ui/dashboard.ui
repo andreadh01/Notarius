@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1200</width>
-    <height>800</height>
+    <width>762</width>
+    <height>622</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,22 +15,20 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QDialog {
- background-color:rgb(255, 253, 225);
- 
+ background-color:rgb(255, 255, 255)
+
  }</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="1">
+   <item row="0" column="2">
     <widget class="QStackedWidget" name="stackedWidget">
+     <property name="minimumSize">
+      <size>
+       <width>100</width>
+       <height>100</height>
+      </size>
+     </property>
      <widget class="VerTabla" name="vertabla"/>
-     <!-- <widget class="AgregarRegistro" name="agregar"/>
-     <widget class="EditarPrivilegios" name="editarprivilegios"/>
-     <widget class="RegistrarUsuario" name="registrarusuario">
-      <property name="whatsThis">
-       <string/>
-      </property>
-     </widget>
-     <widget class="VerUsuario" name="verusuario"/> -->
     </widget>
    </item>
    <item row="0" column="0">
@@ -50,12 +48,19 @@
      </item>
      <item>
       <widget class="QLabel" name="label_2">
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+font: 87 12pt &quot;Arial Black&quot;;
+color: rgba(149, 127, 95, 1);
+
+}</string>
+       </property>
        <property name="text">
         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:24pt; font-weight:700; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:30pt; color:rgb(141, 110, 58);&quot;&gt;Notarius&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'.AppleSystemUIFont'; font-size:30pt; font-weight:696; color:#8d6e3a;&quot;&gt;NOTARIUS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>
@@ -99,9 +104,7 @@ p, li { white-space: pre-wrap; }
       </spacer>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="buttonsLayout">
-       
-      </layout>
+      <layout class="QVBoxLayout" name="buttonsLayout"/>
      </item>
      <item>
       <spacer name="verticalSpacer_4">
@@ -157,30 +160,129 @@ p, li { white-space: pre-wrap; }
      </item>
      <item>
       <widget class="QPushButton" name="logout">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="palette">
+        <palette>
+         <active>
+          <colorrole role="WindowText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>141</red>
+             <green>110</green>
+             <blue>58</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="Text">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>141</red>
+             <green>110</green>
+             <blue>58</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="ButtonText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>141</red>
+             <green>110</green>
+             <blue>58</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </active>
+         <inactive>
+          <colorrole role="WindowText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>141</red>
+             <green>110</green>
+             <blue>58</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="Text">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>141</red>
+             <green>110</green>
+             <blue>58</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="ButtonText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>141</red>
+             <green>110</green>
+             <blue>58</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </inactive>
+         <disabled>
+          <colorrole role="WindowText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>141</red>
+             <green>110</green>
+             <blue>58</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="Text">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>141</red>
+             <green>110</green>
+             <blue>58</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="ButtonText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>141</red>
+             <green>110</green>
+             <blue>58</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </disabled>
+        </palette>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Cerrar sesión&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="whatsThis">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;Cerrar sesión&lt;/span&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton {
-	color: rgb(141, 110, 58);
-	border: none;
-height: 25px;
-}
-
-QPushButton:hover {
-	background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}
-
-QPushButton:pressed {
-    border-style: inset;
-    background-color: rgb(149, 117, 61);
-	color: rgb(255, 255, 255);
-}</string>
+        <string notr="true"/>
        </property>
        <property name="text">
-        <string>Cerrar Sesión</string>
+        <string/>
        </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>logout-box-r-line.png</normaloff>logout-box-r-line.png</iconset>
+       <property name="iconSize">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+       <property name="default">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -202,48 +304,76 @@ QPushButton:pressed {
      </item>
     </layout>
    </item>
+   <item row="0" column="1">
+    <widget class="Line" name="line">
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
   </layout>
+  <action name="actionCerrar_sesi_n">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons/imagenes.qrc">
+     <normaloff>:/icons/logout-box-r-line.png</normaloff>:/icons/logout-box-r-line.png</iconset>
+   </property>
+   <property name="text">
+    <string>Cerrar sesión</string>
+   </property>
+  </action>
+  <action name="actionCerrar_sesi_n_2">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons/imagenes.qrc">
+     <normaloff>:/icons/logout-box-r-line.png</normaloff>:/icons/logout-box-r-line.png</iconset>
+   </property>
+   <property name="text">
+    <string>Cerrar sesión</string>
+   </property>
+  </action>
+  <action name="actionCerrar_sesi_n_3">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons/imagenes.qrc">
+     <normaloff>:/icons/logout-box-r-line.png</normaloff>:/icons/logout-box-r-line.png</iconset>
+   </property>
+   <property name="text">
+    <string>Cerrar sesión</string>
+   </property>
+  </action>
+  <action name="actionCerrar_sesi_n_4">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons/imagenes.qrc">
+     <normaloff>:/icons/logout-box-r-line.png</normaloff>:/icons/logout-box-r-line.png</iconset>
+   </property>
+   <property name="text">
+    <string>Cerrar sesión</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/icons/logout-box-r-line.png&quot;/&gt;Cerrar sesión&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
-  
   <customwidget>
    <class>VerTabla</class>
    <extends>QWidget</extends>
    <header>pages/VerTabla</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-    <class>AgregarRegistro</class>
-    <extends>QWidget</extends>
-    <header>pages/AgregarRegistro</header>
-    <container>1</container>
-   </customwidget>
-   <customwidget>
-    <class>VerUsuario</class>
-    <extends>QWidget</extends>
-    <header>pages/VerUsuario</header>
-    <container>1</container>
-   </customwidget>
-  <customwidget>
-   <class>EditarPrivilegios</class>
-   <extends>QWidget</extends>
-   <header>pages/EditarPrivilegios</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>RegistrarUsuario</class>
-   <extends>QWidget</extends>
-   <header>pages/RegistrarUsuario</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>EditarRegistro</class>
-   <extends>QWidget</extends>
-   <header>pages/EditarRegistro</header>
-   <container>1</container>
-  </customwidget>
-  
  </customwidgets>
- <resources/>
  <connections/>
 </ui>
