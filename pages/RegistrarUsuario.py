@@ -147,7 +147,7 @@ class RegistrarUsuario(Form, Base):
                 cur.execute(query)
                 query = f"CREATE USER '{nombre_usuario}'@'localhost' IDENTIFIED BY '{contrasena}'"
                 cur.execute(query)
-                self.generarGrants(nombre_usuario)
+                self.generarGrants(nombre_usuario,rol)
                 cur.close()
                 conn.close()
                 
@@ -162,7 +162,8 @@ class RegistrarUsuario(Form, Base):
                 self.parent().findChild(VerUsuario).setupTable(self.parent().findChild(VerUsuario))
                 self.limpiarDict()
 
-    def generarGrants(self,nombre_usuario):
+    def generarGrants(self,nombre_usuario,rol):
+        print(self.diccionario_permisos)
         query = f""
         user, pwd = getUsuarioLogueado()
         conn = obtener_conexion(user,pwd)
@@ -172,14 +173,16 @@ class RegistrarUsuario(Form, Base):
                 for nombre_columna,checked in columnas.items():
                     if checked:
                         if llave == 'Ver':
-                            query=f"GRANT SELECT ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost';"
+                            query=f"GRANT SELECT ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
                             cur.execute(query)
                         else:
-                            query=f"GRANT INSERT ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost';"
+                            query=f"GRANT INSERT ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
                             cur.execute(query)
-                            query=f"GRANT UPDATE ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost';"
+                            query=f"GRANT UPDATE ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
                             cur.execute(query)
-                        
+                        if rol == 'admin':
+                            query=f"GRANT ALL PRIVILEGES ON mysql.* TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
+                            cur.execute(query)               
         cur.close()
         conn.close()
     
