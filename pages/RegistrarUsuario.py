@@ -3,7 +3,7 @@ from pages.EditarPrivilegios import EditarPrivilegios
 import os
 from bdConexion import obtener_conexion
 from functools import partial
-
+from ui.icons import imagenes
 from pages.VerUsuario import VerUsuario
 from usuarios import getListaTablas, getPermisos, getUsuarioLogueado, updateTable
 

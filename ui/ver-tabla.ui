@@ -83,6 +83,13 @@ font: 14pt &quot;Arial&quot;;</string>
       </spacer>
      </item>
      <item>
+      <widget class="QPushButton" name="botonModificar">
+       <property name="text">
+        <string>Modificar</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLineEdit" name="line_edit_busqueda_presupuesto">
        <property name="styleSheet">
         <string notr="true">QLineEdit {
