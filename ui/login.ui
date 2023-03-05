@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1045</width>
-    <height>541</height>
+    <width>895</width>
+    <height>547</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -21,7 +21,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QDialog {
-background-color: rgba(209, 207, 200, 1);
+background-color:rgba(245, 216, 174, 0.08);
 
 }</string>
   </property>
@@ -73,7 +73,7 @@ background-color: rgba(202, 166, 112, 0.15);
       </widget>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0,0,0">
+      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0,0,0,0">
        <item>
         <spacer name="verticalSpacer_4">
          <property name="orientation">
@@ -89,6 +89,19 @@ background-color: rgba(202, 166, 112, 0.15);
        </item>
        <item>
         <spacer name="verticalSpacer_6">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_5">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -159,19 +172,6 @@ color: rgba(149, 127, 95, 1);
        </item>
        <item>
         <layout class="QGridLayout" name="gridLayout">
-         <item row="3" column="1">
-          <spacer name="horizontalSpacer_6">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
          <item row="1" column="2">
           <spacer name="horizontalSpacer_3">
            <property name="orientation">
@@ -185,12 +185,12 @@ color: rgba(149, 127, 95, 1);
            </property>
           </spacer>
          </item>
-         <item row="5" column="1">
+         <item row="4" column="1">
           <widget class="QLineEdit" name="passwordfield">
            <property name="font">
             <font>
              <family>Arial Rounded MT Bold</family>
-             <pointsize>14</pointsize>
+             <pointsize>8</pointsize>
              <weight>50</weight>
              <italic>false</italic>
              <bold>false</bold>
@@ -201,13 +201,13 @@ color: rgba(149, 127, 95, 1);
            </property>
            <property name="styleSheet">
             <string notr="true">QLineEdit {
-border-radius: 20px;
+border-radius: 14px;
 border: 1px solid rgb(166, 164, 180);
-background-color: rgb(255, 255, 255);
+background-color: white;
 color: rgb(103, 80, 41);
 padding: 5px;
 font: 14pt &quot;Arial Rounded MT Bold&quot;;
-height: 30px;
+height: 25px;
 }</string>
            </property>
            <property name="placeholderText">
@@ -215,8 +215,8 @@ height: 30px;
            </property>
           </widget>
          </item>
-         <item row="3" column="2">
-          <spacer name="horizontalSpacer_7">
+         <item row="2" column="1">
+          <spacer name="horizontalSpacer_6">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -228,8 +228,6 @@ height: 30px;
            </property>
           </spacer>
          </item>
-         <item row="5" column="2">
-          <spacer name="horizontalSpacer_4">
          <item row="1" column="1">
           <widget class="QLineEdit" name="user">
            <property name="minimumSize">
@@ -283,8 +281,8 @@ height: 25px;
            </property>
           </spacer>
          </item>
-         <item row="3" column="0">
-          <spacer name="horizontalSpacer_5">
+         <item row="2" column="2">
+          <spacer name="horizontalSpacer_7">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -296,7 +294,20 @@ height: 25px;
            </property>
           </spacer>
          </item>
-         <item row="5" column="0">
+         <item row="4" column="2">
+          <spacer name="horizontalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="4" column="0">
           <spacer name="horizontalSpacer_2">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -309,38 +320,11 @@ height: 25px;
            </property>
           </spacer>
          </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="user">
-           <property name="minimumSize">
-            <size>
-             <width>400</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="focusPolicy">
-            <enum>Qt::StrongFocus</enum>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QLineEdit {
-border-radius: 20px;
-border: 1px solid rgb(166, 164, 180);
-background-color: rgb(255, 255, 255);
-color: rgb(103, 80, 41);
-padding: 5px;
-font: 14pt &quot;Arial Rounded MT Bold&quot;;
-height: 30px;
-}</string>
-           </property>
-           <property name="placeholderText">
-            <string>Ingresa tu usuario</string>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="1">
           <widget class="QLabel" name="label_2">
            <property name="styleSheet">
             <string notr="true">QLabel {
-	font: 16pt &quot;Arial Rounded MT Bold&quot;;
+	font: 14pt &quot;Arial Rounded MT Bold&quot;;
 	color: rgba(149, 127, 95, 1);
 }</string>
            </property>
@@ -349,11 +333,11 @@ height: 30px;
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
+         <item row="3" column="1">
           <widget class="QLabel" name="label_4">
            <property name="styleSheet">
             <string notr="true">QLabel {
-	font: 16pt &quot;Arial Rounded MT Bold&quot;;
+	font: 14pt &quot;Arial Rounded MT Bold&quot;;
 	color: rgba(149, 127, 95, 1);
 }</string>
            </property>
@@ -361,19 +345,6 @@ height: 30px;
             <string>Contraseña</string>
            </property>
           </widget>
-         </item>
-         <item row="2" column="1">
-          <spacer name="verticalSpacer_5">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
          </item>
         </layout>
        </item>
@@ -416,7 +387,7 @@ height: 30px;
            <property name="font">
             <font>
              <family>Arial Rounded MT Bold</family>
-             <pointsize>16</pointsize>
+             <pointsize>12</pointsize>
              <weight>50</weight>
              <italic>false</italic>
              <bold>false</bold>
@@ -425,10 +396,12 @@ height: 30px;
            <property name="styleSheet">
             <string notr="true">QPushButton {
 border-radius: 20px;
-background-color: rgba(149, 127, 95, 0.66);
+border: 3px solid #95753d;
+background-color: rgba(149, 127, 95, 1);
 color: white;
 padding:10px 0;
-font: 16pt &quot;Arial Rounded MT Bold&quot;;
+
+font: 14pt &quot;Arial Rounded MT Bold&quot;;
 }
 
 QPushButton:hover {
