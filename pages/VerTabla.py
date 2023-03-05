@@ -1,5 +1,7 @@
 from functools import partial
 from PyQt5 import uic
+import pandas as pd
+#python(suversion) -m pip install pandas
 from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView, QTableView, QAbstractItemView,QPushButton
 from PyQt5.QtCore import Qt,QSortFilterProxyModel
 from PyQt5.QtGui import QStandardItemModel,QStandardItem
@@ -23,6 +25,7 @@ class VerTabla(Base, Form):
 		self.setupTableList(self)
 		self.setupTable(self)
 		self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+		self.pushButton_2.clicked.connect(self.escribirCSV)
 		self.tableslist.itemSelectionChanged.connect(partial(self.setupTable,self))
 
 
@@ -48,6 +51,9 @@ class VerTabla(Base, Form):
 		permisos = getPermisos(tabla_name)
 		select = permisos["SELECT"]
 		tabla = getValoresTabla(tabla_name)
+		#si puede encontrar una manera menos fea de obtener esto en ves de hacer esta variable globar que toma el dic actual dense porfavor. atte; gracida
+		global Diccionario
+		Diccionario = tabla
 		columnas = select.split(',')
 		header = ["Modificar"]+columnas if permisos["UPDATE"] != '' else columnas
 		self.tableWidget.setColumnCount(len(header))
@@ -230,4 +236,13 @@ class VerTabla(Base, Form):
 		proxy.setFilterCaseSensitivity(Qt.CaseInsensitive)
 		#agregar un evento al filtro para cuando se escribe en el line edit
 		self.line_edit_busqueda_presupuesto.textChanged.connect(proxy.setFilterRegExp)
-			
+	def escribirCSV(d,b):
+		print(d)
+		print(b)
+		print(Diccionario)
+		if bool(Diccionario)==True:
+			try:
+				df=pd.DataFrame.from_dict(Diccionario)
+				df.to_csv(r'Test1',index=False,header=True)		
+			except IOError:
+				print("no")
