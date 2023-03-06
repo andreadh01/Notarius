@@ -3,7 +3,7 @@ from functools import partial
 from PyQt5 import uic
 import pandas as pd
 #python(suversion) -m pip install pandas
-from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView, QTableView, QAbstractItemView,QPushButton
+from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView, QTableView, QAbstractItemView,QPushButton,QMessageBox
 from PyQt5.QtCore import Qt,QSortFilterProxyModel
 from PyQt5.QtGui import QStandardItemModel,QStandardItem
 from bdConexion import obtener_conexion
@@ -88,10 +88,6 @@ class VerTabla(Base, Form):
 		#header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
 		#header.setSectionResizeMode(2, QHeaderView.ResizeToContents)self.busqueda()
 		
-		
-		
-		
-	
 	def createButton(self, Form):
 		button = QPushButton(self.tableWidget)
 		button.setObjectName("editar")
@@ -112,25 +108,9 @@ class VerTabla(Base, Form):
 "    color: rgb(255, 255, 255);\n"
 "}")
 		return button
-
-	# en esta funcion se van a ordenar las columnas en el diccionario para crear diccionario de diccionarios
-	# def crearDiccionario(self, diccionario:dict, tabla_seleccionada:str, campo_seleccionado:int)->dict:
-	# 	# conexion a base de datos
-	# 	conn = obtener_conexion()
-	# 	cur = conn.cursor()
-	# 	query1 = f"SELECT *  FROM {tabla_seleccionada};"
-	# 	cur.execute(query1)
-	# 	contenido_tabla = cur.fetchall()
-	# 	for i,items in enumerate(contenido_tabla):
-	# 		diccionario[contenido_tabla[i][campo_seleccionado]] = items
-	# 	cur.close()
-	# 	conn.close()
-	# 	return diccionario
 	
 	def changePage(self, Form, row,tabla):
 		index = self.getIndexCell(row)
-		print('INDICEEEE ')
-		print(index)
 		editar = EditarRegistro()
 		self.parent().addWidget(editar)
 		self.parent().findChild(EditarRegistro).getRegistro(editar, index, tabla, 'id')
@@ -140,20 +120,10 @@ class VerTabla(Base, Form):
 		headercount = self.tableWidget.columnCount()
 		for x in range(headercount):
 			headertext = self.tableWidget.horizontalHeaderItem(x).text()
-			print('header')
-			print(headertext)
 			if 'id' == headertext:
 				cell = self.tableWidget.item(row, x).text()  # get cell at row, col
 				return cell
 	
-	# def bloquearBusqueda(self, table_name:str):
-	# 	if table_name == 'presupuesto' or table_name == 'escritura' or table_name == 'juridico':
-	# 		self.comboBox_busqueda_presupuesto.setEnabled(True)
-	# 		self.line_edit_busqueda_presupuesto.setEnabled(True)
-	# 	else:
-	# 		self.comboBox_busqueda_presupuesto.setEnabled(False)
-	# 		self.line_edit_busqueda_presupuesto.setEnabled(False)
-
 	#esta funcion obtiene el nombre de la tabla actual seleccionada, y rellena el combobox conforme a los campos de la tabla. Después, se realiza una consulta select para obtener el contenido de la tabla y se inserta en un widget QTableView para obtener su filtrado a travez de la seleccion del campo en el combobox.
 	def busqueda(self):
 		self.fillCombo()
@@ -166,20 +136,23 @@ class VerTabla(Base, Form):
 		#obtener el nombre de la tabla actual
 		tabla_name = self.tableslist.currentItem().text()
 		#obtener el id del registro seleccionado en el QTableView
-		id = self.tableView.selectedIndexes()[0].data()
-		#se obtiene de la lista de campos de la tabla actual
-		id_name = self.tableView.model().headerData(0, Qt.Horizontal)
-		#crear un objeto de la clase EditarRegistro
-		editar = EditarRegistro()
-		#agregar el objeto a la pila de widgets del QStackedWidget
-		self.parent().addWidget(editar)
-		#obtener el objeto EditarRegistro de la pila de widgets del QStackedWidget
-		editar = self.parent().findChild(EditarRegistro)
-		#ejecutar el metodo getRegistro del objeto EditarRegistro
-		editar.getRegistro(editar, id, tabla_name, id_name)
-		#hacer el cambio de pagina al objeto EditarRegistro
-		self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(EditarRegistro)))
-
+		if self.tableView.selectedIndexes() == []:
+			QMessageBox.warning(self, 'Error', 'Seleccione un registro')
+			return
+		else:
+			id = self.tableView.selectedIndexes()[0].data()
+			#se obtiene de la lista de campos de la tabla actual
+			id_name = self.tableView.model().headerData(0, Qt.Horizontal)
+			#crear un objeto de la clase EditarRegistro
+			editar = EditarRegistro()
+			#agregar el objeto a la pila de widgets del QStackedWidget
+			self.parent().addWidget(editar)
+			#obtener el objeto EditarRegistro de la pila de widgets del QStackedWidget
+			editar = self.parent().findChild(EditarRegistro)
+			#ejecutar el metodo getRegistro del objeto EditarRegistro
+			editar.getRegistro(editar, id, tabla_name, id_name)
+			#hacer el cambio de pagina al objeto EditarRegistro
+			self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(EditarRegistro)))
 
 	def deactivateLineEdit(self):
 		#ocultar el line edit
@@ -212,8 +185,6 @@ class VerTabla(Base, Form):
 	def getTableContent(self):
 		#obtener el nombre de la tabla actual
 		tabla_name = self.tableslist.currentItem().text()
-		#obtener el valor del combobox
-		comboValue = self.comboBox_busqueda_presupuesto.currentText()
 		#obtener la conexion a la base de datos
 		conn = obtener_conexion()
 		#crear un cursor para la conexion
@@ -251,11 +222,11 @@ class VerTabla(Base, Form):
 				model.setItem(i,j,QStandardItem(str(contenido_tabla[i][j])))
 			
 		#crear un filtro para el widget QTableView
-		proxy = QSortFilterProxyModel()
+		self.proxy = QSortFilterProxyModel()
 		#agregar el modelo al filtro
-		proxy.setSourceModel(model)
+		self.proxy.setSourceModel(model)
 		#agregar el filtro al widget QTableView
-		self.tableView.setModel(proxy)
+		self.tableView.setModel(self.proxy)
 		######Karo, ponle aqui el cambio de icono al boton de filtro######
 		if self.flagTabla == False:
 			self.botonModificar.show()
@@ -272,17 +243,28 @@ class VerTabla(Base, Form):
 			self.flagTabla = False
 		#obtener una lista enumerada de los campos de la tabla
 		headers = list(enumerate([i[0] for i in headers_sinFiltro]))
-		print(headers)
 		#agregar un evento al filtro para cuando se cambia el valor del combobox, comparar el valor del combobox con la lista de campos de la tabla para obtener el indice del campo seleccionado
+		self.comboBox_busqueda_presupuesto.currentIndexChanged.connect(lambda *args, headers= headers: self.setfilterKeyColumn(headers))
+		#agregar un evento al filtro para cuando se escribe en el line edit
+		self.proxy.setFilterCaseSensitivity(Qt.CaseInsensitive)
+		#agregar un evento al filtro para cuando se escribe en el line edit
+		self.line_edit_busqueda_presupuesto.textChanged.connect(self.proxy.setFilterRegExp)
+
+	def setfilterKeyColumn(self,headers:list):
+		#obtener el valor del combobox
+		print()
+		print("AQUI EMPIEZA EL SETFILTERKEYCOLUMN")
+		print(headers)
+		comboValue = self.comboBox_busqueda_presupuesto.currentText()
 		for items in headers:
-			if comboValue == items[1]:
-				proxy.setFilterKeyColumn(items[0])
-		#agregar un evento al filtro para cuando se escribe en el line edit
-		proxy.setFilterCaseSensitivity(Qt.CaseInsensitive)
-		#agregar un evento al filtro para cuando se escribe en el line edit
-		self.line_edit_busqueda_presupuesto.textChanged.connect(proxy.setFilterRegExp)
+			print(items)
+			if items[1] == comboValue:
+				keyColumn = items[0]
+				print(keyColumn)
+				self.proxy.setFilterKeyColumn(keyColumn)
+		print("AQUI TERMINA EL SETFILTERKEYCOLUMN")
+
 	def escribirCSV(self):
-		print(Diccionario)
 		tabla = self.tableslist.currentItem().text()
 		path = os.path.expanduser(f"~/NotariusBackup/{tabla}")
 		if not os.path.exists(path): os.makedirs(path)
