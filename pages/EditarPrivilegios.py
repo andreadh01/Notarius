@@ -167,20 +167,23 @@ class EditarPrivilegios(Base, Form):
 		user, pwd = getUsuarioLogueado()
 		conn = obtener_conexion(user,pwd)
 		cur = conn.cursor()
-		#query=f"REVOKE ALL PRIVILEGES, GRANT OPTION FROM '{nombre_usuario}'@'localhost';"
-		#cur.execute(query)
+		query=f"REVOKE ALL PRIVILEGES, GRANT OPTION FROM '{nombre_usuario}'@'localhost';"
+		cur.execute(query)
 		for llave,accion in self.diccionario_permisos.items():
 			for nombre_tabla,columnas in accion.items():
 				for nombre_columna,checked in columnas.items():
 					if checked:
-						if llave == 'ver':
-							query=f"GRANT SELECT ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost';"
-							cur.execute(query)
-						elif llave == 'escritura':
-							query=f"GRANT INSERT ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost';"
-							cur.execute(query)
-							query=f"GRANT UPDATE ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost';"
-							cur.execute(query)                      
+                        if llave == 'ver':
+                            query=f"GRANT SELECT ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
+                            cur.execute(query)
+                        else:
+                            query=f"GRANT INSERT ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
+                            cur.execute(query)
+                            query=f"GRANT UPDATE ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
+                            cur.execute(query)
+                        if rol == 'admin':
+                            query=f"GRANT ALL PRIVILEGES ON mysql.* TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
+							cur.execute(query)                     
 		cur.close()
 		conn.close()
 

@@ -174,18 +174,25 @@ class RegistrarUsuario(Form, Base):
         user, pwd = getUsuarioLogueado()
         conn = obtener_conexion(user,pwd)
         cur = conn.cursor()
+        query=f"SELECT rol FROM usuario WHERE nombre_usuario='{nombre_usuario}'"
+		cur.execute(query)
+		rol = cur.fetchall()
+		rol = rol[0][0]
         for llave,accion in self.diccionario_permisos.items():
             for nombre_tabla,columnas in accion.items():
                 for nombre_columna,checked in columnas.items():
                     if checked:
                         if llave == 'ver':
-                            query=f"GRANT SELECT ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost';"
+                            query=f"GRANT SELECT ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
                             cur.execute(query)
                         else:
-                            query=f"GRANT INSERT ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost';"
+                            query=f"GRANT INSERT ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
                             cur.execute(query)
-                            query=f"GRANT UPDATE ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost';"
+                            query=f"GRANT UPDATE ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
                             cur.execute(query)
+                        if rol == 'admin':
+                            query=f"GRANT ALL PRIVILEGES ON mysql.* TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
+							cur.execute(query) 
                         
         cur.close()
         conn.close()
