@@ -29,6 +29,7 @@ class RegistrarUsuario(Form, Base):
         self.setupColumns(self)
         # cada que se actualice el combobox de tablas, se actualizan los checkbox de las columnas
         self.tablaslist.currentTextChanged.connect(self.setupColumns)
+        self.lineEdit_contrasenausuario.setEchoMode(QtWidgets.QLineEdit.Password)
         #self.accioneslist.currentTextChanged.connect(self.resetCheckboxes)
         self.button_guardar.clicked.connect(self.crearUsuario)
         self.pushButton_cancelar.clicked.connect(self.cancelarRegistro)
