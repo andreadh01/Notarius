@@ -169,6 +169,10 @@ class EditarPrivilegios(Base, Form):
 		cur = conn.cursor()
 		query=f"REVOKE ALL PRIVILEGES, GRANT OPTION FROM '{nombre_usuario}'@'localhost';"
 		cur.execute(query)
+		query=f"SELECT rol FROM usuario WHERE nombre_usuario='{nombre_usuario}'"
+		cur.execute(query)
+		rol = cur.fetchall()
+		rol = rol[0][0]
 		for llave,accion in self.diccionario_permisos.items():
 			for nombre_tabla,columnas in accion.items():
 				for nombre_columna,checked in columnas.items():
