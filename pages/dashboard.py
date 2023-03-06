@@ -48,7 +48,7 @@ class Dashboard(Base, Form):
         self.logout.setFont(font)
         self.logout.setIcon(QtGui.QIcon(":/icons/logout.png"))
         self.logout.setStyleSheet("QPushButton {\n"
-"    color: rgb(141, 110, 58);\n"
+"    color: #957F5F;\n"
 "    border: none;\n"
 "    height: 30px;\n"
 "    border-radius: 20px;\n"
@@ -58,7 +58,7 @@ class Dashboard(Base, Form):
 "}\n"
 "\n"
 "QPushButton:hover {\n"
-"    background-color: rgba(149, 127, 95, 0.66);\n"
+"    background-color: #957F5F;\n"
 "    color: rgb(255, 255, 255);\n"
 "    height: 30px;\n"
 "    border-radius: 20px;\n"
@@ -123,7 +123,7 @@ class Dashboard(Base, Form):
             button.setIcon(QtGui.QIcon(":/icons/RegistrarUsuario.png"))
 
         button.setStyleSheet("QPushButton {\n"
-"    color: rgb(141, 110, 58);\n"
+"    color: #957F5F;\n"
 "    border: none;\n"
 "    height: 30px;\n"
 "    border-radius: 20px;\n"
@@ -133,7 +133,7 @@ class Dashboard(Base, Form):
 "}\n"
 "\n"
 "QPushButton:hover {\n"
-"    background-color: rgba(149, 127, 95, 0.66);\n"
+"    background-color: #957F5F;\n"
 "    color: rgb(255, 255, 255);\n"
 "    height: 30px;\n"
 "    border-radius: 20px;\n"

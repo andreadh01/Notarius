@@ -1,17 +1,17 @@
 <RCC>
   <qresource prefix="icons">
-    <file>logout.png</file>
     <file>logout-white2.png</file>
-    <file>AgregarRegistro.png</file>
     <file>AgregarRegistro-white.png</file>
-    <file>EditarPrivilegios.png</file>
     <file>EditarPrivilegios-white.png</file>
-    <file>RegistrarUsuario.png</file>
     <file>RegistrarUsuario-white.png</file>
-    <file>VerUsuario.png</file>
     <file>VerUsuario-white.png</file>
-    <file>tabla.png</file>
     <file>logout-white.png</file>
+    <file>AgregarRegistro.png</file>
+    <file>EditarPrivilegios.png</file>
+    <file>logout.png</file>
+    <file>RegistrarUsuario.png</file>
+    <file>tabla.png</file>
+    <file>VerUsuario.png</file>
     <file>logout-brown.png</file>
     <file>carpeta.png</file>
     <file>undraw_team_up_re_84ok.svg</file>
