@@ -3,23 +3,55 @@ import os
 import re
 import sys
 from PyQt5 import QtWidgets, uic,QtGui
+from PyQt5.QtGui import QIcon
 from pages.EditarPrivilegios import EditarPrivilegios
 from pages.RegistrarUsuario import RegistrarUsuario
 from usuarios import clearSession, getAllPermisos
 import importlib
+'''
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
 
+    return os.path.join(base_path, relative_path)
+
+dash = resource_path("dashboard.ui")
+'''
 Form, Base = uic.loadUiType("ui/dashboard.ui")
-
 
 class Dashboard(Base, Form):
     lista_botones = []
-    
     def __init__(self, parent=None):
         super(self.__class__, self).__init__(parent)
         self.setupUi(self)
         self.checarPermisos()
         self.setupButtons(self)
         self.logout.clicked.connect(self.cerrarSesion)
+        self.logout.setStyleSheet("QPushButton {\n"
+"    color: rgb(141, 110, 58);\n"
+"    border: none;\n"
+"    height: 30px;\n"
+"    border-radius: 20px;\n"
+"    padding: 5 50;\n"
+"    image: url(:/icons/logout-brown.png)\n"
+"\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color: rgba(149, 127, 95, 0.66);\n"
+"    color: rgb(255, 255, 255);\n"
+"    height: 30px;\n"
+"    border-radius: 20px;\n"
+"    image:url(:/icons/logout-white.png);"
+"}\n"
+"QPushButton:pressed {\n"
+"    border-style: inset;\n"
+"    background-color: rgb(149, 117, 61);\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"")
         #self.stackedWidget.setCurrentIndex(self.stackedWidget.currentIndex()+1)
         # for i, button in enumerate(self.lista_botones):
         #     button.clicked.connect(partial(self.stackedWidget.setCurrentIndex,i))
@@ -44,13 +76,10 @@ class Dashboard(Base, Form):
                 self.lista_botones.clear() 
                 self.lista_botones.extend(['VerTabla','AgregarRegistro','VerUsuario','EditarPrivilegios', 'RegistrarUsuario'])
                 return
-            
-            
 
     def setupButtons(self, Form):
-        print('botonesssss')
-        print(self.lista_botones)
         for i, button in enumerate(self.lista_botones):
+            btn = self.createButton(self,button)
             print(button)
             btn = self.createButton(self,button) # <------ funcion de dashboardButton()
             # agregar boton a stack
@@ -85,7 +114,9 @@ class Dashboard(Base, Form):
 "}\n"
 "")                                     # <------------ hasta aqui llega dashboardButton()
         module = importlib.import_module(f"pages.{name}")
-        print(name, module)
+        #QPixmap pixmap("")
+        #button.setIcon(QIcon(f'{name}.png'))
+        #button.setIcon(QIcon(f'{name}-white.png'))
         instance = getattr(module, name)()
         instance.setObjectName(name.lower())
         self.stackedWidget.addWidget(instance)

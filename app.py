@@ -62,6 +62,7 @@ widget.addWidget(welcome)
 widget.setMinimumHeight(800)
 widget.setMinimumWidth(1200)
 widget.show()
+
 try:
     sys.exit(app.exec_())
 except:

@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="icons">
+    <file>logout-white.png</file>
+    <file>logout-brown.png</file>
+    <file>logout-box-r-line.png</file>
     <file>carpeta.png</file>
     <file>undraw_team_up_re_84ok.svg</file>
   </qresource>
