@@ -8,17 +8,6 @@ from pages.EditarPrivilegios import EditarPrivilegios
 from pages.RegistrarUsuario import RegistrarUsuario
 from usuarios import clearSession, getAllPermisos
 import importlib
-'''
-def resource_path(relative_path):
-    try:
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
-
-dash = resource_path("dashboard.ui")
-'''
 Form, Base = uic.loadUiType("ui/dashboard.ui")
 
 class Dashboard(Base, Form):
@@ -79,8 +68,6 @@ class Dashboard(Base, Form):
 
     def setupButtons(self, Form):
         for i, button in enumerate(self.lista_botones):
-            btn = self.createButton(self,button)
-            print(button)
             btn = self.createButton(self,button) # <------ funcion de dashboardButton()
             # agregar boton a stack
             self.buttonsLayout.addWidget(btn)
@@ -114,9 +101,7 @@ class Dashboard(Base, Form):
 "}\n"
 "")                                     # <------------ hasta aqui llega dashboardButton()
         module = importlib.import_module(f"pages.{name}")
-        #QPixmap pixmap("")
-        #button.setIcon(QIcon(f'{name}.png'))
-        #button.setIcon(QIcon(f'{name}-white.png'))
+
         instance = getattr(module, name)()
         instance.setObjectName(name.lower())
         self.stackedWidget.addWidget(instance)
