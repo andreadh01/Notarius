@@ -8,7 +8,7 @@ from pages.EditarPrivilegios import EditarPrivilegios
 from pages.RegistrarUsuario import RegistrarUsuario
 from usuarios import clearSession, getAllPermisos
 import importlib
-from ui.icons import imagenes
+from ui.icons import dash
 
 Form, Base = uic.loadUiType("ui/dashboard.ui")
 
