@@ -1,12 +1,14 @@
 from PyQt5 import  uic
-from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView
-from PyQt5.QtWidgets import QAbstractItemView,QPushButton
 from bdConexion import obtener_conexion
+from PyQt5.QtWidgets import QHeaderView, QTableView, QAbstractItemView,QPushButton,QMessageBox
+from PyQt5.QtCore import Qt,QSortFilterProxyModel, QTimer
 from ui.icons import imagenes
+from PyQt5.QtGui import QStandardItemModel,QStandardItem
+
 import os
 
 from pages.EditarPrivilegios import EditarPrivilegios
-from usuarios import getUsuarioLogueado, getValoresTabla, updateTable
+from usuarios import getPermisos, getUsuarioLogueado, getValoresTabla, updateTable
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/ver-usuario.ui")))
@@ -17,57 +19,72 @@ class VerUsuario(Base, Form):
 		super(self.__class__, self).__init__(parent)
 		self.setupUi(self)
 		self.setupTable(self)
-		self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
-		#self.modificar.clicked.connect(self.parent().findChild(EditarRegistro).usuarioslist)
+		self.tableView.setEditTriggers(QAbstractItemView.NoEditTriggers)
+		self.botonEliminar.clicked.connect(self.buttonClick)
 
 	# en este metodo se actualizan los datos de la tabla, segun la tabla seleccionada en la lista
 	def setupTable(self, Form):
-		self.tableWidget.setRowCount(0)
-		self.tableWidget.setColumnCount(0)
+		permisos = getPermisos('usuario')
+		select = permisos["read"]
 		tabla = getValoresTabla('usuario')
-		if bool(tabla) == False: return
-		header = ["Eliminar"]+list(tabla[0].keys())
-		self.tableWidget.setColumnCount(len(header))
-		self.tableWidget.setHorizontalHeaderLabels(header)
-		for dic in tabla:
-			col = 1
-			button = self.createButton(self)
-			rows = self.tableWidget.rowCount()
-			self.tableWidget.setRowCount(rows + 1)
-			# se agrega un boton modificar que al hacer clic mandara a la pagina modificar registro
-			self.tableWidget.setCellWidget(rows,0,button)
-			button.clicked.connect(lambda *args, self=self, row=rows: self.eliminarusuarios(self,row))
-			for val in dic.values():
-				self.tableWidget.setItem(rows, col, QTableWidgetItem(str(val)))
-				col +=1
-		self.tableWidget.resizeColumnsToContents()
-		self.tableWidget.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents);
-	
-	def createButton(self, Form):
-  
-		button = QPushButton(self.tableWidget)
-		button.setObjectName("eliminar")
-		button.setText("Eliminar")
-		button.setStyleSheet("QPushButton {\n"
-"background-color: #d3c393;\n"
-"color: rgb(131, 112, 82);\n"
-"height: 25px;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background-color: rgb(116, 91, 47);\n"
-"    color: rgb(255, 255, 255);\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: rgb(103, 80, 41);\n"
-"    color: rgb(255, 255, 255);\n"
-"}")
+		#si puede encontrar una manera menos fea de obtener esto en ves de hacer esta variable globar que toma el dic actual dense porfavor. atte; gracida
+		global Diccionario
+		Diccionario = tabla
+		header = select.split(',')
 
-		return button
+		model = QStandardItemModel()
+		#agregar los encabezados al modelo
+		for i, item in enumerate(header):
+			model.setHorizontalHeaderItem(i,QStandardItem(item))		
+
+		#agregar el modelo al widget QTableView
+		self.tableView.setModel(model)
+		#agregar los registros al modelo con un boton para editar el registro
+		for i, registro in enumerate(tabla):
+			for j, (col, val) in enumerate(registro.items()):
+				model.setItem(i,j,QStandardItem(str(val)))
+			
+		#crear un filtro para el widget QTableView
+		self.proxy = QSortFilterProxyModel()
+		#agregar el modelo al filtro
+		self.proxy.setSourceModel(model)
+		#agregar el filtro al widget QTableView
+		self.tableView.setModel(self.proxy)		
+		self.tableView.horizontalHeader().setStretchLastSection(True);
 	
-	def eliminarusuarios(self, Form, row):
-		index = self.tableWidget.item(row,1).text()
+	def buttonClick(self):
+		if self.tableView.selectedIndexes() == []:
+			# agregar mensaje de error
+			self.mensaje.show()
+			self.mensaje.setText("No tiene ningun usuario seleccionado para eliminar")
+			self.checkThreadTimer = QTimer(self)
+			self.checkThreadTimer.setInterval(5000)
+			self.checkThreadTimer.start()
+			self.checkThreadTimer.timeout.connect(self.mensaje.hide)
+			return
+		elif len(self.tableView.selectedIndexes())>1:
+			self.mensaje.show()
+			self.mensaje.setText("Elija solamente un campo para eliminar el usuario")
+			self.checkThreadTimer = QTimer(self)
+			self.checkThreadTimer.setInterval(5000)
+			self.checkThreadTimer.start()
+			self.checkThreadTimer.timeout.connect(self.mensaje.hide)
+			return
+		else:
+			row = self.tableView.selectedIndexes()[0].row()
+			print(row)
+			index = self.getIndexCell(row)
+			self.eliminarusuarios(self,index)
+	
+	def getIndexCell(self, row):
+		headercount = self.tableView.model().columnCount()
+		for x in range(headercount):
+			headertext = self.tableView.model().headerData(x, Qt.Horizontal)
+			if 'id' == headertext:
+				cell = self.tableView.model().index(row, x).data()  # get cell at row, col
+				return cell
+
+	def eliminarusuarios(self, Form, index):
 		user, pwd = getUsuarioLogueado()
 		conn = obtener_conexion(user,pwd)
 		cur = conn.cursor()

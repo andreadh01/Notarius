@@ -89,6 +89,7 @@ class EditarRegistro(Form, Base):
     def actualizarDict(self, col,val):
         tipo = str(type(val))
         if 'QDate' in tipo: val = val.toString("yyyy-MM-dd")
+        if type(val) == bool: val = 1 if val else 0
         self.camposCambiados[col] = val
         print(self.camposCambiados)
         

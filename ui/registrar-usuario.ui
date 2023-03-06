@@ -67,6 +67,9 @@ color: #957F5F;
      </item>
      <item row="0" column="2">
       <widget class="QPushButton" name="button_guardar">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="styleSheet">
         <string notr="true">QPushButton {
 border-radius: 8px;
@@ -147,17 +150,17 @@ background: white;
        </property>
        <item>
         <property name="text">
+         <string>Selecciona un rol...</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Armadores</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>Proyectista</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Juridico</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Presupuesto</string>
         </property>
        </item>
        <item>
@@ -167,7 +170,17 @@ background: white;
        </item>
        <item>
         <property name="text">
-         <string>Armadores</string>
+         <string>Presupuesto</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Juridico</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tramites</string>
         </property>
        </item>
        <item>

@@ -46,15 +46,6 @@ class VerTabla(Base, Form):
 
 	# en este metodo se actualizan los datos de la tabla, segun la tabla seleccionada en la lista
 	def setupTable(self,Form):
-		#self.tableView.show()#daniel estuvo aqui
-		#self.deactivateLineEdit()#daniel estuvo aqui
-		#verificar si hay algún objeto QTableView en el layout#daniel estuvo aqui
-		# if hasattr(self, 'tableView'):#daniel estuvo aqui
-		# 	self.tableView.hide()#daniel estuvo aqui
-		# 	self.flag = False#daniel estuvo aqui
-
-		#self.tableView.setRowCount(0)
-		#self.tableView.setColumnCount(0)
 		tabla_name = self.tableslist.currentText()
 		permisos = getPermisos(tabla_name)
 		select = permisos["read"]
@@ -64,18 +55,12 @@ class VerTabla(Base, Form):
 		global Diccionario
 		Diccionario = tabla
 		header = select.split(',')
-		# self.tableView.setColumnCount(len(header))
-		# self.tableView.setHorizontalHeaderLabels(header)
+
 		model = QStandardItemModel()
 		#agregar los encabezados al modelo
 		for i, item in enumerate(header):
 			model.setHorizontalHeaderItem(i,QStandardItem(item))		
-		#agregar el widget QTableView al layout
-		# if self.flag == False:
-		# 	#crear un nuevo widget QTableView
-		# 	self.tableView = QTableView()
-		# 	self.horizontalLayout.addWidget(self.tableView)
-		# 	self.flag=True
+
 		#agregar el modelo al widget QTableView
 		self.tableView.setModel(model)
 		#agregar los registros al modelo con un boton para editar el registro
@@ -89,20 +74,7 @@ class VerTabla(Base, Form):
 		self.proxy.setSourceModel(model)
 		#agregar el filtro al widget QTableView
 		self.tableView.setModel(self.proxy)
-		######Karo, ponle aqui el cambio de icono al boton de filtro######
-		# if self.flagTabla == False:
-		# 	self.botonModificar.show()
-		# 	self.line_edit_busqueda_presupuesto.show()
-		# 	#ocultar el widget tableView
-		# 	self.tableView.hide()
-		# 	self.tableView.show()
-		# 	self.flagTabla = True
-		# else:
-		# 	self.botonModificar.hide()
-		# 	self.line_edit_busqueda_presupuesto.hide()
-		# 	self.tableView.hide()
-		# 	self.tableView.show()
-		# 	self.flagTabla = False
+
 		#obtener una lista enumerada de los campos de la tabla
 		headers = list(enumerate([i for i in header]))
 		#agregar un evento al filtro para cuando se cambia el valor del combobox, comparar el valor del combobox con la lista de campos de la tabla para obtener el indice del campo seleccionado
@@ -112,28 +84,7 @@ class VerTabla(Base, Form):
 		#agregar un evento al filtro para cuando se escribe en el line edit
 		self.line_edit_busqueda_presupuesto.textChanged.connect(self.proxy.setFilterRegExp)
 		self.busqueda()
-		# for dic in tabla:
-		# 	col = 0
-		# 	rows = self.tableView.rowCount()
-		# 	self.tableView.setRowCount(rows + 1)
-		# 	# se agrega un boton modificar que al hacer clic mandara a la pagina modificar registro
-		# 	if permisos["write"] != '':
-		# 		col = 1
-		# 		button = self.createButton(self.tableView)
-		# 		self.tableView.setCellWidget(rows,0,button)
-		# 		button.clicked.connect(lambda *args, self=self, row=rows, tabla=tabla_name: self.changePage(self,row,tabla))
-		# 	for val in dic.values():
-		# 		self.tableView.setItem(rows, col, QtableViewItem(str(val)))
-		# 		col +=1
-		# self.tableView.resizeColumnsToContents()
-		#self.busqueda()#daniel estuvo aqui
-		# self.tableView.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-		#self.tableView.horizontalHeader().setSectionResizeMode(0,QHeaderView.Stretch)
-		#header = self.tableView.horizontalHeader()       
-		#header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
-		#header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
-		#header.setSectionResizeMode(2, QHeaderView.ResizeToContents)self.busqueda()
-		#self.tableView.resizeRowsToContents();
+
 		self.tableView.resizeColumnsToContents();
 		
 		self.tableView.horizontalHeader().setStretchLastSection(True);
@@ -223,10 +174,6 @@ class VerTabla(Base, Form):
 			#hacer el cambio de pagina al objeto EditarRegistro
 			self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(EditarRegistro)))
 
-	# def deactivateLineEdit(self):
-	# 	#ocultar el line edit
-	# 	self.line_edit_busqueda_presupuesto.hide()
-	# 	self.botonModificar.hide()#daniel estuvo aqui
 
 	def fillCombo(self):
 		#obtener el nombre de la tabla actual
@@ -250,74 +197,7 @@ class VerTabla(Base, Form):
 		for i in headers:
 			self.comboBox_busqueda_presupuesto.addItem(i[0])
 
-	#en el siguiente metodo se obtiene el valor del combobox para realizar una consulta que obtenga todos los registros de la tabla;
-	def getTableContent(self):
-		#obtener el nombre de la tabla actual
-		tabla_name = self.tableslist.currentText()
-		#obtener la conexion a la base de datos
-		conn = obtener_conexion()
-		#crear un cursor para la conexion
-		cur = conn.cursor()
-		#crear la consulta para obtener todos los registros de la tabla
-		query = f"SELECT *  FROM {tabla_name};"
-		query2 = f"DESCRIBE {tabla_name}"
-		#ejecutar la consulta
-		cur.execute(query)
-		#obtener los registros de la tabla
-		contenido_tabla = cur.fetchall()
-		#ejecutar la consulta
-		cur.execute(query2)
-		#obtener los encabezados de la tabla
-		headers_sinFiltro = cur.fetchall()
-		#cerrar la conexion
-		cur.close()
-		conn.close()
-		#crear un modelo para el widget QTableView
-		model = QStandardItemModel()
-		#agregar los encabezados al modelo
-		for i in headers_sinFiltro:
-			model.setHorizontalHeaderItem(headers_sinFiltro.index(i),QStandardItem(i[0]))		
-		#agregar el widget QTableView al layout
-		if self.flag == False:
-			#crear un nuevo widget QTableView
-			self.tableView = QTableView()
-			self.horizontalLayout.addWidget(self.tableView)
-			self.flag=True
-		#agregar el modelo al widget QTableView
-		self.tableView.setModel(model)
-		#agregar los registros al modelo con un boton para editar el registro
-		for i,items in enumerate(contenido_tabla):
-			for j in range(len(contenido_tabla[i])):
-				model.setItem(i,j,QStandardItem(str(contenido_tabla[i][j])))
-			
-		#crear un filtro para el widget QTableView
-		self.proxy = QSortFilterProxyModel()
-		#agregar el modelo al filtro
-		self.proxy.setSourceModel(model)
-		#agregar el filtro al widget QTableView
-		self.tableView.setModel(self.proxy)
-		######Karo, ponle aqui el cambio de icono al boton de filtro######
-		if self.flagTabla == False:
-			self.botonModificar.show()
-			self.line_edit_busqueda_presupuesto.show()
-			#ocultar el widget tableView
-			self.tableView.hide()
-			self.tableView.show()
-			self.flagTabla = True
-		else:
-			self.botonModificar.hide()
-			self.line_edit_busqueda_presupuesto.hide()
-			self.tableView.hide()
-			self.tableView.show()
-			self.flagTabla = False
-		#obtener una lista enumerada de los campos de la tabla
-		headers = list(enumerate([i[0] for i in headers_sinFiltro]))
-		#agregar un evento al filtro para cuando se cambia el valor del combobox, comparar el valor del combobox con la lista de campos de la tabla para obtener el indice del campo seleccionado
-		self.comboBox_busqueda_presupuesto.currentIndexChanged.connect(lambda *args, headers= headers: self.setfilterKeyColumn(headers))
-		#agregar un evento al filtro para cuando se escribe en el line edit
-		self.proxy.setFilterCaseSensitivity(Qt.CaseInsensitive)
-		#agregar un evento al filtro para cuando se escribe en el line edit
-		self.line_edit_busqueda_presupuesto.textChanged.connect(self.proxy.setFilterRegExp)
+
 
 	def setfilterKeyColumn(self,headers:list):
 		#obtener el valor del combobox
