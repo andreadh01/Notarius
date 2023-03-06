@@ -1,0 +1,22 @@
+<RCC>
+  <qresource prefix="resources">
+    <file>resources/icons/search-interface-symbol.png</file>
+    <file>resources/imagenes/folder.png</file>
+    <file>resources/imagenes/folder.png</file>
+    <file>resources/icons/down-arrow-brown.png</file>
+    <file>resources/icons/down-arrow-gray.png</file>
+    <file>resources/icons/down-arrow-white.png</file>
+    <file>resources/icons/left-arrow.png</file>
+    <file>resources/icons/menu.png</file>
+    <file>resources/icons/right-arrow.png</file>
+    <file>resources/icons/add-user.png</file>
+    <file>resources/icons/add.png</file>
+    <file>resources/icons/cells.png</file>
+    <file>resources/icons/edit.png</file>
+    <file>resources/icons/group.png</file>
+    <file>resources/icons/logout.png</file>
+    <file>resources/icons/menu.png</file>
+    <file>resources/imagenes/carpeta.png</file>
+    <file>resources/imagenes/undraw_team_up_re_84ok.svg</file>
+  </qresource>
+</RCC>

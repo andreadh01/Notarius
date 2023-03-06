@@ -102,8 +102,8 @@ def crearRadioButton(self,name_input, registro='',col=''):
         attr.addButton(r0)
         r1 = getattr(self,si_radiobutton)
         attr.addButton(r1)
-        r1.setStyleSheet("font: 100 16pt 'Arial';\ncolor: #666666")
-        r0.setStyleSheet("font: 100 16pt 'Arial';\ncolor: #666666")
+        r1.setStyleSheet("font: 100 12pt 'Arial';\ncolor: #666666")
+        r0.setStyleSheet("font: 100 12pt 'Arial';\ncolor: #666666")
         r1.toggled.connect(partial(self.actualizarDict, col, True))
         r0.toggled.connect(partial(self.actualizarDict, col, False))
         print("rad btn registro")
@@ -120,7 +120,7 @@ def inputStylesheet(enable, date=False, combobox=False):
     if date: 
         stylesheet = """
         QDateTimeEdit {
-            font: 16pt "Arial";\ncolor: #666666;\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;
+            font: 12pt "Arial";\ncolor: #666666;\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;
         }
         QDateEdit::drop-down{
             background-color:#957F5F;
@@ -132,7 +132,7 @@ border-bottom-right-radius:8px;
     image:url('ui/icons/calendar.png');
         }
         QDateEdit {
-            font: 16pt "Arial";\ncolor: #666666;\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;
+            font: 12pt "Arial";\ncolor: #666666;\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;
         }
         QDateTimeEdit::drop-down{
             background-color:#957F5F;
@@ -206,7 +206,7 @@ QCalendarWidget {
     elif combobox:
         stylesheet = """
         QComboBox {
-            font: 16pt "Arial";\ncolor: #666666;\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;
+            font: 12pt "Arial";\ncolor: #666666;\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;
         }
 
 /* style for drop down area */
@@ -247,7 +247,7 @@ background-color: #d3c393;
 
         """
     else:
-        stylesheet = f"font: 100 16pt 'Arial';\ncolor: #666666;\nbackground-color: {bg};\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;"
+        stylesheet = f"font: 100 12pt 'Arial';\ncolor: #666666;\nbackground-color: {bg};\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;"
     return  stylesheet
 # esta funcion devuelve un checkbox
 #

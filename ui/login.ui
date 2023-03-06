@@ -64,7 +64,7 @@ background-color:rgba(245, 216, 174, 0.08);
         <string notr="true">QLabel {
 background-color: rgba(202, 166, 112, 0.15);
 	
-	image: url(:/icons/undraw_team_up_re_84ok.svg);
+	image: url(:/resources/resources/imagenes/undraw_team_up_re_84ok.svg);
 }</string>
        </property>
        <property name="text">
@@ -144,7 +144,7 @@ color: rgba(149, 127, 95, 1);
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true">image: url(:/icons/carpeta.png);</string>
+          <string notr="true">image: url(:/resources/resources/imagenes/carpeta.png);</string>
          </property>
          <property name="text">
           <string/>

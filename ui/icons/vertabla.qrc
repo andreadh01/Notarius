@@ -1,8 +1,0 @@
-<RCC>
-  <qresource prefix="buscar">
-    <file>search-line (1).png</file>
-  </qresource>
-  <qresource prefix="flechas">
-    <file>down-arrow.png</file>
-  </qresource>
-</RCC>

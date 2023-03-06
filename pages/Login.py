@@ -1,23 +1,27 @@
 from doctest import master
 import os
 import sys
-from ui.icons import imagenes
+from resources_rc import *
 from PyQt5.uic import loadUi
-from PyQt5 import QtWidgets, QtGui,Qt
+from PyQt5 import QtWidgets
 from bdConexion import obtener_conexion
-from pages.dashboard import Dashboard
 from usuarios import saveSession, tablaToDict
+
 os.environ["QT_FONT_DPI"] = "96" # FIX Problem for High DPI and Scale above 100%
 
-class WelcomeScreen(QtWidgets.QDialog):
-    def __init__(self):
-        super(WelcomeScreen, self).__init__()
+class LoginScreen(QtWidgets.QDialog):
+    def __init__(self,parent=None):
+        super(self.__class__, self).__init__(parent)
         loadUi("ui/login.ui",self)
-        #self.setWindowFlags(Qt.Dialog, Qt.WindowSystemMenuHint, Qt.WindowMinimizeButtonHint);
         self.passwordfield.setEchoMode(QtWidgets.QLineEdit.Password)
         self.login.clicked.connect(self.loginfunction)
-    
+        self.setMinimumHeight(800)
+        self.setMinimumWidth(1200)
+        self.setWindowTitle('Notarius - Login')
 
+    def closeEvent(self, event):
+        sys.exit()
+    
     def loginfunction(self):
         user = self.user.text()
         password = self.passwordfield.text()
@@ -32,50 +36,23 @@ class WelcomeScreen(QtWidgets.QDialog):
             tablaToDict(user, password)
             cur = conn.cursor()
             print("Successfully logged in.")
-            dashboard = Dashboard()
-            widget.addWidget(dashboard)
-            widget.setCurrentIndex(1)
             self.error.setText("")
             cur.close()
             conn.close()
+            self.accept()
             # CUANDO YA ESTE LISTA APLICACION, SE VA A UTILIZAR EL TRY EXCEPT
             # try:
             #     conn = obtener_conexion(user, password)
             #     saveSession(user, password)
             #     cur = conn.cursor()
             #     print("Successfully logged in.")
-            #     dashboard = Dashboard()
-            #     #tabla = VerTabla(widget)
-            #     widget.addWidget(dashboard)
-            #     #widget.addWidget(tabla)
-            #     print(widget.currentIndex())
-            #     widget.setCurrentIndex(1)
-            #     #widget.setCurrentIndex(widget.currentIndex()+1)
             #     self.error.setText("")
             #     cur.close()
             #     conn.close()
+            #     self.accept()
             # except:
             #     self.error.setText("Usuario o contraseña incorrectos. Consulta al administrador.")
             #     self.passwordfield.setText('')
             #     self.user.setText('')
     def reject(self) -> None:
         return
-
-# main
-app = QtWidgets.QApplication([])
-app.setWindowIcon(QtGui.QIcon("ui/icons/carpeta.png"))
-
-welcome = WelcomeScreen()
-widget = QtWidgets.QStackedWidget()
-widget.addWidget(welcome)
-
-widget.setWindowTitle('Notarius - Sistema Administrativo')
-
-widget.setMinimumHeight(800)
-widget.setMinimumWidth(1200)
-widget.show()
-
-try:
-    sys.exit(app.exec_())
-except:
-    print("Exiting")

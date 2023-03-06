@@ -2,7 +2,7 @@ from PyQt5 import  uic
 from bdConexion import obtener_conexion
 from PyQt5.QtWidgets import QHeaderView, QTableView, QAbstractItemView,QPushButton,QMessageBox
 from PyQt5.QtCore import Qt,QSortFilterProxyModel, QTimer
-from ui.icons import imagenes
+from resources_rc import *
 from PyQt5.QtGui import QStandardItemModel,QStandardItem
 
 import os
