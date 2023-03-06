@@ -67,6 +67,9 @@ color: #957F5F;
      </item>
      <item row="0" column="2">
       <widget class="QPushButton" name="button_guardar">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="styleSheet">
         <string notr="true">QPushButton {
 border-radius: 8px;
@@ -147,12 +150,17 @@ background: white;
        </property>
        <item>
         <property name="text">
+         <string>Selecciona un rol...</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>Administrador</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Empleado</string>
+         <string>Armadores</string>
         </property>
        </item>
        <item>
@@ -162,7 +170,17 @@ background: white;
        </item>
        <item>
         <property name="text">
-         <string>Armadores</string>
+         <string>Presupuesto</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Juridico</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tramites</string>
         </property>
        </item>
        <item>
@@ -283,8 +301,8 @@ border: none;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>614</width>
-          <height>44</height>
+          <width>616</width>
+          <height>45</height>
          </rect>
         </property>
         <property name="sizePolicy">
@@ -340,8 +358,8 @@ border: none;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>365</width>
-          <height>44</height>
+          <width>484</width>
+          <height>45</height>
          </rect>
         </property>
         <property name="sizePolicy">
