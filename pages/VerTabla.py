@@ -297,3 +297,5 @@ class VerTabla(Base, Form):
 				self.mensaje.setStyleSheet("color:red;")
 				self.mensaje.setText(f"Hubo un error al exportar la tabla")
 				print("no")
+	def reject(self) -> None:
+		return

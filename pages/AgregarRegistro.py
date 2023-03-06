@@ -135,6 +135,9 @@ class AgregarRegistro(Form, Base):
         #insert into {nombre_tabla} (cols[0]) cols[1]
     def restartRegistro(self):
         self.setupColumns(self)
+    
+    def reject(self) -> None:
+        return
 
 	# dentro de este método se podran actualizar los campos de forma dinamica,
 	# segun la tabla que se haya seleccionado	

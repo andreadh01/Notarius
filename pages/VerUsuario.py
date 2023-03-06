@@ -86,3 +86,5 @@ class VerUsuario(Base, Form):
 		self.parent().findChild(EditarPrivilegios).usuarioslist.removeItem(item)
 		updateTable('usuario')
 		self.setupTable(self)
+	def reject(self) -> None:
+		return

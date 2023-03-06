@@ -112,3 +112,6 @@ class EditarRegistro(Form, Base):
         conn.close()
         updateTable(tabla)
         self.changePage()
+
+    def reject(self) -> None:
+        return

@@ -129,3 +129,6 @@ class Dashboard(Base, Form):
     def cerrarSesion(self):
         clearSession()
         os.execl(sys.executable, sys.executable, *sys.argv)
+        
+    def reject(self) -> None:
+        return

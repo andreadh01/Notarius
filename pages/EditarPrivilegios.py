@@ -256,6 +256,8 @@ class EditarPrivilegios(Base, Form):
 								'write':{}}
 		self.showGrants()
 
+	def reject(self) -> None:
+		return
 	# al seleccionar guardar se llevara a cabo el comando en la base de datos
 	#	ejemplo: GRANT SELECT (col1), INSERT (col1,col2) ON mydb.mytbl TO 'someuser'@'somehost';
 	# seria buena opcion que aparezca un aviso una vez que se ha guardado correctamente
