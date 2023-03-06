@@ -175,9 +175,9 @@ class RegistrarUsuario(Form, Base):
         conn = obtener_conexion(user,pwd)
         cur = conn.cursor()
         query=f"SELECT rol FROM usuario WHERE nombre_usuario='{nombre_usuario}'"
-		cur.execute(query)
-		rol = cur.fetchall()
-		rol = rol[0][0]
+        cur.execute(query)
+        rol = cur.fetchall()
+        rol = rol[0][0]
         for llave,accion in self.diccionario_permisos.items():
             for nombre_tabla,columnas in accion.items():
                 for nombre_columna,checked in columnas.items():
@@ -192,7 +192,7 @@ class RegistrarUsuario(Form, Base):
                             cur.execute(query)
                         if rol == 'admin':
                             query=f"GRANT ALL PRIVILEGES ON mysql.* TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
-							cur.execute(query) 
+                            cur.execute(query) 
                         
         cur.close()
         conn.close()
