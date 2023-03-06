@@ -63,7 +63,7 @@ class WelcomeScreen(QtWidgets.QDialog):
 
 # main
 app = QtWidgets.QApplication([])
-app.setWindowIcon(QtGui.QIcon("icon.png"))
+app.setWindowIcon(QtGui.QIcon("ui/icons/carpeta.png"))
 
 welcome = WelcomeScreen()
 widget = QtWidgets.QStackedWidget()

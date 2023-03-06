@@ -3,7 +3,7 @@ from pages.EditarPrivilegios import EditarPrivilegios
 import os
 from bdConexion import obtener_conexion
 from functools import partial
-from ui.icons import imagenes
+
 from pages.VerUsuario import VerUsuario
 from usuarios import getListaTablas, getPermisos, getUsuarioLogueado, updateTable
 
@@ -161,7 +161,7 @@ class RegistrarUsuario(Form, Base):
             else:
                 print('permisossss')
                 print(self.diccionario_permisos.values())
-                query = f"INSERT INTO usuario(nombre_usuario,contrasena,rol) VALUES('{nombre_usuario}','{contrasena}','{rol}')"
+                query = f"INSERT INTO usuario(nombre_usuario,rol) VALUES('{nombre_usuario}','{rol}')"
                 cur.execute(query)
                 query = f"CREATE USER '{nombre_usuario}'@'localhost' IDENTIFIED BY '{contrasena}'"
                 cur.execute(query)
@@ -192,6 +192,8 @@ class RegistrarUsuario(Form, Base):
         user, pwd = getUsuarioLogueado()
         conn = obtener_conexion(user,pwd)
         cur = conn.cursor()
+        print(f'diccionario de permisos para {self.comboBox_roles.currentText()}')
+        print(self.diccionario_permisos)
         for llave,accion in self.diccionario_permisos.items():
             for nombre_tabla,columnas in accion.items():
                 for nombre_columna,checked in columnas.items():
@@ -224,6 +226,12 @@ class RegistrarUsuario(Form, Base):
             return 'proyectista'
         elif rol_unformat == 'Armadores':
             return 'armadores'
+        elif rol_unformat == 'Juridico':
+            return 'juridico'
+        elif rol_unformat == 'Trámites':
+            return 'tramites'
+        elif rol_unformat == 'Presupuesto':
+            return 'presupuesto'
         else:
             return 'otro' 
 
@@ -231,8 +239,14 @@ class RegistrarUsuario(Form, Base):
         query = f"SELECT * FROM usuario WHERE nombre_usuario ='{nombre_usuario}'"
         cur.execute(query)
         usuarios = cur.fetchall()
-        if len(usuarios) == 0:
+        query = f"SELECT * FROM mysql.user WHERE user ='{nombre_usuario}'"
+        cur.execute(query)
+        mysql_user = cur.fetchall()
+        if len(usuarios) == 0 and len(mysql_user) == 0:
             repetido = False
         else:
             repetido = True
         return repetido
+
+    def reject(self) -> None:
+        return
