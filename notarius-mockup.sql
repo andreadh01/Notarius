@@ -325,7 +325,7 @@ CREATE TABLE `usuario` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `nombre_usuario` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `contrasena` varchar(300) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `rol` enum('admin','empleado','proyectista','armadores','otro') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `rol` enum('admin','proyectista','armadores','presupuesto','tramites','juridico','otro') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Empleados: Martin, Eva y Paulina\nProyectistas:\n Alicia Felix\nMartha Soto\nAbraham Castro\nYesenia\nAna Luisa Rodriguez\nJuan Martin Ruiz\nRene Luna Araiza\nRene Luna Sugich\nGloria';
 
