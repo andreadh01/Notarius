@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>762</width>
-    <height>622</height>
+    <height>642</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,17 +20,6 @@
  }</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="2">
-    <widget class="QStackedWidget" name="stackedWidget">
-     <property name="minimumSize">
-      <size>
-       <width>100</width>
-       <height>100</height>
-      </size>
-     </property>
-     <widget class="VerTabla" name="vertabla"/>
-    </widget>
-   </item>
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout_5">
      <item>
@@ -61,6 +50,22 @@ color: rgba(149, 127, 95, 1);
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'.AppleSystemUIFont'; font-size:30pt; font-weight:696; color:#8d6e3a;&quot;&gt;NOTARIUS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>100</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="text">
+        <string> </string>
        </property>
       </widget>
      </item>
@@ -312,6 +317,17 @@ p, li { white-space: pre-wrap; }
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QStackedWidget" name="stackedWidget">
+     <property name="minimumSize">
+      <size>
+       <width>100</width>
+       <height>100</height>
+      </size>
+     </property>
+     <widget class="VerTabla" name="vertabla"/>
     </widget>
    </item>
   </layout>
