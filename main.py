@@ -18,9 +18,9 @@ import sys
 import os
 import platform
 from PyQt5 import QtWidgets,QtGui
-from pages.Login import LoginScreen
 
 from ui.ui_dashboard import Ui_Dashboard
+from ui_functions import *
 # IMPORT / GUI AND MODULES AND WIDGETS
 # ///////////////////////////////////////////////////////////////
 
@@ -38,6 +38,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.return_to_login = False
         self.setMinimumHeight(800)
         self.setMinimumWidth(1200)
+        self.doLogin()
         # SET AS GLOBAL WIDGETS
         # ///////////////////////////////////////////////////////////////
         self.ui = Ui_Dashboard()
@@ -48,13 +49,11 @@ class MainWindow(QtWidgets.QMainWindow):
         # ///////////////////////////////////////////////////////////////
         title = "Notarius - Sistema administrativo"
         self.setWindowTitle(title)
-
+        centerOnScreen(self)
         # TOGGLE MENU
         # ///////////////////////////////////////////////////////////////
-        from ui_functions import UIFunctions
-
         widgets.toggleButton.clicked.connect(
-            lambda: UIFunctions.toggleMenu(self, True))
+            lambda: toggleMenu(self, True))
 
         # BUTTONS CLICK
         # ///////////////////////////////////////////////////////////////
@@ -68,7 +67,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # EXTRA LEFT BOX
         def openCloseLeftBox():
-            UIFunctions.toggleLeftBox(self, True)
+            toggleLeftBox(self, True)
         # widgets.toggleLeftBox.clicked.connect(openCloseLeftBox)
         widgets.extraCloseColumnBtn.clicked.connect(openCloseLeftBox)
 
@@ -79,16 +78,25 @@ class MainWindow(QtWidgets.QMainWindow):
         # SET HOME PAGE AND SELECT MENU
         # ///////////////////////////////////////////////////////////////
         widgets.stackedWidget.setCurrentWidget(widgets.verTabla)
-        widgets.btn_tablas.setStyleSheet(UIFunctions.selectMenu(widgets.btn_tablas.styleSheet()))
+        widgets.btn_tablas.setStyleSheet(selectMenu(widgets.btn_tablas.styleSheet()))
         
-    
     def logOut(self):
-        self.return_to_login = True
-        self.close()
+        self.hide()  # hide main window
+        self.doLogin()  # show login
+        self.show()
+        
+    def doLogin(self):
+        from pages.Login import LoginScreen
+        login = LoginScreen()
+        if login.exec_() != QtWidgets.QDialog.Accepted:
+            self.close()  # exit app
+    # def logOut(self):
+    #     self.return_to_login = True
+    #     self.close()
 
-    def closeEvent(self, event):
-        if not self.return_to_login:
-            sys.exit()
+    # def closeEvent(self, event):
+    #     if not self.return_to_login:
+    #         sys.exit()
 
     # BUTTONS CLICK
     # Post here your functions for clicked buttons
@@ -97,28 +105,27 @@ class MainWindow(QtWidgets.QMainWindow):
         # GET BUTTON CLICKED
         btn = self.sender()
         btnName = btn.objectName()
-        from ui_functions import UIFunctions
 
 
         # SHOW HOME PAGE
         if btnName == "btn_tablas":
             widgets.stackedWidget.setCurrentWidget(widgets.verTabla)
-            UIFunctions.resetStyle(self, btnName)
-            btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
+            resetStyle(self, btnName)
+            btn.setStyleSheet(selectMenu(btn.styleSheet()))
 
         # SHOW WIDGETS PAGE
         if btnName == "btn_agregar":
             widgets.stackedWidget.setCurrentWidget(widgets.agregar)
-            UIFunctions.resetStyle(self, btnName)
-            btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
+            resetStyle(self, btnName)
+            btn.setStyleSheet(selectMenu(btn.styleSheet()))
 
         # SHOW NEW PAGE
         if btnName == "btn_registrar":
             widgets.stackedWidget.setCurrentWidget(
                 widgets.registrar)  # SET PAGE
             # RESET ANOTHERS BUTTONS SELECTED
-            UIFunctions.resetStyle(self, btnName)
-            btn.setStyleSheet(UIFunctions.selectMenu(
+            resetStyle(self, btnName)
+            btn.setStyleSheet(selectMenu(
                 btn.styleSheet()))  # SELECT MENU
 
         if btnName == "btn_usuarios":
@@ -131,8 +138,5 @@ class MainWindow(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     app.setWindowIcon(QtGui.QIcon("ui/resources/imagenes/carpeta.png"))
-    while True:
-        login = LoginScreen()
-        if login.exec_() == QtWidgets.QDialog.Accepted:
-            window = MainWindow()
-            app.exec_()
+    window = MainWindow()
+    app.exec_()

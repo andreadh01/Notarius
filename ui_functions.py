@@ -17,17 +17,22 @@
 # MAIN FILE
 # ///////////////////////////////////////////////////////////////
 from main import *
-from PyQt5 import QtGui,QtCore
+from PyQt5 import QtGui,QtCore,QtWidgets
 # GLOBALS
 # ///////////////////////////////////////////////////////////////
 GLOBAL_STATE = False
 GLOBAL_TITLE_BAR = True
 
 
-class UIFunctions(MainWindow):
+def centerOnScreen (self):
+        '''centerOnScreen()
+Centers the window on the screen.'''
+        resolution = QtWidgets.QDesktopWidget().screenGeometry()
+        self.move((resolution.width() / 2) - (self.frameSize().width() / 2),
+                  (resolution.height() / 2) - (self.frameSize().height() / 2)) 
     # MAXIMIZE/RESTORE
     # ///////////////////////////////////////////////////////////////
-    def maximize_restore(self):
+def maximize_restore(self):
         global GLOBAL_STATE
         status = GLOBAL_STATE
         if status == False:
@@ -58,18 +63,18 @@ class UIFunctions(MainWindow):
 
     # RETURN STATUS
     # ///////////////////////////////////////////////////////////////
-    def returStatus(self):
+def returStatus(self):
         return GLOBAL_STATE
 
     # SET STATUS
     # ///////////////////////////////////////////////////////////////
-    def setStatus(self, status):
+def setStatus(self, status):
         global GLOBAL_STATE
         GLOBAL_STATE = status
 
     # TOGGLE MENU
     # ///////////////////////////////////////////////////////////////
-    def toggleMenu(self, enable):
+def toggleMenu(self, enable):
         if enable:
             # GET WIDTH
             width = self.ui.leftMenuBg.width()
@@ -93,7 +98,7 @@ class UIFunctions(MainWindow):
 
     # TOGGLE LEFT BOX
     # ///////////////////////////////////////////////////////////////
-    def toggleLeftBox(self, enable):
+def toggleLeftBox(self, enable):
         if enable:
             # GET WIDTH
             width = self.ui.extraLeftBox.width()
@@ -119,7 +124,7 @@ class UIFunctions(MainWindow):
                 # RESET BTN
                 self.ui.toggleLeftBox.setStyleSheet(style.replace(color, ''))
 
-        UIFunctions.start_box_animation(self, width, widthRightBox, "left")
+        start_box_animation(self, width, widthRightBox, "left")
 
     # TOGGLE RIGHT BOX
     # ///////////////////////////////////////////////////////////////
@@ -151,7 +156,7 @@ class UIFunctions(MainWindow):
 
     #         UIFunctions.start_box_animation(self, widthLeftBox, width, "right")
 
-    def start_box_animation(self, left_box_width, right_box_width, direction):
+def start_box_animation(self, left_box_width, right_box_width, direction):
         right_width = 0
         left_width = 0
 
@@ -191,45 +196,41 @@ class UIFunctions(MainWindow):
     # SELECT/DESELECT MENU
     # ///////////////////////////////////////////////////////////////
     # SELECT
-    def selectMenu(getStyle):
-        select = getStyle + """
-    border-left: 22px solid qlineargradient(spread:pad, x1:0.034, y1:0, x2:0.216, y2:0, stop:0.499 rgb(116, 91, 47), stop:0.5 rgba(85, 170, 255, 0));
-    background-color: #e3ddcc;
-    color:rgb(116, 91, 47) ;
-    """
-        return select
-
-    # DESELECT
-    def deselectMenu(getStyle):
-        deselect = getStyle.replace("""
-    border-left: 22px solid qlineargradient(spread:pad, x1:0.034, y1:0, x2:0.216, y2:0, stop:0.499 rgb(116, 91, 47), stop:0.5 rgba(85, 170, 255, 0));
-    background-color: #e3ddcc;
-    color:rgb(116, 91, 47) ;
-    """, "")
-        return deselect
-
-    # START SELECTION
-    def selectStandardMenu(self, widget):
-        for w in self.ui.topMenu.findChildren(QtWidgets.QPushButton):
-            if w.objectName() == widget:
-                w.setStyleSheet(UIFunctions.selectMenu(w.styleSheet()))
-
-    # RESET SELECTION
-    def resetStyle(self, widget):
-        for w in self.ui.topMenu.findChildren(QtWidgets.QPushButton):
-            if w.objectName() != widget:
-                w.setStyleSheet(UIFunctions.deselectMenu(w.styleSheet()))
-
-    # IMPORT THEMES FILES QSS/CSS
-    # ///////////////////////////////////////////////////////////////
-    def theme(self, file, useCustomTheme):
-        if useCustomTheme:
-            str = open(file, 'r').read()
-            self.ui.styleSheet.setStyleSheet(str)
+def selectMenu(getStyle):
+    select = getStyle + """
+border-left: 22px solid qlineargradient(spread:pad, x1:0.034, y1:0, x2:0.216, y2:0, stop:0.499 rgb(116, 91, 47), stop:0.5 rgba(85, 170, 255, 0));
+background-color: #e3ddcc;
+color:rgb(116, 91, 47) ;
+"""
+    return select
+# DESELECT
+def deselectMenu(getStyle):
+    deselect = getStyle.replace("""
+border-left: 22px solid qlineargradient(spread:pad, x1:0.034, y1:0, x2:0.216, y2:0, stop:0.499 rgb(116, 91, 47), stop:0.5 rgba(85, 170, 255, 0));
+background-color: #e3ddcc;
+color:rgb(116, 91, 47) ;
+""", "")
+    return deselect
+# START SELECTION
+def selectStandardMenu(self, widget):
+    for w in self.ui.topMenu.findChildren(QtWidgets.QPushButton):
+        if w.objectName() == widget:
+            w.setStyleSheet(selectMenu(w.styleSheet()))
+# RESET SELECTION
+def resetStyle(self, widget):
+    for w in self.ui.topMenu.findChildren(QtWidgets.QPushButton):
+        if w.objectName() != widget:
+            w.setStyleSheet(deselectMenu(w.styleSheet()))
+# IMPORT THEMES FILES QSS/CSS
+# ///////////////////////////////////////////////////////////////
+def theme(self, file, useCustomTheme):
+    if useCustomTheme:
+        str = open(file, 'r').read()
+        self.ui.styleSheet.setStyleSheet(str)
 
     # START - GUI DEFINITIONS
     # ///////////////////////////////////////////////////////////////
-#     def uiDefinitions(self):
+def uiDefinitions(self):
 #         def dobleClickMaximizeRestore(event):
 #             # IF DOUBLE CLICK CHANGE STATUS
 #             if event.type() == QEvent.MouseButtonDblClick:

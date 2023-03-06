@@ -5,6 +5,7 @@ from resources_rc import *
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets
 from bdConexion import obtener_conexion
+from ui_functions import centerOnScreen
 from usuarios import saveSession, tablaToDict
 
 os.environ["QT_FONT_DPI"] = "96" # FIX Problem for High DPI and Scale above 100%
@@ -18,6 +19,8 @@ class LoginScreen(QtWidgets.QDialog):
         self.setMinimumHeight(800)
         self.setMinimumWidth(1200)
         self.setWindowTitle('Notarius - Login')
+        centerOnScreen(self)
+        self.show()
 
     def closeEvent(self, event):
         sys.exit()
