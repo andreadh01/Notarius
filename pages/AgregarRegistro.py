@@ -38,7 +38,7 @@ class AgregarRegistro(Form, Base):
         self.camposCambiados.clear()
         self.resetCombobox(self)
         tabla = self.tablaslist.currentText()
-        columnas = getPermisos(tabla)["escritura"]
+        columnas = getPermisos(tabla)["write"]
         lista_columnas = columnas.split(',')
         print(tabla)
         print(lista_columnas)
@@ -100,6 +100,7 @@ class AgregarRegistro(Form, Base):
     def actualizarDict(self,col, val):
         tipo = str(type(val))
         if 'QDate' in tipo: val = val.toString("yyyy-MM-dd")
+        if type(val) == bool: val = 1 if val else 0
         self.camposCambiados[col] = val
         print(self.camposCambiados)
         
@@ -135,12 +136,15 @@ class AgregarRegistro(Form, Base):
         #insert into {nombre_tabla} (cols[0]) cols[1]
     def restartRegistro(self):
         self.setupColumns(self)
+    
+    def reject(self) -> None:
+        return
 
 	# dentro de este método se podran actualizar los campos de forma dinamica,
 	# segun la tabla que se haya seleccionado	
 	# def setupUi(self, Form):
 		# print("agregar campos de tabla")
-		# primero se obtendra la tabla seleccionada, por default sera escritura
+		# primero se obtendra la tabla seleccionada, por default sera write
 		# se hara un fetch a la base de datos con todos los campos de esa tabla 
 		# se debe renderizar la pantalla con los inputs de los campos a llenar
 		# si es posible, que existan condiciones para poner el mejor tipo de campo

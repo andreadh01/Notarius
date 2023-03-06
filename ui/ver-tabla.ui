@@ -17,13 +17,107 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
+      <widget class="QLabel" name="label">
+       <property name="styleSheet">
+        <string notr="true">font: 700 14pt &quot;Arial&quot;;
+color: #957F5F;</string>
+       </property>
+       <property name="text">
+        <string>Tabla:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="tableslist">
+       <property name="styleSheet">
+        <string notr="true">/* style for the QComboBox */
+#tableslist {
+border-radius: 11px;
+border: 2px solid #957F5F;
+background-color: white;
+color: #957F5F;
+height: 25px;
+padding: 0 15px;
+
+}
+
+/* style for drop down area */
+#tableslist::drop-down{
+border: 0px;
+}
+/* style for drop down arrow */
+#tableslist::down-arrow {
+image: url(:/flechas/down-arrow.png);
+width: 20px;
+height: 20px;
+margin-right: 15px;
+}
+/* style for QComboBox after open selcet menu */
+#tableslist:on {
+border: 4px solid #c2dbfe;
+}
+/* style for list menu */
+#tableslist QListView {
+font-size: 12px;
+border: 1px solid rgba(0, 0, 0, 10%);
+padding: 5px;
+background-color: #fff;
+outline: 0px;
+}
+
+/* style for list items */
+#tableslist QListView::item {
+padding-left: 10px;
+background-color: #fff;
+}
+#tableslist QListView::item:hover {
+background-color: #d3c393;
+}
+#tableslist QListView::item:selected {
+background-color: #d3c393;
+}
+</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="botonModificar">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+border-radius: 11px;
+border: 2px solid #957F5F;
+background-color: white;
+color: #957F5F;
+height: 25px;
+padding: 0 15px;
+}
+
+QPushButton:hover {
+	background-color: rgb(116, 91, 47);
+	color: rgb(255, 255, 255);
+	border: 3px solid  rgb(116, 91, 47);
+}
+
+QPushButton:pressed {
+    border-style: inset;
+    background-color: rgb(103, 80, 41);
+	color: rgb(255, 255, 255);
+	border: 3px solid  rgb(103, 80, 41);
+}</string>
+       </property>
+       <property name="text">
+        <string>Modificar</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="pushButton_2">
        <property name="styleSheet">
         <string notr="true">QPushButton {
 border-radius: 11px;
-border: 2px solid #95753d;
+border: 2px solid #957F5F;
 background-color: white;
-color: #95753d;
+color: #957F5F;
 height: 25px;
 }
 
@@ -42,17 +136,6 @@ QPushButton:pressed {
        </property>
        <property name="text">
         <string>     Exportar     </string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="mensaje">
-       <property name="styleSheet">
-        <string notr="true">color: #8fc26b;
-font: 14pt &quot;Arial&quot;;</string>
-       </property>
-       <property name="text">
-        <string/>
        </property>
       </widget>
      </item>
@@ -83,59 +166,96 @@ font: 14pt &quot;Arial&quot;;</string>
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="botonModificar">
-       <property name="text">
-        <string>Modificar</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QLineEdit" name="line_edit_busqueda_presupuesto">
        <property name="styleSheet">
         <string notr="true">QLineEdit {
-border-radius: 6px;
-border: 1px solid #d3c393;
+border-radius: 11px;
+border: 1px solid #957F5F;
 background-color: white;
-color:  #95753d;
-height: 20px;
-}</string>
+color: #957F5F;
+height: 25px;
+}
+</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox_busqueda_presupuesto"/>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButton_3">
+      <widget class="QComboBox" name="comboBox_busqueda_presupuesto">
        <property name="styleSheet">
-        <string notr="true">QPushButton {
-border-radius: 6px;
-border: 3px solid #95753d;
-background-color: #95753d;
+        <string notr="true">/* style for the QComboBox */
+#comboBox_busqueda_presupuesto {
+border-radius: 11px;
+border: 2px solid #957F5F;
+background-color: #957F5F;
 color: white;
 height: 25px;
-width: 40px;
+padding: 0 15px;
+
 }
 
-QPushButton:hover {
-	background-color: rgb(116, 91, 47);
-	color: rgb(255, 255, 255);
-	border: 3px solid  rgb(116, 91, 47);
+/* style for drop down area */
+#comboBox_busqueda_presupuesto::drop-down{
+border: 0px;
+color: white;
+}
+/* style for drop down arrow */
+#comboBox_busqueda_presupuesto::down-arrow {
+image: url(:/buscar/search-line (1).png);
+width: 20px;
+height: 20px;
+margin-right: 15px;
+}
+/* style for QComboBox after open selcet menu */
+#comboBox_busqueda_presupuesto:on {
+border: 4px solid #c2dbfe;
+color: white;
+}
+/* style for list menu */
+#comboBox_busqueda_presupuesto QListView {
+font-size: 12px;
+border: 1px solid rgba(0, 0, 0, 10%);
+padding: 5px;
+background-color: #957F5F;
+outline: 0px;
+color: white;
 }
 
-QPushButton:pressed {
-    border-style: inset;
-    background-color: rgb(103, 80, 41);
-	color: rgb(255, 255, 255);
-	border: 3px solid  rgb(103, 80, 41);
-}</string>
+/* style for list items */
+#comboBox_busqueda_presupuesto QListView::item {
+padding-left: 10px;
+color: white;
+background-color: #957F5F;
+}
+#comboBox_busqueda_presupuesto QListView::item:hover {
+background-color: #d3c393;
+color: white;
+}
+#comboBox_busqueda_presupuesto QListView::item:selected {
+background-color: #d3c393;
+color: white;
+}
+</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="mensaje">
+       <property name="styleSheet">
+        <string notr="true">color: rgb(149, 163, 255);
+font: 14pt &quot;Arial&quot;;</string>
        </property>
        <property name="text">
         <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>search-line (1).png</normaloff>search-line (1).png</iconset>
        </property>
       </widget>
      </item>
@@ -144,125 +264,17 @@ QPushButton:pressed {
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QListWidget" name="tableslist">
-       <property name="maximumSize">
-        <size>
-         <width>150</width>
-         <height>16777215</height>
-        </size>
+      <widget class="QTableView" name="tableView">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">QListWidget{
-background-color:white;
-color: rgb(130, 110, 74);
+        <string notr="true">QTableView {
 border:none;
-color:#957F5F;
-font: 14pt &quot;Arial&quot;;
-padding: 10px
-}</string>
-       </property>
-       <property name="currentRow">
-        <number>-1</number>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QTableWidget" name="tableWidget">
-       <property name="styleSheet">
-        <string notr="true">QTableWidget {	
-            background-color: #fff;
-            padding: 10px;
-			font: 14pt &quot;Arial&quot;;
-            gridline-color: rgb(44, 49, 60);
-            border-bottom: 1px solid rgb(204, 207, 211);
-            color:#000;
-			border:none;
-        }
-        QTableWidget::item{
-            border-color: rgb(44, 49, 60);
-            padding-left: 5px;
-            padding-right: 5px;
-            gridline-color: rgb(44, 49, 60);
-        }
-        QTableWidget::item:selected{
-            background-color: #e5faf8;
-            color:#000;
-        }
-        QScrollBar:horizontal {
-            border: none;
-            background: rgb(52, 59, 72);
-            height: 14px;
-            margin: 0px 21px 0 21px;
-            border-radius: 0px;
-        }
-         QScrollBar:vertical {
-            border: none;
-            background: white;
-            width: 10px;
-            margin: 21px 0 21px 0;
-            border-radius: 10px;
-         }
-        QHeaderView{
-           background-color:#957F5F;
-            border: 1px solid rgb(204, 207, 211);
-            border-style: none;
-            border-bottom: 1px solid rgb(204, 207, 211);
-            border-right: 1px solid rgb(204, 207, 211);
-            color:white;
-            font-size:16px;
-            border-radius: 0px;
-        }
-QScrollBar::handle:vertical {	
-	background-color: #CCCCCC;
-	min-height: 30px;
-	border-radius: 7px;
 }
-QScrollBar::handle:vertical:hover{	
-	background-color: #666666;
-}
-QScrollBar::handle:vertical:pressed {	
-	background-color: #666666;
-}QScrollBar::sub-line:vertical {
-	border: none;
-	background-color: white;
-	height: 15px;
-	border-top-left-radius: 7px;
-	border-top-right-radius: 7px;
-	subcontrol-position: top;
-	subcontrol-origin: margin;
-}
-QScrollBar::sub-line:vertical:hover {	
-	background-color: white;
-}
-QScrollBar::sub-line:vertical:pressed {	
-	background-color: white
-}
-
-/* BTN BOTTOM - SCROLLBAR */
-QScrollBar::add-line:vertical {
-	border: none;
-	background-color: white
-	height: 15px;
-	border-bottom-left-radius: 7px;
-	border-bottom-right-radius: 7px;
-	subcontrol-position: bottom;
-	subcontrol-origin: margin;
-}
-QScrollBar::add-line:vertical:hover {	
-	background-color: white;
-}
-QScrollBar::add-line:vertical:pressed {	
-	background-color: white;
-}
-
-/* RESET ARROW */
-QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
-	background: none;
-}
-QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
-	background: none;
-}
-</string>
+QHeaderView::section { background-color:#957F5F; color:white; font: 14pt &quot;Arial&quot;;  padding:5px; border: none;}</string>
        </property>
        <property name="autoScrollMargin">
         <number>30</number>
@@ -282,7 +294,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
        <property name="cornerButtonEnabled">
         <bool>false</bool>
        </property>
-       <attribute name="horizontalHeaderStretchLastSection">
+       <attribute name="verticalHeaderCascadingSectionResizes">
         <bool>true</bool>
        </attribute>
       </widget>
@@ -291,6 +303,8 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="icons/vertabla.qrc"/>
+ </resources>
  <connections/>
 </ui>

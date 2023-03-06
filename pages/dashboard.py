@@ -29,7 +29,7 @@ class Dashboard(Base, Form):
             # button.clicked.connect(partial(self.findChild(RegistrarUsuario).label_error.setText,""))
 
 	## para checar los botones a los que los usuarios tienen acceso, se deben cumplir las siguientes condiciones:
-	# si el usuario tiene acceso a ver al menos una tabla, agregar botonTabla <-- ojo aqui ya que si el usuario no puede modificar no debe salir el campo modificar
+	# si el usuario tiene acceso a read al menos una tabla, agregar botonTabla <-- ojo aqui ya que si el usuario no puede modificar no debe salir el campo modificar
 	# si el usuario tiene acceso a agregar un registro en al menos una tabla, agregar botonAgregar
 	# si el usuario tiene acceso a los usuarios, agregar botonEditarPrivilegios, botonUsuarios y botonRegistrar
     
@@ -73,10 +73,10 @@ class Dashboard(Base, Form):
     def checarPermisos(self):
         permisos_usuario = getAllPermisos()
         for tabla, permisos in permisos_usuario.items():
-            if permisos['ver'] != '': 
+            if permisos['read'] != '': 
                 if 'VerTabla' not in self.lista_botones:
                     self.lista_botones.append('VerTabla')
-            if permisos['escritura'] != '': 
+            if permisos['write'] != '': 
                 if 'AgregarRegistro' not in self.lista_botones:
                     self.lista_botones.append('AgregarRegistro')
             if tabla == 'usuario':
@@ -152,3 +152,6 @@ class Dashboard(Base, Form):
     def cerrarSesion(self):
         clearSession()
         os.execl(sys.executable, sys.executable, *sys.argv)
+        
+    def reject(self) -> None:
+        return

@@ -1,18 +1,23 @@
+from doctest import master
+import os
 import sys
 from ui.icons import imagenes
 from PyQt5.uic import loadUi
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtGui,Qt
 from bdConexion import obtener_conexion
 from pages.dashboard import Dashboard
 from usuarios import saveSession, tablaToDict
+os.environ["QT_FONT_DPI"] = "96" # FIX Problem for High DPI and Scale above 100%
 
 class WelcomeScreen(QtWidgets.QDialog):
     def __init__(self):
         super(WelcomeScreen, self).__init__()
         loadUi("ui/login.ui",self)
+        #self.setWindowFlags(Qt.Dialog, Qt.WindowSystemMenuHint, Qt.WindowMinimizeButtonHint);
         self.passwordfield.setEchoMode(QtWidgets.QLineEdit.Password)
         self.login.clicked.connect(self.loginfunction)
-        
+    
+
     def loginfunction(self):
         user = self.user.text()
         password = self.passwordfield.text()
@@ -53,12 +58,19 @@ class WelcomeScreen(QtWidgets.QDialog):
             #     self.error.setText("Usuario o contraseña incorrectos. Consulta al administrador.")
             #     self.passwordfield.setText('')
             #     self.user.setText('')
+    def reject(self) -> None:
+        return
 
 # main
-app = QtWidgets.QApplication(sys.argv)
+app = QtWidgets.QApplication([])
+app.setWindowIcon(QtGui.QIcon("ui/icons/carpeta.png"))
+
 welcome = WelcomeScreen()
 widget = QtWidgets.QStackedWidget()
 widget.addWidget(welcome)
+
+widget.setWindowTitle('Notarius - Sistema Administrativo')
+
 widget.setMinimumHeight(800)
 widget.setMinimumWidth(1200)
 widget.show()

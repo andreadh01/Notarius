@@ -201,7 +201,7 @@ border: none;
           <x>0</x>
           <y>0</y>
           <width>517</width>
-          <height>44</height>
+          <height>70</height>
          </rect>
         </property>
         <property name="sizePolicy">
@@ -237,6 +237,17 @@ background:rgba(149,127,95);
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QCheckBox" name="checkBoxAllVer">
+           <property name="styleSheet">
+            <string notr="true">font: 75 16pt;
+color: white;</string>
+           </property>
+           <property name="text">
+            <string>Seleccionar todo</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </widget>
@@ -258,7 +269,7 @@ border: none;
           <x>0</x>
           <y>0</y>
           <width>365</width>
-          <height>44</height>
+          <height>70</height>
          </rect>
         </property>
         <property name="sizePolicy">
@@ -291,6 +302,17 @@ background:rgba(149,127,95);
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkBoxAllEscribir">
+           <property name="styleSheet">
+            <string notr="true">font: 75 16pt;
+color: white;</string>
+           </property>
+           <property name="text">
+            <string>Seleccionar todo</string>
            </property>
           </widget>
          </item>

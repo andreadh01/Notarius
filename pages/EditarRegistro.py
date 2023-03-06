@@ -24,7 +24,7 @@ class EditarRegistro(Form, Base):
     def setupInputs(self, Form, tabla, registro):
         # se eliminan los inputs anteriores
         self.tabla = tabla
-        columnas = getPermisos(tabla)["escritura"]
+        columnas = getPermisos(tabla)["write"]
         lista_columnas = columnas.split(',')
         print(tabla)
         print(lista_columnas)
@@ -89,6 +89,7 @@ class EditarRegistro(Form, Base):
     def actualizarDict(self, col,val):
         tipo = str(type(val))
         if 'QDate' in tipo: val = val.toString("yyyy-MM-dd")
+        if type(val) == bool: val = 1 if val else 0
         self.camposCambiados[col] = val
         print(self.camposCambiados)
         
@@ -112,3 +113,6 @@ class EditarRegistro(Form, Base):
         conn.close()
         updateTable(tabla)
         self.changePage()
+
+    def reject(self) -> None:
+        return
