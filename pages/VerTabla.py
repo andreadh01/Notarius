@@ -144,18 +144,12 @@ class VerTabla(Base, Form):
 			# agregar mensaje de error
 			self.mensaje.show()
 			self.mensaje.setText("No tiene ningun registro seleccionado para modificar")
-			self.checkThreadTimer = QTimer(self)
-			self.checkThreadTimer.setInterval(5000)
-			self.checkThreadTimer.start()
-			self.checkThreadTimer.timeout.connect(self.mensaje.hide)
+			self.timerAndHide()
 			return
 		elif len(self.tableView.selectedIndexes())>1:
 			self.mensaje.show()
 			self.mensaje.setText("Elija solamente un campo para modificar el registro")
-			self.checkThreadTimer = QTimer(self)
-			self.checkThreadTimer.setInterval(5000)
-			self.checkThreadTimer.start()
-			self.checkThreadTimer.timeout.connect(self.mensaje.hide)
+			self.timerAndHide()
 			return
 		else:
 			row = self.tableView.selectedIndexes()[0].row()
@@ -214,7 +208,7 @@ class VerTabla(Base, Form):
 		print("AQUI TERMINA EL SETFILTERKEYCOLUMN")
 
 	def escribirCSV(self):
-		tabla = self.tableslist.currentItem().text()
+		tabla = self.tableslist.currentText()
 		path = os.path.expanduser(f"~/NotariusBackup/{tabla}")
 		if not os.path.exists(path): os.makedirs(path)
 
@@ -223,11 +217,20 @@ class VerTabla(Base, Form):
 			try:
 				df=pd.DataFrame.from_dict(Diccionario)
 				df.to_csv(path,index=False,header=True)
+				self.mensaje.show()
 				self.mensaje.setText(f"Exportado con éxito, en la ruta \"{path}\"")
 			except IOError:
+				self.mensaje.show()
 				self.mensaje.setStyleSheet("color:red;")
 				self.mensaje.setText(f"Hubo un error al exportar la tabla")
 				print("no")
+			self.timerAndHide()
+
+	def timerAndHide(self):
+		self.checkThreadTimer = QTimer(self)
+		self.checkThreadTimer.setInterval(5000)
+		self.checkThreadTimer.start()
+		self.checkThreadTimer.timeout.connect(self.mensaje.hide)
 	
 	def reject(self) -> None: 
 		return
