@@ -208,45 +208,43 @@ QCalendarWidget {
         QComboBox {
             font: 16pt "Arial";\ncolor: #666666;\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;
         }
-        QComboBox::drop-down
-{
-     subcontrol-origin: padding;
-     subcontrol-position: top right;
-     width: 15px;
-     color: #666666;
-     background-color: white;
-     border-radius: 8px;
-     padding-left: 10px;
- }
- 
- QListView{
-    border:                 none;
-    outline: none;
-    color:                      #666666;
-    background-color:   white;
-    font-weight:            bold;
-    selection-background-color: #957F5F;
-    selection-color: white;
-    show-decoration-selected: 1;
-    margin-left:                -10px;
-    padding-left    :           15px;
+
+/* style for drop down area */
+QComboBox::drop-down{
+border: 0px;
 }
-QComboBox QAbstractItemView::item {
-    border: none;
-    outline: none;
-    padding-left: 5px;
+/* style for drop down arrow */
+QComboBox::down-arrow {
+image: url(:/icons/arrow-down.png);
+width: 20px;
+height: 20px;
+margin-right: 15px;
 }
-QComboBox QAbstractItemView::item:selected {
-    background: #957F5F;
-    padding-left: 5px;
+/* style for QComboBox after open selcet menu */
+QComboBox:on {
+border: 4px solid #c2dbfe;
 }
-QComboBox::down-arrow, QSpinBox::down-arrow, QTimeEdit::down-arrow, QDateEdit::down-arrow
-{
-     image: url(ui/icons/arrow-down.png);
-     width: 24px;
-     height: 14px;
-     padding-right: 15px;
+/* style for list menu */
+QComboBox QListView {
+font-size: 12px;
+border: 1px solid rgba(0, 0, 0, 10%);
+padding: 5px;
+background-color: #fff;
+outline: 0px;
 }
+
+/* style for list items */
+QComboBox QListView::item {
+padding-left: 10px;
+background-color: #fff;
+}
+QComboBox QListView::item:hover {
+background-color: #d3c393;
+}
+QComboBox QListView::item:selected {
+background-color: #d3c393;
+}
+
         """
     else:
         stylesheet = f"font: 100 16pt 'Arial';\ncolor: #666666;\nbackground-color: {bg};\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;"

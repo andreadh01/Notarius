@@ -47,14 +47,14 @@ border: 0px;
 }
 /* style for drop down arrow */
 #tableslist::down-arrow {
-image: url(:/flechas/down-arrow.png);
+image: url(:/icons/arrow-down-brown.png);
 width: 20px;
 height: 20px;
 margin-right: 15px;
 }
 /* style for QComboBox after open selcet menu */
 #tableslist:on {
-border: 4px solid #c2dbfe;
+border: 1px solid #c2dbfe;
 }
 /* style for list menu */
 #tableslist QListView {
@@ -200,14 +200,14 @@ color: white;
 }
 /* style for drop down arrow */
 #comboBox_busqueda_presupuesto::down-arrow {
-image: url(:/buscar/search-line (1).png);
+image:url(:/icons/search-line (1).png);
 width: 20px;
 height: 20px;
 margin-right: 15px;
 }
 /* style for QComboBox after open selcet menu */
 #comboBox_busqueda_presupuesto:on {
-border: 4px solid #c2dbfe;
+border: 1px solid #c2dbfe;
 color: white;
 }
 /* style for list menu */
@@ -274,7 +274,7 @@ font: 14pt &quot;Arial&quot;;</string>
         <string notr="true">QTableView {
 border:none;
 }
-QHeaderView::section { background-color:#957F5F; color:white; font: 14pt &quot;Arial&quot;;  padding:5px; border: none;}</string>
+QHeaderView::section { background-color:#957F5F; color:white; font: 14pt &quot;Arial&quot;;  padding:5px; border: 1px solid white;}</string>
        </property>
        <property name="autoScrollMargin">
         <number>30</number>
@@ -304,7 +304,7 @@ QHeaderView::section { background-color:#957F5F; color:white; font: 14pt &quot;A
   </layout>
  </widget>
  <resources>
-  <include location="icons/vertabla.qrc"/>
+  <include location="icons/imagenes.qrc"/>
  </resources>
  <connections/>
 </ui>

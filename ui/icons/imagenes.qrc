@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="icons">
+    <file>search-line (1).png</file>
+    <file>arrow-down.png</file>
+    <file>arrow-down-brown.png</file>
     <file>logout-white.png</file>
     <file>logout-brown.png</file>
     <file>logout-box-r-line.png</file>

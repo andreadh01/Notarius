@@ -127,8 +127,6 @@ QHeaderView::section { background-color:#957F5F; color:white; font: 14pt &quot;A
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="icons/vertabla.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
