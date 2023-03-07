@@ -11,9 +11,10 @@ import os
 
 from pages.EditarRegistro import EditarRegistro
 from usuarios import getListaTablas, getPermisos, getValoresTabla
+from deployment import getBaseDir
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/ver-tabla.ui")))
+base_dir = getBaseDir()
+Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','ver-tabla.ui'))
 
 
 

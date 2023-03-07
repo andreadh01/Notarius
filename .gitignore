@@ -1,3 +1,6 @@
 __pycache__
 notarius
 .DS_Store
+build
+dist
+*.spec

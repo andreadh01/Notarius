@@ -5,9 +5,10 @@ import os
 from bdConexion import obtener_conexion
 from pages.components import crearInput, crearRadioButton
 from usuarios import getPermisos, getRegistro, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
+from deployment import getBaseDir
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/editar-registro.ui")))
+base_dir = getBaseDir()
+Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','editar-registro.ui'))
 
 class EditarRegistro(Form, Base):
     camposCambiados = {}

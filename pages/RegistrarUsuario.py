@@ -6,9 +6,10 @@ from functools import partial
 
 from pages.VerUsuarios import VerUsuarios
 from usuarios import getListaTablas, getPermisos, getUsuarioLogueado, updateTable
+from deployment import getBaseDir
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/registrar-usuario.ui")))
+base_dir = getBaseDir()
+Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','registrar-usuario.ui'))
 
 class RegistrarUsuario(Form, Base):
     checkboxList=[]
