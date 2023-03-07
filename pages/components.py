@@ -106,7 +106,6 @@ def crearRadioButton(self,name_input, registro='',col=''):
         r0.setStyleSheet("font: 100 12pt 'Arial';\ncolor: #666666")
         r1.toggled.connect(partial(self.actualizarDict, col, True))
         r0.toggled.connect(partial(self.actualizarDict, col, False))
-        print("rad btn registro")
         if registro == 1:
             r1.setChecked(True)
         else: 

@@ -164,7 +164,6 @@ class RegistrarUsuario(Form, Base):
                 self.diccionario_permisos['read'][tabla][columna] = self.diccionario_permisos['write'][tabla][columna]
             if self.diccionario_permisos['read'][tabla][columna] == False and self.diccionario_permisos['write'][tabla][columna]:
                 self.diccionario_permisos['read'][tabla][columna] = True
-        print(self.diccionario_permisos)
  
 
     #este metodo borra todos los datos del diccionario y desactiva todas las checkboxes. se utiliza al cambiar de usuario a modificar -Jared
@@ -194,8 +193,6 @@ class RegistrarUsuario(Form, Base):
                 self.label_error.setText("El usuario ingresado ya existe")
                 self.mensaje.setText("")
             else:
-                print('permisossss')
-                print(self.diccionario_permisos.values())
                 query = f"INSERT INTO usuario(nombre_usuario,rol) VALUES('{nombre_usuario}','{rol}')"
                 cur.execute(query)
                 query = f"CREATE USER '{nombre_usuario}'@'localhost' IDENTIFIED BY '{contrasena}'"

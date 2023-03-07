@@ -33,7 +33,6 @@ class Tablas(Base, Form):
 	def selectTable(self,Form,tabla):
 		#print("resultado")
 		item = self.tableslist.findText(tabla,Qt.MatchExactly)
-		print(item)
 		#index =self.tableslist.row(item[0])
 		self.tableslist.setCurrentIndex(item)
 		#print(self.tableslist.row(item[0]))
@@ -137,8 +136,6 @@ class Tablas(Base, Form):
 		#obtener el nombre de la tabla actual
 		tabla_name = self.tableslist.currentText()
 		#obtener el id del registro seleccionado en el QTableView
-		print('selected')
-		print(self.tableView.selectedIndexes())
 
 		if self.tableView.selectedIndexes() == []:
 			# agregar mensaje de error
@@ -153,7 +150,6 @@ class Tablas(Base, Form):
 			return
 		else:
 			row = self.tableView.selectedIndexes()[0].row()
-			print(row)
 			index = self.getIndexCell(row)
 			#se obtiene de la lista de campos de la tabla actual
 			id_name = self.tableView.model().headerData(0, Qt.Horizontal)
@@ -195,17 +191,11 @@ class Tablas(Base, Form):
 
 	def setfilterKeyColumn(self,headers:list):
 		#obtener el valor del combobox
-		print()
-		print("AQUI EMPIEZA EL SETFILTERKEYCOLUMN")
-		print(headers)
 		comboValue = self.comboBox_busqueda_presupuesto.currentText()
 		for items in headers:
-			print(items)
 			if items[1] == comboValue:
 				keyColumn = items[0]
-				print(keyColumn)
 				self.proxy.setFilterKeyColumn(keyColumn)
-		print("AQUI TERMINA EL SETFILTERKEYCOLUMN")
 
 	def escribirCSV(self):
 		tabla = self.tableslist.currentText()
@@ -223,7 +213,6 @@ class Tablas(Base, Form):
 				self.mensaje.show()
 				self.mensaje.setStyleSheet("color:red;")
 				self.mensaje.setText(f"Hubo un error al exportar la tabla")
-				print("no")
 			self.timerAndHide()
 
 	def timerAndHide(self):

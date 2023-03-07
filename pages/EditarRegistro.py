@@ -26,18 +26,12 @@ class EditarRegistro(Form, Base):
         self.tabla = tabla
         columnas = getPermisos(tabla)["write"]
         lista_columnas = columnas.split(',')
-        print(tabla)
-        print(lista_columnas)
         propiedades_columnas = listaDescribe(tabla,lista_columnas)
-        print(registro['id'])
-        print(registro)
         layout = self.verticalLayout
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
             name_input = f"input_{i}"
             name_label = f'label_{i}'
-             
-            print(col)
             tipo_dato = propiedades_columnas[i][1]
             auto_increment = propiedades_columnas[i][5]
             pri = propiedades_columnas[i][3]
@@ -55,7 +49,6 @@ class EditarRegistro(Form, Base):
                     self.pri_key = (col,registro[col])
                     widget = crearInput(self, tipo_dato, name_input, registro[col],col, enable=False)
                     layout.addWidget(widget)
-                    print(self.pri_key)
             elif 'tinyint' in tipo_dato:
                 r0,r1 = crearRadioButton(self, name_input, registro[col],col)
                 layout.addWidget(r0)
@@ -68,7 +61,6 @@ class EditarRegistro(Form, Base):
     def getRegistro(self, Form, index, tabla, col):
         self.label_tabla.setText(f"Tabla: {tabla}")
         registro = getRegistro(tabla,col,int(index))
-        print(registro)
         self.setupInputs(self,tabla,registro)
         
     def limpiarString(self,cadena_sucia):
@@ -80,7 +72,6 @@ class EditarRegistro(Form, Base):
     def changePage(self):
         from pages.VerTabla import VerTabla
         self.camposCambiados.clear()
-        print(self.tabla)
         self.parent().findChild(VerTabla).selectTable(self.parent().findChild(VerTabla),self.tabla)
         self.parent().findChild(VerTabla).setupTable(self.parent().findChild(VerTabla))
         self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(VerTabla)))
@@ -91,7 +82,6 @@ class EditarRegistro(Form, Base):
         if 'QDate' in tipo: val = val.toString("yyyy-MM-dd")
         if type(val) == bool: val = 1 if val else 0
         self.camposCambiados[col] = val
-        print(self.camposCambiados)
         
     def actualizarRegistro(self):
         tabla = self.label_tabla.text().split(": ")
@@ -102,11 +92,8 @@ class EditarRegistro(Form, Base):
         query = f"UPDATE {tabla} set "
 
         for i, (col, val) in enumerate(self.camposCambiados.items()):
-            print(i)
-            print(len(self.camposCambiados))
             if i+1 == len(self.camposCambiados): query+= f"{col}='{val}' WHERE  {self.pri_key[0]}='{self.pri_key[1]}'"
             else: query+= f"{col}='{val}', "
-        print(query)
         cur.execute(query)
         conn.commit()
         cur.close()

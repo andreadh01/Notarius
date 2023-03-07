@@ -50,7 +50,7 @@ class VerUsuarios(Base, Form):
 		self.proxy.setSourceModel(model)
 		#agregar el filtro al widget QTableView
 		self.tableView.setModel(self.proxy)		
-		self.tableView.horizontalHeader().setStretchLastSection(True);
+		self.tableView.horizontalHeader().setStretchLastSection(True)
 	
 	def buttonClick(self):
 		if self.tableView.selectedIndexes() == []:
@@ -72,7 +72,6 @@ class VerUsuarios(Base, Form):
 			return
 		else:
 			row = self.tableView.selectedIndexes()[0].row()
-			print(row)
 			index = self.getIndexCell(row)
 			self.eliminarusuarios(self,index)
 	

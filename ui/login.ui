@@ -21,7 +21,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QDialog {
-background-color:rgba(245, 216, 174, 0.08);
+background-color:#F0EEEF;
 
 }</string>
   </property>
@@ -62,7 +62,7 @@ background-color:rgba(245, 216, 174, 0.08);
        </property>
        <property name="styleSheet">
         <string notr="true">QLabel {
-background-color: rgba(202, 166, 112, 0.15);
+background-color: rgba(202, 166, 112, 0.25);
 	
 	image: url(:/resources/resources/imagenes/undraw_team_up_re_84ok.svg);
 }</string>
@@ -206,7 +206,7 @@ border: 1px solid rgb(166, 164, 180);
 background-color: white;
 color: rgb(103, 80, 41);
 padding: 5px;
-font: 14pt &quot;Arial Rounded MT Bold&quot;;
+font: 11pt &quot;Segoe UI&quot;;
 height: 25px;
 }</string>
            </property>
@@ -246,7 +246,7 @@ border: 1px solid rgb(166, 164, 180);
 background-color: white;
 color: rgb(103, 80, 41);
 padding: 5px;
-font: 14pt &quot;Arial Rounded MT Bold&quot;;
+font: 11pt &quot;Segoe UI&quot;;
 height: 25px;
 }</string>
            </property>

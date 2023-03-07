@@ -20,7 +20,7 @@
       <widget class="QLabel" name="mensaje">
        <property name="styleSheet">
         <string notr="true">color: rgb(149, 163, 255);
-font: 14pt &quot;Arial&quot;;</string>
+font: 11pt &quot;Segoe UI&quot;;</string>
        </property>
        <property name="text">
         <string/>
@@ -91,14 +91,14 @@ QPushButton:pressed {
       <widget class="QTableView" name="tableView">
        <property name="font">
         <font>
-         <pointsize>14</pointsize>
+         <pointsize>12</pointsize>
         </font>
        </property>
        <property name="styleSheet">
         <string notr="true">QTableView {
 border:none;
 }
-QHeaderView::section { background-color:#957F5F; color:white; font: 14pt &quot;Arial&quot;;  padding:5px; border: none;}</string>
+QHeaderView::section { background-color:#957F5F; color:#FFFFFF; font: 12pt &quot;Segoe UI&quot;;  padding:5px; border: none;}</string>
        </property>
        <property name="autoScrollMargin">
         <number>30</number>

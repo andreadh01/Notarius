@@ -72,7 +72,7 @@ color: #957F5F;
 border-radius: 8px;
 background-color: #957F5F;
 color: white;
-font-size: 16px;
+font-size: 12px;
 padding: 10px 30px;
 }
 
@@ -102,7 +102,7 @@ border-radius: 8px;
 border: 1px solid #957F5F;
 background-color: white;
 color: #957F5F;
-font-size: 16px;
+font-size: 12px;
 padding: 10px 30px;
 }
 
@@ -137,7 +137,7 @@ QPushButton:pressed {
      <item row="3" column="0">
       <widget class="QComboBox" name="usuarioslist">
        <property name="styleSheet">
-        <string notr="true">QComboBox{font: 100 16pt 'Arial';
+        <string notr="true">QComboBox{font: 100 12pt 'Segoe UI';
 color: #666666;
 
 }
@@ -150,7 +150,7 @@ background: white;
      <item row="0" column="0">
       <widget class="QLabel" name="label_error">
        <property name="styleSheet">
-        <string notr="true">font: 14pt &quot;Arial&quot;;
+        <string notr="true">font: 12pt &quot;Segoe UI&quot;;
 color:#de574e;</string>
        </property>
        <property name="text">
@@ -161,7 +161,7 @@ color:#de574e;</string>
      <item row="1" column="0">
       <widget class="QLabel" name="mensaje">
        <property name="styleSheet">
-        <string notr="true">font: 14pt &quot;Arial&quot;;
+        <string notr="true">font: 12pt &quot;Segoe UI&quot;;
 color: #8fc26b;</string>
        </property>
        <property name="text">
@@ -172,7 +172,7 @@ color: #8fc26b;</string>
      <item row="2" column="0">
       <widget class="QLabel" name="label_4">
        <property name="styleSheet">
-        <string notr="true">font: 16pt &quot;Arial Rounded MT Bold &quot;;
+        <string notr="true">font: 14pt &quot;Segoe UI&quot;;
 color: #666666;</string>
        </property>
        <property name="text">
@@ -226,7 +226,7 @@ background:rgba(149,127,95);
             </sizepolicy>
            </property>
            <property name="styleSheet">
-            <string notr="true">font: 14pt &quot;Arial Black&quot;;
+            <string notr="true">font: 14pt &quot;Segoe UI&quot;;
     color: white;</string>
            </property>
            <property name="text">
@@ -240,7 +240,7 @@ background:rgba(149,127,95);
          <item>
           <widget class="QCheckBox" name="checkBoxAllVer">
            <property name="styleSheet">
-            <string notr="true">font: 75 16pt;
+            <string notr="true">font: 75 16pt &quot;Segoe UI&quot;;
 color: white;</string>
            </property>
            <property name="text">
@@ -294,7 +294,7 @@ background:rgba(149,127,95);
             </sizepolicy>
            </property>
            <property name="styleSheet">
-            <string notr="true">font: 14pt &quot;Arial Black&quot;;
+            <string notr="true">font: 14pt &quot;Segoe UI&quot;;
     color: white;</string>
            </property>
            <property name="text">
@@ -308,7 +308,7 @@ background:rgba(149,127,95);
          <item>
           <widget class="QCheckBox" name="checkBoxAllEscribir">
            <property name="styleSheet">
-            <string notr="true">font: 75 16pt;
+            <string notr="true">font: 75 16pt &quot;Segoe UI&quot;;
 color: white;</string>
            </property>
            <property name="text">
@@ -333,7 +333,7 @@ color: white;</string>
      <item row="1" column="0">
       <widget class="QLabel" name="label_tabla_3">
        <property name="styleSheet">
-        <string notr="true">font: 16pt &quot;Arial Rounded MT Bold &quot;;
+        <string notr="true">font: 14pt &quot;Segoe UI&quot;;
 color: #666666;</string>
        </property>
        <property name="text">
@@ -344,7 +344,7 @@ color: #666666;</string>
      <item row="2" column="0">
       <widget class="QComboBox" name="tablaslist">
        <property name="styleSheet">
-        <string notr="true">QComboBox{font: 100 16pt 'Arial';
+        <string notr="true">QComboBox{font: 100 12pt 'Segoe UI';
 color: #666666;
 
 }

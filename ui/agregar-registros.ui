@@ -46,7 +46,7 @@ color: #957F5F;
      <item>
       <widget class="QLabel" name="label_tabla">
        <property name="styleSheet">
-        <string notr="true">font: 18pt &quot;Arial Rounded MT Bold&quot;;
+        <string notr="true">font: 12pt &quot;Segoe UI&quot;;
 color: #957F5F;</string>
        </property>
        <property name="text">
@@ -57,7 +57,7 @@ color: #957F5F;</string>
      <item>
       <widget class="QComboBox" name="tablaslist">
        <property name="styleSheet">
-        <string notr="true">QComboBox{font: 18pt &quot;Arial Rounded MT Bold&quot;;
+        <string notr="true">QComboBox{font: 12pt &quot;Segoe UI&quot;;
 color: #957F5F;
 
 }
@@ -72,7 +72,7 @@ background: white;
    <item>
     <widget class="QLabel" name="label_exito">
      <property name="styleSheet">
-      <string notr="true">font: 14pt &quot;Arial&quot;;
+      <string notr="true">font: 12pt &quot;Arial&quot;;
 color: #8fc26b;</string>
      </property>
      <property name="text">
@@ -196,7 +196,7 @@ border-radius: 8px;
 border: 1px solid #957F5F;
 background-color: white;
 color: #957F5F;
-font-size: 16px;
+font-size: 12px;
 padding: 10px 30px;
 }
 
@@ -225,7 +225,7 @@ QPushButton:pressed {
 border-radius: 8px;
 background-color: #957F5F;
 color: white;
-font-size: 16px;
+font-size: 12px;
 padding: 10px 30px;
 }
 
