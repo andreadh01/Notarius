@@ -87,7 +87,7 @@ class RegistrarUsuario(Form, Base):
             setattr(self, name_escritura, QtWidgets.QCheckBox(Form))
             checkbox_ver = getattr(self,name_ver)
             checkbox_ver.setStyleSheet("\n"
-            "font: 75 16pt;\n"
+            "font: 75 11pt;\n"
             "color: white;")
             checkbox_ver.setObjectName(name_ver)
             
@@ -95,7 +95,7 @@ class RegistrarUsuario(Form, Base):
             checkbox_escritura.setText(col)
             checkbox_escritura = getattr(self,name_escritura)
             checkbox_escritura.setStyleSheet("\n"
-            "font: 75 16pt;\n"
+            "font: 75 11pt;\n"
             "color: white;")
             checkbox_escritura.setObjectName(name_escritura)
             checkbox_escritura.setText(col)
