@@ -18,13 +18,13 @@
     <number>200</number>
    </property>
    <property name="topMargin">
-    <number>50</number>
+    <number>12</number>
    </property>
    <property name="rightMargin">
     <number>200</number>
    </property>
    <property name="bottomMargin">
-    <number>20</number>
+    <number>12</number>
    </property>
    <item>
     <widget class="QLabel" name="titulo">
@@ -46,7 +46,7 @@ color: #957F5F;
      <item>
       <widget class="QLabel" name="label_tabla">
        <property name="styleSheet">
-        <string notr="true">font: 18pt &quot;Arial Rounded MT Bold&quot;;
+        <string notr="true">font: 12pt &quot;Segoe UI&quot;;
 color: #957F5F;</string>
        </property>
        <property name="text">
@@ -57,12 +57,51 @@ color: #957F5F;</string>
      <item>
       <widget class="QComboBox" name="tablaslist">
        <property name="styleSheet">
-        <string notr="true">QComboBox{font: 18pt &quot;Arial Rounded MT Bold&quot;;
+        <string notr="true">/* style for the QComboBox */
+QComboBox {
+border-radius: 11px;
+border: 1px solid #957F5F;
+background-color: white;
 color: #957F5F;
+height: 25px;
+padding: 0 15px;
 
 }
-QListView{
-background: white;
+
+/* style for drop down area */
+QComboBox::drop-down{
+border: 0px;
+}
+/* style for drop down arrow */
+QComboBox::down-arrow {
+image: url(:/resources/resources/icons/down-arrow-brown.png);
+width: 20px;
+height: 20px;
+margin-right: 15px;
+}
+/* style for QComboBox after open selcet menu */
+QComboBox:on {
+border: 1px solid #c2dbfe;
+}
+/* style for list menu */
+QComboBox QListView {
+font-size: 12px;
+border: 1px solid rgba(0, 0, 0, 10%);
+padding: 5px;
+background-color: #fff;
+outline: 0px;
+}
+
+/* style for list items */
+QComboBox QListView::item {
+padding-left: 10px;
+background-color: #fff;
+}
+QComboBox QListView::item:hover {
+background-color: #d3c393;
+}
+QComboBox QListView::item:selected {
+background-color: #d3c393;
 }</string>
        </property>
       </widget>
@@ -72,7 +111,7 @@ background: white;
    <item>
     <widget class="QLabel" name="label_exito">
      <property name="styleSheet">
-      <string notr="true">font: 14pt &quot;Arial&quot;;
+      <string notr="true">font: 12pt &quot;Arial&quot;;
 color: #8fc26b;</string>
      </property>
      <property name="text">
@@ -196,7 +235,7 @@ border-radius: 8px;
 border: 1px solid #957F5F;
 background-color: white;
 color: #957F5F;
-font-size: 16px;
+font-size: 12px;
 padding: 10px 30px;
 }
 
@@ -225,7 +264,7 @@ QPushButton:pressed {
 border-radius: 8px;
 background-color: #957F5F;
 color: white;
-font-size: 16px;
+font-size: 12px;
 padding: 10px 30px;
 }
 

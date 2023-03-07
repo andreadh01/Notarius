@@ -166,8 +166,8 @@ class Ui_Dashboard(object):
                                       CheckBox */
                                       QCheckBox::indicator {
                                           border: 1px solid #cccccc;
-                                      	width: 5px;
-                                      	height: 5px;
+                                      	width: 16px;
+                                      	height: 16px;
                                           background: white;
                                       }
                                       QCheckBox::indicator:hover {
@@ -175,8 +175,8 @@ class Ui_Dashboard(object):
                                       }
                                       QCheckBox::indicator:checked {
                                           background: 3px solid #c2dbfe;
-                                      	border: 3px solid #c2dbfe;	
-                                      	background-image: url(:/icons/resources/check.png);
+                                      	border: 1px solid #c2dbfe;	
+                                      	background-image: url(:/resources/resources/icons/cheque.png);
                                       }
                                       
                                       /* /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -477,7 +477,7 @@ class Ui_Dashboard(object):
         self.verticalLayout_15 = QVBoxLayout(self.pagesContainer)
         self.verticalLayout_15.setSpacing(0)
         self.verticalLayout_15.setObjectName(u"verticalLayout_15")
-        self.verticalLayout_15.setContentsMargins(10, 10, 10, 10)
+        self.verticalLayout_15.setContentsMargins(0, 0, 0, 0)
         self.stackedWidget = QStackedWidget(self.pagesContainer)
         self.stackedWidget.setObjectName(u"stackedWidget")
         self.stackedWidget.setStyleSheet(u"background: transparent;")

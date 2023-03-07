@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>895</width>
+    <width>962</width>
     <height>547</height>
    </rect>
   </property>
@@ -21,7 +21,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QDialog {
-background-color:rgba(245, 216, 174, 0.08);
+background-color:#F0EEEF;
 
 }</string>
   </property>
@@ -62,7 +62,7 @@ background-color:rgba(245, 216, 174, 0.08);
        </property>
        <property name="styleSheet">
         <string notr="true">QLabel {
-background-color: rgba(202, 166, 112, 0.15);
+background-color: rgba(202, 166, 112, 0.25);
 	
 	image: url(:/resources/resources/imagenes/undraw_team_up_re_84ok.svg);
 }</string>
@@ -117,14 +117,17 @@ background-color: rgba(202, 166, 112, 0.15);
         <widget class="QLabel" name="label_3">
          <property name="font">
           <font>
-           <pointsize>60</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
+           <family>ARIAL BLACK</family>
+           <pointsize>55</pointsize>
+           <weight>50</weight>
+           <italic>false</italic>
+           <bold>false</bold>
           </font>
          </property>
          <property name="styleSheet">
           <string notr="true">QLabel {
 color: rgba(149, 127, 95, 1);
+font: 55pt &quot;ARIAL BLACK&quot;
 }</string>
          </property>
          <property name="text">
@@ -189,8 +192,8 @@ color: rgba(149, 127, 95, 1);
           <widget class="QLineEdit" name="passwordfield">
            <property name="font">
             <font>
-             <family>Arial Rounded MT Bold</family>
-             <pointsize>8</pointsize>
+             <family>Segoe UI</family>
+             <pointsize>11</pointsize>
              <weight>50</weight>
              <italic>false</italic>
              <bold>false</bold>
@@ -206,7 +209,7 @@ border: 1px solid rgb(166, 164, 180);
 background-color: white;
 color: rgb(103, 80, 41);
 padding: 5px;
-font: 14pt &quot;Arial Rounded MT Bold&quot;;
+font: 11pt &quot;Segoe UI&quot;;
 height: 25px;
 }</string>
            </property>
@@ -246,7 +249,7 @@ border: 1px solid rgb(166, 164, 180);
 background-color: white;
 color: rgb(103, 80, 41);
 padding: 5px;
-font: 14pt &quot;Arial Rounded MT Bold&quot;;
+font: 11pt &quot;Segoe UI&quot;;
 height: 25px;
 }</string>
            </property>
@@ -387,7 +390,7 @@ height: 25px;
            <property name="font">
             <font>
              <family>Arial Rounded MT Bold</family>
-             <pointsize>12</pointsize>
+             <pointsize>14</pointsize>
              <weight>50</weight>
              <italic>false</italic>
              <bold>false</bold>
@@ -471,7 +474,7 @@ QPushButton:pressed {
   </layout>
  </widget>
  <resources>
-  <include location="icons/imagenes.qrc"/>
+  <include location="resources.qrc"/>
  </resources>
  <connections/>
 </ui>

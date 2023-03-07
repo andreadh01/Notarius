@@ -59,7 +59,6 @@ class EditarPrivilegios(Base, Form):
 			to_i = texto.find("TO")
 
 			nombre_tabla = texto[notarius_i+11:to_i-2]
-			print("La tabla es:",nombre_tabla)
 			if "SELECT" in texto:
 				par_i = texto.find(')')
 				subcadena_select = texto[select_i:par_i]
@@ -78,7 +77,6 @@ class EditarPrivilegios(Base, Form):
 			permiso_select.append(nombre_tabla)
 			permiso_insert.append(nombre_tabla)
 			self.ingresar_datos_diccionario(permiso_select,permiso_insert)
-		print(self.diccionario_permisos)
 
 
 	def ingresar_datos_diccionario(self,permiso_select,permiso_insert):
@@ -151,7 +149,7 @@ class EditarPrivilegios(Base, Form):
 			setattr(self, name_escritura, QtWidgets.QCheckBox(Form))
 			checkbox_ver = getattr(self,name_ver)
 			checkbox_ver.setStyleSheet("\n"
-			"font: 75 16pt;\n"
+			"font: 75 11pt;\n"
 			"color: white;")
 			checkbox_ver.setObjectName(name_ver)
 			
@@ -159,7 +157,7 @@ class EditarPrivilegios(Base, Form):
 			checkbox_escritura.setText(col)
 			checkbox_escritura = getattr(self,name_escritura)
 			checkbox_escritura.setStyleSheet("\n"
-			"font: 75 16pt;\n"
+			"font: 75 11pt;\n"
 			"color: white;")
 			checkbox_escritura.setObjectName(name_escritura)
 			checkbox_escritura.setText(col)
@@ -246,7 +244,6 @@ class EditarPrivilegios(Base, Form):
 				self.diccionario_permisos['read'][tabla][columna] = self.diccionario_permisos['write'][tabla][columna]
 			if self.diccionario_permisos['read'][tabla][columna] == False and self.diccionario_permisos['write'][tabla][columna]:
 				self.diccionario_permisos['read'][tabla][columna] = True
-		print(self.diccionario_permisos)
 
 	#este metodo borra todos los datos del diccionario y desactiva todas las checkboxes. se utiliza al cambiar de usuario a modificar -Jared
 	def limpiarDict(self):

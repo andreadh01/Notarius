@@ -20,7 +20,7 @@
       <widget class="QLabel" name="mensaje">
        <property name="styleSheet">
         <string notr="true">color: rgb(149, 163, 255);
-font: 14pt &quot;Arial&quot;;</string>
+font: 11pt &quot;Segoe UI&quot;;</string>
        </property>
        <property name="text">
         <string/>
@@ -62,7 +62,7 @@ border: 2px solid #957F5F;
 background-color: white;
 color: #957F5F;
 height: 25px;
-padding: 0 15px;
+padding: 0 20px;
 }
 
 QPushButton:hover {
@@ -91,14 +91,97 @@ QPushButton:pressed {
       <widget class="QTableView" name="tableView">
        <property name="font">
         <font>
-         <pointsize>14</pointsize>
+         <pointsize>12</pointsize>
         </font>
        </property>
        <property name="styleSheet">
         <string notr="true">QTableView {
 border:none;
+color:#666666;
 }
-QHeaderView::section { background-color:#957F5F; color:white; font: 14pt &quot;Arial&quot;;  padding:5px; border: none;}</string>
+QHeaderView::section { background-color:#957F5F; color:white; font: 11pt &quot;Segoe UI&quot;;  padding-left:5px; border: 1px solid white;}
+QScrollBar:vertical {
+	border: none;
+    background: white;
+    width: 10px;
+    margin: 15px 0 15px 0;
+	border-radius: 0px;
+ }
+ QScrollBar:horizontal {
+	border: none;
+    background: white;
+    width: 10px;
+    margin: 15px 0 15px 0;
+	border-radius: 0px;
+ }
+
+/*  HANDLE BAR VERTICAL */
+QScrollBar::handle:vertical {	
+	background-color: #CCCCCC;
+	min-height: 30px;
+	border-radius: 7px;
+}
+QScrollBar::handle:vertical:hover{	
+	background-color: #666666;
+}
+QScrollBar::handle:vertical:pressed {	
+	background-color: #666666;
+}
+
+QScrollBar::handle:horizontal {	
+	background-color: #CCCCCC;
+	min-height: 30px;
+	border-radius: 7px;
+}
+QScrollBar::handle:horizontal:hover{	
+	background-color: #666666;
+}
+QScrollBar::handle:horizontal:pressed {	
+	background-color: #666666;
+}
+
+/* BTN TOP - SCROLLBAR */
+QScrollBar::sub-line:vertical {
+	border: none;
+	background-color: white;
+	height: 15px;
+	border-top-left-radius: 7px;
+	border-top-right-radius: 7px;
+	subcontrol-position: top;
+	subcontrol-origin: margin;
+}
+QScrollBar::sub-line:vertical:hover {	
+	background-color: white;
+}
+QScrollBar::sub-line:vertical:pressed {	
+	background-color: white
+}
+
+/* BTN BOTTOM - SCROLLBAR */
+QScrollBar::add-line:vertical {
+	border: none;
+	background-color: white
+	height: 15px;
+	border-bottom-left-radius: 7px;
+	border-bottom-right-radius: 7px;
+	subcontrol-position: bottom;
+	subcontrol-origin: margin;
+}
+QScrollBar::add-line:vertical:hover {	
+	background-color: white;
+}
+QScrollBar::add-line:vertical:pressed {	
+	background-color: white;
+}
+
+/* RESET ARROW */
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+	background: none;
+}
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+	background: none;
+}
+</string>
        </property>
        <property name="autoScrollMargin">
         <number>30</number>

@@ -297,7 +297,6 @@ def getListaBotones():
 def buttonClick(self, btn):
         # GET BUTTON CLICKED
         btnName = btn.objectName()
-        print('clicked'+btnName)
 
         # SHOW HOME PAGE
         if btnName == "btn_tablas":

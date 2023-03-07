@@ -19,7 +19,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="styleSheet">
-        <string notr="true">font: 700 11pt &quot;Arial&quot;;
+        <string notr="true">font: 700 11pt &quot;Segoe UI&quot;;
 color: #957F5F;</string>
        </property>
        <property name="text">
@@ -252,7 +252,7 @@ color: white;
       <widget class="QLabel" name="mensaje">
        <property name="styleSheet">
         <string notr="true">color: rgb(149, 163, 255);
-font: 11pt &quot;Arial&quot;;</string>
+font: 11pt &quot;Segoe UI&quot;;</string>
        </property>
        <property name="text">
         <string/>

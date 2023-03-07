@@ -40,19 +40,13 @@ class AgregarRegistro(Form, Base):
         tabla = self.tablaslist.currentText()
         columnas = getPermisos(tabla)["write"]
         lista_columnas = columnas.split(',')
-        print(tabla)
-        print(lista_columnas)
         propiedades_columnas = listaDescribe(tabla,lista_columnas)
         layout = self.verticalLayout
         index = getValoresTabla(tabla)[-1]['id']
-        print(getValoresTabla(tabla)[-1])
-        print(getValoresTabla(tabla)[-1]['id'])
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
             name_input = f"input_{i}"
             name_label = f'label_{i}'
-             
-            print(col)
             tipo_dato = propiedades_columnas[i][1]
             auto_increment = propiedades_columnas[i][5]
             pri = propiedades_columnas[i][3]
@@ -60,7 +54,7 @@ class AgregarRegistro(Form, Base):
             # Label
             attr_label = getattr(self,name_label)
             attr_label.setStyleSheet("\n"
-			"font: 75 16pt;\n"
+			"font: 75 12pt;\n"
 			"color: #666666;\n" 
             "font-weight: 700;")
             attr_label.setObjectName(name_label)
@@ -102,7 +96,6 @@ class AgregarRegistro(Form, Base):
         if 'QDate' in tipo: val = val.toString("yyyy-MM-dd")
         if type(val) == bool: val = 1 if val else 0
         self.camposCambiados[col] = val
-        print(self.camposCambiados)
         
     def guardarRegistro(self):
         tabla = self.tablaslist.currentText()
@@ -113,8 +106,6 @@ class AgregarRegistro(Form, Base):
         vals = "values ("
 
         for i, (col, val) in enumerate(self.camposCambiados.items()):
-            print(val)
-            print(len(self.camposCambiados))
             if i+1 == len(self.camposCambiados): 
                 query+= f"{col}) "
                 vals+= f"'{val}');"
