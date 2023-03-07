@@ -17,6 +17,7 @@ from PyQt5.QtWidgets import *
 from pages.AgregarRegistro import AgregarRegistro
 from pages.RegistrarUsuario import RegistrarUsuario
 from pages.Tablas import Tablas
+from pages.Login import LoginScreen
 
 from resources_rc import *
 from ui_functions import resetStyle, selectMenu
@@ -37,209 +38,168 @@ class Ui_Dashboard(object):
         font.setBold(False)
         font.setItalic(False)
         self.styleSheet.setFont(font)
-        self.styleSheet.setStyleSheet(u"/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
-                                      "\n"
-                                      "SET APP STYLESHEET - FULL STYLES HERE\n"
-                                      "\n"
-                                      "///////////////////////////////////////////////////////////////////////////////////////////////// */\n"
-                                      "\n"
-                                      "QWidget{\n"
-                                      "	color: rgb(221, 221, 221);\n"
-                                      "	font: 11pt \"Segoe UI\";\n"
-                                      "}\n"
-                                      "\n"
-                                      "/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
+        self.styleSheet.setStyleSheet(u"""
+                                      QWidget{
+                                      	color: rgb(221, 221, 221);
+                                      	font: 11pt \"Segoe UI\";
+                                      }
+                                      
+          
+                                      /* /////////////////////////////////////////////////////////////////////////////////////////////////
+                                      Bg App */
+                                      #bgApp {	
+                                      	background-color: white;
+                                      	border: 1px solid white;
+                                      }
+                                      
+                                      /* /////////////////////////////////////////////////////////////////////////////////////////////////
+                                      Left Menu */
+                                      #leftMenuBg {	
+                                      	background-color: rgb(245, 243, 240);
+                                      }
+                                      #topLogo {
+                                      	background-color: rgb(245, 243, 240);
+                                      	background-image: url(:/resources/resources/imagenes/folder.png);
+                                      	background-position: centered;
+                                      	background-repeat: no-repeat;
+                                      }
+                                      #titleLeftApp { font: 600 12pt \"Segoe UI Semibold\";color: rgb(116, 91, 47);}
+                                      #titleLeftDescription { font: 8pt \"Segoe UI\"; color:#302512; }
+                                      
+                                      /* MENUS */
+                                      #topMenu .QPushButton {	
+                                      	background-position: left center;
+                                          background-repeat: no-repeat;
+                                      	border: none;
+                                      	border-left: 22px solid transparent;
+                                      	background-color: rgb(245, 243, 240);
+                                      color: rgb(116, 91, 47);
+                                      	text-align: left;
+                                      	padding-left: 44px;
+                                      }
+                                      #topMenu .QPushButton:hover {
+                                      	background-color: #e3ddcc;
+                                      }
+                                      #topMenu .QPushButton:pressed {	
+                                      	background-color: #d3c393;
+                                      	color: rgb(116, 91, 47);
+                                      }
+                                      #bottomMenu .QPushButton {	
+                                      	background-position: left center;
+                                          background-repeat: no-repeat;
+                                      	border: none;
+                                      	border-left: 20px solid transparent;
+                                      	background-color:transparent;
+                                      	text-align: left;
+                                      	padding-left: 44px;
+                                      }
+                                      #bottomMenu .QPushButton:hover {
+                                      	background-color: #e3ddcc;
+                                      }
+                                      #bottomMenu .QPushButton:pressed {	
+                                      	background-color:#d3c393;
+                                      	color: rgb(116, 91, 47);
+                                      }
+                                      #leftMenuFrame{
+                                      	border-top: none;
+                                      }
+                                      
+                                      /* Toggle Button */
+                                      #toggleButton {
+                                      	background-position: left center;
+                                          background-repeat: no-repeat;
+                                      	border: none;
+                                      	border-left: 20px solid transparent;
+                                      	background-color: rgb(245, 243, 240);
+                                      	text-align: left;
+                                      	padding-left: 44px;
+                                      	color: #666;
+                                      }
+                                      #toggleButton:hover {
+                                      	background-color: #e3ddcc;
+                                      }
+                                      #toggleButton:pressed {
+                                      	background-color: #d3c393;
+                                      	color: white;
+                                      }
+                                      
 
-                                      "\n"
-                                      "/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
-                                      "Bg App */\n"
-                                      "#bgApp {	\n"
-                                      "	background"
-                                      "-color: white;\n"
-                                      "	border: 1px solid white;\n"
-                                      "}\n"
-                                      "\n"
-                                      "/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
-                                      "Left Menu */\n"
-                                      "#leftMenuBg {	\n"
-                                      "	background-color: rgb(245, 243, 240);\n"
-                                      "}\n"
-                                      "#topLogo {\n"
-                                      "	background-color: rgb(245, 243, 240);\n"
-                                      "	background-image: url(:/resources/resources/imagenes/folder.png);\n"
-                                      "	background-position: centered;\n"
-                                      "	background-repeat: no-repeat;\n"
-                                      "}\n"
-                                      "#titleLeftApp { font: 600 12pt \"Segoe UI Semibold\";\ncolor: rgb(116, 91, 47);\n}"
-                                      "#titleLeftDescription { font: 8pt \"Segoe UI\"; color:#302512; }\n"
-                                      "\n"
-                                      "/* MENUS */\n"
-                                      "#topMenu .QPushButton {	\n"
-                                      "	background-position: left center;\n"
-                                      "    background-repeat: no-repeat;\n"
-                                      "	border: none;\n"
-                                      "	border-left: 22px solid transparent;\n"
-                                      "	background-color: rgb(245, 243, 240);\n"
-                                      "color: rgb(116, 91, 47);\n"
-                                      "	text-align: left;\n"
-                                      "	padding-left: 44px;\n"
-                                      "}\n"
-                                      "#topMenu .QPushButton:hover {\n"
-                                      "	background-color: #e3ddcc;\n"
-                                      "}\n"
-                                      "#topMenu .QPushButton:pressed {	\n"
-                                      "	background-color: #d3c393;\n"
-                                      "	color: rgb(116, 91, 47);\n"
-                                      "}\n"
-                                      "#bottomMenu .QPushButton {	\n"
-                                      "	background-position: left center;\n"
-                                      "    background-repeat: no-repeat;\n"
-                                      "	border: none;\n"
-                                      "	border-left: 20px solid transparent;\n"
-                                      "	background-color:transparent;\n"
-                                      "	text-align: left;\n"
-                                      "	padding-left: 44px;\n"
-                                      "}\n"
-                                      "#bottomMenu .QPushButton:hover {\n"
-                                      "	background-color: #e3ddcc;\n"
-                                      "}\n"
-                                      "#bottomMenu .QPushButton:pressed {	\n"
-                                      "	background-color:#d3c393;\n"
-                                      "	color: rgb(116, 91, 47);\n"
-                                      "}\n"
-                                      "#leftMenuFrame{\n"
-                                      "	border-top: none;\n"
-                                      "}\n"
-                                      "\n"
-                                      "/* Toggle Button */\n"
-                                      "#toggleButton {\n"
-                                      "	background-position: left center;\n"
-                                      "    background-repeat: no-repeat;\n"
-                                      "	border: none;\n"
-                                      "	border-left: 20px solid transparent;\n"
-                                      "	background-color: rgb(245, 243, 240);\n"
-                                      "	text-align: left;\n"
-                                      "	padding-left: 44px;\n"
-                                      "	color: #666;\n"
-                                      "}\n"
-                                      "#toggleButton:hover {\n"
-                                      "	background-color: #e3ddcc;\n"
-                                      "}\n"
-                                      "#toggleButton:pressed {\n"
-                                      "	background-color: #d3c393;\n"
-                                      "	color: white;\n"
-                                      "}\n"
-                                      "\n"
-
-                                      "/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
-                                      "LineEdit */\n"
-                                      "QLineEdit {\n"
-                                      "	background-color: white;\n"
-                                      "	border-radius: 5px;\n"
-                                      "	border: 1px solid #cccccc;\n"
-                                      "color:#666666;\n"
-                                      "	padding-left: 10px;\n"
-                                      "	selection-color: rgb(27, 29, 35);\n"
-                                      "	selection-background-color: #c2dbfe;\n"
-                                      "}\n"
-                                      "QLineEdit:hover {\n"
-                                      "	border: 1px solid #c2dbfe;\n"
-                                      "}\n"
-                                      "QLineEdit:focus {\n"
-                                      "	border: 1px solid #c2dbfe;\n"
-                                      "}\n"
-                                      "\n"
-                                      "/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
-                                      "PlainTextEdit */\n"
-                                      "QPlainTextEdit {\n"
-                                      "	background-color: white;\n"
-                                      "	border-radius: 5px;\n"
-                                      "	border: 1px solid #cccccc;\n"
-                                      "color:#666666;\n"
-                                      "	padding-left: 10px;\n"
-                                      "	selection-color: rgb(27, 29, 35);\n"
-                                      "	selection-background-color: #c2dbfe;\n"
-                                      "}\n"
-                                      "QPlainTextEdit:hover {\n"
-                                      "	border: 1px solid #c2dbfe;\n"
-                                      "}\n"
-                                      "QPlainTextEdit:focus {\n"
-                                      "	border: 1px solid #c2dbfe;\n"
-                                      "}\n"
-                                      "\n"
-                                      "/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
-
-                                      "/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
-                                      "CheckBox */\n"
-                                      "QCheckBox::indicator {\n"
-                                      "    border: 1px solid #cccccc;\n"
-                                      "	width: 5px;\n"
-                                      "	height: 5px;\n"
-                                      "    background: white;\n"
-                                      "}\n"
-                                      "QCheckBox::indicator:hover {\n"
-                                      "    border: 1px solid #c2dbfe;\n"
-                                      "}\n"
-                                      "QCheckBox::indicator:checked {\n"
-                                      "    background: 3px solid #c2dbfe;\n"
-                                      "	border: 3px solid #c2dbfe;	\n"
-                                      "	back"
-                                      "ground-image: url(:/icons/resources/check.png);\n"
-                                      "}\n"
-                                      "\n"
-                                      "/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
-                                      "RadioButton */\n"
-                                      "QRadioButton::indicator {\n"
-                                      "    border: 1px solid #cccccc;\n"
-                                      "	width: 10px;\n"
-                                      "	height: 10px;\n"
-                                      "	border-radius: 30px;\n"
-                                      "    background: white;\n"
-                                      "}\n"
-                                      "QRadioButton::indicator:hover {\n"
-                                      "    border: 1px solid #c2dbfe;\n"
-                                      "}\n"
-                                      "QRadioButton::indicator:checked {\n"
-                                      "    background: 1px solid #c2dbfe;\n"
-                                      "	border: 1px solid #c2dbfe;	\n"
-                                      "}\n"
-                                      "\n"
-                                      "/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
-                                      "ComboBox */\n"
-                                      "QComboBox{\n"
-                                      "	background-color: white;\n"
-                                      "	border-radius: 5px;\n"
-                                      "	border: 2px solid #957F5F;\n"
-                                      "	padding: 5px;\n"
-                                      "	padding-left: 10px;\n"
-                                      "}\n"
-                                      "QComboBox:hover{\n"
-                                      "	border: 2px solid #c2dbfe;\n"
-                                      "}\n"
-                                      "QComboBox::drop-down {\n"
-                                      "	subcontrol-origin: padding;\n"
-                                      "	subco"
-                                      "ntrol-position: top right;\n"
-                                      "	width: 25px; \n"
-                                      "	border-left-width: 3px;\n"
-                                      "	border-left-color: white;\n"
-                                      "	border-left-style: solid;\n"
-                                      "	border-top-right-radius: 3px;\n"
-                                      "	border-bottom-right-radius: 3px;	\n"
-                                      "	background-image: url(:/resources/resources/icons/arrow-down.png);\n"
-                                      "	background-position: center;\n"
-                                      "	background-repeat: no-reperat;\n"
-                                      " }\n"
-                                      "QComboBox QAbstractItemView {\n"
-                                      "	color: rgb(116, 91, 47);	\n"
-                                      "	background-color: white;\n"
-                                      "	padding: 10px;\n"
-                                      "	selection-background-color: #957F5F;\n"
-                                      "	selection-color: #fff;\n"
-                                      "}\n"
-                                      "\n"
-                                      "/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
-                                      "")
+                                      /* /////////////////////////////////////////////////////////////////////////////////////////////////
+                                      LineEdit */
+                                      QLineEdit {
+                                      	background-color: white;
+                                      	border-radius: 5px;
+                                      	border: 1px solid #cccccc;
+                                      color:#666666;
+                                      	padding-left: 10px;
+                                      	selection-color: rgb(27, 29, 35);
+                                      	selection-background-color: #c2dbfe;
+                                      }
+                                      QLineEdit:hover {
+                                      	border: 1px solid #c2dbfe;
+                                      }
+                                      QLineEdit:focus {
+                                      	border: 1px solid #c2dbfe;
+                                      }
+                                      
+                                      /* /////////////////////////////////////////////////////////////////////////////////////////////////
+                                      PlainTextEdit */
+                                      QPlainTextEdit {
+                                      	background-color: white;
+                                      	border-radius: 5px;
+                                      	border: 1px solid #cccccc;
+                                      color:#666666;
+                                      	padding-left: 10px;
+                                      	selection-color: rgb(27, 29, 35);
+                                      	selection-background-color: #c2dbfe;
+                                      }
+                                      QPlainTextEdit:hover {
+                                      	border: 1px solid #c2dbfe;
+                                      }
+                                      QPlainTextEdit:focus {
+                                      	border: 1px solid #c2dbfe;
+                                      }
+                                      
+                                      /* /////////////////////////////////////////////////////////////////////////////////////////////////
+                                        
+                                      /* /////////////////////////////////////////////////////////////////////////////////////////////////
+                                      CheckBox */
+                                      QCheckBox::indicator {
+                                          border: 1px solid #cccccc;
+                                      	width: 5px;
+                                      	height: 5px;
+                                          background: white;
+                                      }
+                                      QCheckBox::indicator:hover {
+                                          border: 1px solid #c2dbfe;
+                                      }
+                                      QCheckBox::indicator:checked {
+                                          background: 3px solid #c2dbfe;
+                                      	border: 3px solid #c2dbfe;	
+                                      	background-image: url(:/icons/resources/check.png);
+                                      }
+                                      
+                                      /* /////////////////////////////////////////////////////////////////////////////////////////////////
+                                      RadioButton */
+                                      QRadioButton::indicator {
+                                          border: 1px solid #cccccc;
+                                      	width: 10px;
+                                      	height: 10px;
+                                      	border-radius: 30px;
+                                          background: white;
+                                      }
+                                      QRadioButton::indicator:hover {
+                                          border: 1px solid #c2dbfe;
+                                      }
+                                      QRadioButton::indicator:checked {
+                                          background: 1px solid #c2dbfe;
+                                      	border: 1px solid #c2dbfe;	
+                                      }
+                                      
+                                     
+                                      
+                                      /* /////////////////////////////////////////////////////////////////////////////////////////////////
+                                      """)
         self.appMargins = QVBoxLayout(self.styleSheet)
         self.appMargins.setSpacing(0)
         self.appMargins.setObjectName(u"appMargins")
@@ -368,7 +328,7 @@ class Ui_Dashboard(object):
         self.logout.setCursor(QCursor(Qt.PointingHandCursor))
         self.logout.setLayoutDirection(Qt.LeftToRight)
         self.logout.setStyleSheet(
-            u"color: rgb(116, 91, 47);\nbackground-image: url(:/resources/resources/icons/logout.png);")
+            u"color: rgb(116, 91, 47);background-image: url(:/resources/resources/icons/logout.png);")
 
         self.verticalLayout_9.addWidget(self.logout)
 
@@ -522,8 +482,10 @@ class Ui_Dashboard(object):
         self.stackedWidget.setObjectName(u"stackedWidget")
         self.stackedWidget.setStyleSheet(u"background: transparent;")
         
-        
-        
+        self.login = LoginScreen()
+        self.login.setObjectName(u"login")
+        self.stackedWidget.addWidget(self.login)
+        self.stackedWidget.setCurrentWidget(self.login)
         self.verticalLayout_15.addWidget(self.stackedWidget)
 
         self.horizontalLayout_4.addWidget(self.pagesContainer)
@@ -546,13 +508,10 @@ class Ui_Dashboard(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        user, pwd = getUsuarioLogueado()
         MainWindow.setWindowTitle(QCoreApplication.translate(
             "MainWindow", u"MainWindow", None))
         self.titleLeftApp.setText(QCoreApplication.translate(
             "MainWindow", u"NOTARIUS", None))
-        self.titleLeftDescription.setText(QCoreApplication.translate(
-            "MainWindow", f"Usuario: {user}", None))
         self.toggleButton.setText(
             QCoreApplication.translate("MainWindow", u"Ocultar", None))
         self.logout.setText(

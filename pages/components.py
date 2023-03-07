@@ -83,11 +83,11 @@ def crearInput(self,tipo_dato,name_input, registro='',col='',enable=True): # <--
         #attr.setDisplayFormat("yyyy-mm-dd HH:mm:ss")
         attr.setStyleSheet(inputStylesheet(enable, True))
         attr.setObjectName(name_input)
-        registro = QtCore.QDate.currentDateTime() if registro == '' else registro
+        registro = QtCore.QDate.currentDate() if registro == '' else registro
 
         
         attr.dateTimeChanged.connect(partial(self.actualizarDict, col))
-        attr.setDateTime(registro)
+        attr.setDate(registro)
         attr.setEnabled(enable)    
         return attr
 
@@ -120,28 +120,28 @@ def inputStylesheet(enable, date=False, combobox=False):
     if date: 
         stylesheet = """
         QDateTimeEdit {
-            font: 12pt "Arial";\ncolor: #666666;\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;
+            font: 12pt "Arial";\ncolor: #666666;\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\nheight: 50px; padding:0 10px;
         }
         QDateEdit::drop-down{
             background-color:#957F5F;
 border-top-right-radius: 8px;
 border-bottom-right-radius:8px;
-            height:28px;
+            height:50px;
     width:25px;
-    padding: 5px;
-    image:url('ui/icons/calendar.png');
+    padding: 0 5px;
+    image:url(:/resources/resources/icons/calendario.png);
         }
         QDateEdit {
-            font: 12pt "Arial";\ncolor: #666666;\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;
+            font: 12pt "Arial";\ncolor: #666666;\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\nheight: 50px; padding:0 10px;
         }
         QDateTimeEdit::drop-down{
             background-color:#957F5F;
 border-top-right-radius: 8px;
 border-bottom-right-radius:8px;
-            height:30px;
+            height:50px;
     width:25px;
-    padding: 5px;
-    image:url('ui/icons/calendar.png');
+    padding: 0 5px;
+    image:url(:/resources/resources/icons/calendario.png);
         }
         QCalendarWidget QToolButton {
 height: 30px;
@@ -171,11 +171,11 @@ QCalendarWidget QSpinBox::up-arrow { color: #957F5F; width:20px; height:20px; }
 QCalendarWidget QSpinBox::down-arrow { color: #957F5F; width:20px; height:20px; }
 QCalendarWidget QToolButton#qt_calendar_prevmonth 
 {
-    qproperty-icon: url(ui/icons/arrow-left.png);
+    qproperty-icon: url(:/resources/resources/icons/left-arrow.png);
 }
 QCalendarWidget QToolButton#qt_calendar_nextmonth 
 {
-    qproperty-icon: url(ui/icons/arrow-right.png);
+    qproperty-icon: url(:/resources/resources/icons/right-arrow.png);
 }
 /* normal days */
 QCalendarWidget QAbstractItemView:enabled
@@ -215,7 +215,7 @@ border: 0px;
 }
 /* style for drop down arrow */
 QComboBox::down-arrow {
-image: url(:/icons/arrow-down.png);
+image: url(:/resources/resources/icons/down-arrow-gray.png);
 width: 20px;
 height: 20px;
 margin-right: 15px;

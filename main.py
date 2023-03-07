@@ -38,12 +38,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.return_to_login = False
         self.setMinimumHeight(800)
         self.setMinimumWidth(1200)
-
         # SET AS GLOBAL WIDGETS
         # ///////////////////////////////////////////////////////////////
         from ui.ui_dashboard import Ui_Dashboard
         self.ui = Ui_Dashboard()
         self.ui.setupUi(self)
+       
         global widgets
         widgets = self.ui
         # APP NAME
@@ -52,6 +52,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle(title)
         centerOnScreen(self)
         uiDefinitions(self)
+        self.ui.leftMenuBg.hide()
         # TOGGLE MENU
         # ///////////////////////////////////////////////////////////////
         widgets.toggleButton.clicked.connect(
@@ -65,24 +66,35 @@ class MainWindow(QtWidgets.QMainWindow):
             toggleLeftBox(self.ui, True)
         widgets.extraCloseColumnBtn.clicked.connect(openCloseLeftBox)
 
-        checarPermisos(self.ui)
-        createButtons(self.ui)
         
-        nombre_btn = getListaBotones()[0][0].lower()
+        
+        self.show()
+        if self.ui.login.exec_() == QtWidgets.QDialog.Accepted:
+            user, pwd = getUsuarioLogueado()
+            self.ui.leftMenuBg.show()
+            checarPermisos(self.ui)
+            createButtons(self.ui)
+            self.ui.titleLeftDescription.setText(QCoreApplication.translate(
+            "MainWindow", f"Usuario: {user}", None))
+            nombre_btn = getListaBotones()[0][0].lower()
+            startPage = getattr(self.ui, nombre_btn)
+            button = getattr(self.ui, f"btn_{nombre_btn}")
+            self.ui.stackedWidget.setCurrentWidget(startPage)
+            button.setStyleSheet(selectMenu(button.styleSheet()))
+        else:
+            self.close()
         # ///////////////////////////////////////////////////////////////
         # SET HOME PAGE AND SELECT MENU
-        startPage = getattr(self.ui, nombre_btn)
-        button = getattr(self.ui, f"btn_{nombre_btn}")
-        self.ui.stackedWidget.setCurrentWidget(startPage)
-        button.setStyleSheet(selectMenu(button.styleSheet()))
-         # SHOW APP
-        self.show()
         
-       
+         # SHOW APP
+        
+        
     def logOut(self):
         clearSession()
         self.return_to_login = True
         self.close()
+        #self.ui.stackedWidget.setCurrentWidget(self.ui.login)
+
 
     def closeEvent(self, event):
         if not self.return_to_login:
@@ -95,8 +107,6 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     app.setWindowIcon(QtGui.QIcon("ui/resources/imagenes/carpeta.png"))
     while True:
-        loginWindow = LoginScreen()
-        if loginWindow.exec_() == QtWidgets.QDialog.Accepted:
-            win = MainWindow()
-            app.exec_()
+        win = MainWindow()
+        app.exec_()
 

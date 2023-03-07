@@ -78,12 +78,12 @@ class EditarRegistro(Form, Base):
 
 
     def changePage(self):
-        from pages.VerTabla import VerTabla
+        from pages.Tablas import Tablas
         self.camposCambiados.clear()
         print(self.tabla)
-        self.parent().findChild(VerTabla).selectTable(self.parent().findChild(VerTabla),self.tabla)
-        self.parent().findChild(VerTabla).setupTable(self.parent().findChild(VerTabla))
-        self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(VerTabla)))
+        self.parent().findChild(Tablas).selectTable(self.parent().findChild(Tablas),self.tabla)
+        self.parent().findChild(Tablas).setupTable(self.parent().findChild(Tablas))
+        self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(Tablas)))
         
     
     def actualizarDict(self, col,val):

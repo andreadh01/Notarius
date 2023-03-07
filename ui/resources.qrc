@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="resources">
+    <file>resources/icons/calendario.png</file>
     <file>resources/icons/search-interface-symbol.png</file>
     <file>resources/imagenes/folder.png</file>
     <file>resources/imagenes/folder.png</file>
