@@ -44,8 +44,8 @@ border: none;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>410</width>
-          <height>58</height>
+          <width>412</width>
+          <height>68</height>
          </rect>
         </property>
         <property name="sizePolicy">
@@ -121,8 +121,8 @@ border: none;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>255</width>
-          <height>58</height>
+          <width>304</width>
+          <height>68</height>
          </rect>
         </property>
         <property name="sizePolicy">
@@ -350,11 +350,6 @@ background-color: #d3c393;
        <item>
         <property name="text">
          <string>Juridico</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Tramites</string>
         </property>
        </item>
        <item>

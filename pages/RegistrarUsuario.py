@@ -55,6 +55,8 @@ class RegistrarUsuario(Form, Base):
         elif rol == 'Presupuesto':
             diccionario_usar = self.diccionario_presupuesto
         elif rol == 'Juridico':
+            diccionario_usar = self.diccionario_juridico
+        elif rol == 'Trámites':
             diccionario_usar = self.diccionario_tramites
         else:
             diccionario_usar = self.diccionario_permisos
