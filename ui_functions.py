@@ -250,10 +250,10 @@ def checarPermisos(self):
         permisos_usuario = getAllPermisos()
         for tabla, permisos in permisos_usuario.items():
             if permisos['read'] != '': 
-                if 'Tablas' not in lista_botones:
+                if ['Tablas','cells'] not in lista_botones:
                     lista_botones.append(['Tablas','cells'])
             if permisos['write'] != '': 
-                if 'AgregarRegistro' not in lista_botones:
+                if ['AgregarRegistro','add'] not in lista_botones:
                     lista_botones.append(['AgregarRegistro','add'])
             if tabla == 'usuario':
                 lista_botones.clear() 
@@ -272,8 +272,6 @@ def createButtons(self):
         font.setItalic(False)
 
         for button in lista_botones:
-            print('botonnn')
-            print(button[0])
             name = button[0]
             icon = button[1]
             
