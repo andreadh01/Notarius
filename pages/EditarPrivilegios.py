@@ -109,7 +109,7 @@ class EditarPrivilegios(Base, Form):
 			permiso = checkbox.objectName()
 			permiso = permiso.split('_')[2]
 			if tipo_permiso == permiso:
-				checkbox.setChecked(not checkbox.isChecked())
+				checkbox.setChecked(True)
 	# en esta funcion se van a cargar los usuarios de la base de datos al combobox de usuarios
 	def setupUsers(self, Form):
 		# user, pwd = getUsuarioLogueado()

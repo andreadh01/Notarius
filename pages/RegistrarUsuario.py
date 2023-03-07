@@ -57,7 +57,7 @@ class RegistrarUsuario(Form, Base):
         elif rol == 'Juridico':
             diccionario_usar = self.diccionario_tramites
         else:
-            diccionario_usar = {}
+            diccionario_usar = self.diccionario_permisos
         self.limpiarDict() 
         self.diccionario_permisos = diccionario_usar
         self.resetCheckboxes(Form)
@@ -114,7 +114,8 @@ class RegistrarUsuario(Form, Base):
             permiso = checkbox.objectName()
             permiso = permiso.split('_')[2]
             if tipo_permiso == permiso:
-                checkbox.setChecked(not checkbox.isChecked())
+                checkbox.setChecked(True)
+        print(self.diccionario_permisos)
 
     def resetCombobox(self, Form):
         for obj in self.checkboxList:
