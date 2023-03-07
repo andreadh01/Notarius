@@ -8,14 +8,19 @@
 # WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
+from functools import partial
+import importlib
+import re
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from pages.AgregarRegistro import AgregarRegistro
 from pages.RegistrarUsuario import RegistrarUsuario
-from pages.VerTabla import VerTabla
+from pages.Tablas import Tablas
 
 from resources_rc import *
+from ui_functions import resetStyle, selectMenu
+from usuarios import getAllPermisos, getUsuarioLogueado
 
 
 class Ui_Dashboard(object):
@@ -341,76 +346,7 @@ class Ui_Dashboard(object):
         self.verticalLayout_8.setSpacing(0)
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
         self.verticalLayout_8.setContentsMargins(0, 0, 0, 0)
-        self.btn_tablas = QPushButton(self.topMenu)
-        self.btn_tablas.setObjectName(u"btn_tablas")
-        sizePolicy.setHeightForWidth(
-            self.btn_tablas.sizePolicy().hasHeightForWidth())
-        self.btn_tablas.setSizePolicy(sizePolicy)
-        self.btn_tablas.setMinimumSize(QSize(0, 45))
-        self.btn_tablas.setFont(font)
-        self.btn_tablas.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_tablas.setLayoutDirection(Qt.LeftToRight)
-        self.btn_tablas.setStyleSheet(
-            u"background-image: url(:/resources/resources/icons/cells.png);")
-
-        self.verticalLayout_8.addWidget(self.btn_tablas)
-
-        self.btn_agregar = QPushButton(self.topMenu)
-        self.btn_agregar.setObjectName(u"agregar")
-        sizePolicy.setHeightForWidth(
-            self.btn_agregar.sizePolicy().hasHeightForWidth())
-        self.btn_agregar.setSizePolicy(sizePolicy)
-        self.btn_agregar.setMinimumSize(QSize(0, 45))
-        self.btn_agregar.setFont(font)
-        self.btn_agregar.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_agregar.setLayoutDirection(Qt.LeftToRight)
-        self.btn_agregar.setStyleSheet(
-            u"background-image: url(:/resources/resources/icons/add.png);")
-
-        self.verticalLayout_8.addWidget(self.btn_agregar)
-
-        self.btn_registrar = QPushButton(self.topMenu)
-        self.btn_registrar.setObjectName(u"btn_registrar")
-        sizePolicy.setHeightForWidth(
-            self.btn_registrar.sizePolicy().hasHeightForWidth())
-        self.btn_registrar.setSizePolicy(sizePolicy)
-        self.btn_registrar.setMinimumSize(QSize(0, 45))
-        self.btn_registrar.setFont(font)
-        self.btn_registrar.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_registrar.setLayoutDirection(Qt.LeftToRight)
-        self.btn_registrar.setStyleSheet(
-            u"background-image: url(:/resources/resources/icons/add-user.png);")
-
-        self.verticalLayout_8.addWidget(self.btn_registrar)
-
-        self.btn_usuarios = QPushButton(self.topMenu)
-        self.btn_usuarios.setObjectName(u"btn_usuarios")
-        sizePolicy.setHeightForWidth(
-            self.btn_usuarios.sizePolicy().hasHeightForWidth())
-        self.btn_usuarios.setSizePolicy(sizePolicy)
-        self.btn_usuarios.setMinimumSize(QSize(0, 45))
-        self.btn_usuarios.setFont(font)
-        self.btn_usuarios.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_usuarios.setLayoutDirection(Qt.LeftToRight)
-        self.btn_usuarios.setStyleSheet(
-
-            u"background-image: url(:/resources/resources/icons/group.png)")
-
-        self.verticalLayout_8.addWidget(self.btn_usuarios)
-
-        self.btn_editarPriv = QPushButton(self.topMenu)
-        self.btn_editarPriv.setObjectName(u"btn_editarPriv")
-        sizePolicy.setHeightForWidth(
-            self.btn_editarPriv.sizePolicy().hasHeightForWidth())
-        self.btn_editarPriv.setSizePolicy(sizePolicy)
-        self.btn_editarPriv.setMinimumSize(QSize(0, 45))
-        self.btn_editarPriv.setFont(font)
-        self.btn_editarPriv.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_editarPriv.setLayoutDirection(Qt.LeftToRight)
-        self.btn_editarPriv.setStyleSheet(
-            u"background-image: url(:/resources/resources/icons/edit.png);")
-
-        self.verticalLayout_8.addWidget(self.btn_editarPriv)
+        
 
         self.verticalMenuLayout.addWidget(self.topMenu, 0, Qt.AlignTop)
 
@@ -585,18 +521,9 @@ class Ui_Dashboard(object):
         self.stackedWidget = QStackedWidget(self.pagesContainer)
         self.stackedWidget.setObjectName(u"stackedWidget")
         self.stackedWidget.setStyleSheet(u"background: transparent;")
-        self.verTabla = VerTabla()
-        self.verTabla.setObjectName(u"verTabla")
-        self.stackedWidget.addWidget(self.verTabla)
-        self.agregar = AgregarRegistro()
-        self.agregar.setObjectName(u"agregar")
-
-        self.stackedWidget.addWidget(self.agregar)
-        self.registrar = RegistrarUsuario()
-        self.registrar.setObjectName(u"registrar")
-
-        self.stackedWidget.addWidget(self.registrar)
-
+        
+        
+        
         self.verticalLayout_15.addWidget(self.stackedWidget)
 
         self.horizontalLayout_4.addWidget(self.pagesContainer)
@@ -619,24 +546,15 @@ class Ui_Dashboard(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
+        user, pwd = getUsuarioLogueado()
         MainWindow.setWindowTitle(QCoreApplication.translate(
             "MainWindow", u"MainWindow", None))
         self.titleLeftApp.setText(QCoreApplication.translate(
             "MainWindow", u"NOTARIUS", None))
         self.titleLeftDescription.setText(QCoreApplication.translate(
-            "MainWindow", u"Usuario: #usuario", None))
+            "MainWindow", f"Usuario: {user}", None))
         self.toggleButton.setText(
             QCoreApplication.translate("MainWindow", u"Ocultar", None))
-        self.btn_tablas.setText(QCoreApplication.translate(
-            "MainWindow", u"Tablas", None))
-        self.btn_agregar.setText(QCoreApplication.translate(
-            "MainWindow", u"Agregar registro", None))
-        self.btn_registrar.setText(QCoreApplication.translate(
-            "MainWindow", u"Registrar usuario", None))
-        self.btn_usuarios.setText(QCoreApplication.translate(
-            "MainWindow", u"Ver usuarios", None))
-        self.btn_editarPriv.setText(QCoreApplication.translate(
-            "MainWindow", u"Editar privilegios", None))
         self.logout.setText(
             QCoreApplication.translate("MainWindow", u"Cerrar sesión", None))
 

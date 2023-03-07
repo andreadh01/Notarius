@@ -17,7 +17,7 @@ Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/ver-tabla.ui")))
 
 
 
-class VerTabla(Base, Form):
+class Tablas(Base, Form):
 	def __init__(self, parent=None):
 		self.flag = False
 		self.flagTabla = False

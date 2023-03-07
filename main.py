@@ -19,8 +19,9 @@ import os
 import platform
 from PyQt5 import QtWidgets,QtGui
 
-from ui.ui_dashboard import Ui_Dashboard
+
 from ui_functions import *
+from usuarios import clearSession, getAllPermisos
 # IMPORT / GUI AND MODULES AND WIDGETS
 # ///////////////////////////////////////////////////////////////
 
@@ -31,16 +32,16 @@ os.environ["QT_FONT_DPI"] = "96"
 # ///////////////////////////////////////////////////////////////
 widgets = None
 
-
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
         self.return_to_login = False
         self.setMinimumHeight(800)
         self.setMinimumWidth(1200)
-        self.doLogin()
+
         # SET AS GLOBAL WIDGETS
         # ///////////////////////////////////////////////////////////////
+        from ui.ui_dashboard import Ui_Dashboard
         self.ui = Ui_Dashboard()
         self.ui.setupUi(self)
         global widgets
@@ -50,93 +51,52 @@ class MainWindow(QtWidgets.QMainWindow):
         title = "Notarius - Sistema administrativo"
         self.setWindowTitle(title)
         centerOnScreen(self)
+        uiDefinitions(self)
         # TOGGLE MENU
         # ///////////////////////////////////////////////////////////////
         widgets.toggleButton.clicked.connect(
-            lambda: toggleMenu(self, True))
+            lambda: toggleMenu(self.ui, True))
 
-        # BUTTONS CLICK
-        # ///////////////////////////////////////////////////////////////
-
-        # LEFT MENUS
-        widgets.btn_tablas.clicked.connect(self.buttonClick)
-        widgets.btn_agregar.clicked.connect(self.buttonClick)
-        widgets.btn_registrar.clicked.connect(self.buttonClick)
-        widgets.btn_usuarios.clicked.connect(self.buttonClick)
+        # BUTTON CLICK
         widgets.logout.clicked.connect(self.logOut)
 
         # EXTRA LEFT BOX
         def openCloseLeftBox():
-            toggleLeftBox(self, True)
-        # widgets.toggleLeftBox.clicked.connect(openCloseLeftBox)
+            toggleLeftBox(self.ui, True)
         widgets.extraCloseColumnBtn.clicked.connect(openCloseLeftBox)
 
-        # SHOW APP
-        # ///////////////////////////////////////////////////////////////
+        checarPermisos(self.ui)
+        createButtons(self.ui)
         
-        self.show()
+        nombre_btn = getListaBotones()[0][0].lower()
+        # ///////////////////////////////////////////////////////////////
         # SET HOME PAGE AND SELECT MENU
-        # ///////////////////////////////////////////////////////////////
-        widgets.stackedWidget.setCurrentWidget(widgets.verTabla)
-        widgets.btn_tablas.setStyleSheet(selectMenu(widgets.btn_tablas.styleSheet()))
-        
-    def logOut(self):
-        self.hide()  # hide main window
-        self.doLogin()  # show login
+        startPage = getattr(self.ui, nombre_btn)
+        button = getattr(self.ui, f"btn_{nombre_btn}")
+        self.ui.stackedWidget.setCurrentWidget(startPage)
+        button.setStyleSheet(selectMenu(button.styleSheet()))
+         # SHOW APP
         self.show()
         
-    def doLogin(self):
-        from pages.Login import LoginScreen
-        login = LoginScreen()
-        if login.exec_() != QtWidgets.QDialog.Accepted:
-            self.close()  # exit app
-    # def logOut(self):
-    #     self.return_to_login = True
-    #     self.close()
+       
+    def logOut(self):
+        clearSession()
+        self.return_to_login = True
+        self.close()
 
-    # def closeEvent(self, event):
-    #     if not self.return_to_login:
-    #         sys.exit()
-
-    # BUTTONS CLICK
-    # Post here your functions for clicked buttons
-    # ///////////////////////////////////////////////////////////////
-    def buttonClick(self):
-        # GET BUTTON CLICKED
-        btn = self.sender()
-        btnName = btn.objectName()
-
-
-        # SHOW HOME PAGE
-        if btnName == "btn_tablas":
-            widgets.stackedWidget.setCurrentWidget(widgets.verTabla)
-            resetStyle(self, btnName)
-            btn.setStyleSheet(selectMenu(btn.styleSheet()))
-
-        # SHOW WIDGETS PAGE
-        if btnName == "btn_agregar":
-            widgets.stackedWidget.setCurrentWidget(widgets.agregar)
-            resetStyle(self, btnName)
-            btn.setStyleSheet(selectMenu(btn.styleSheet()))
-
-        # SHOW NEW PAGE
-        if btnName == "btn_registrar":
-            widgets.stackedWidget.setCurrentWidget(
-                widgets.registrar)  # SET PAGE
-            # RESET ANOTHERS BUTTONS SELECTED
-            resetStyle(self, btnName)
-            btn.setStyleSheet(selectMenu(
-                btn.styleSheet()))  # SELECT MENU
-
-        if btnName == "btn_usuarios":
-            print("Save BTN clicked!")
-
-        # PRINT BTN NAME
-        print(f'Button "{btnName}" pressed!')
+    def closeEvent(self, event):
+        if not self.return_to_login:
+            sys.exit()
 
 
 if __name__ == "__main__":
+    from pages.Login import LoginScreen
+
     app = QtWidgets.QApplication(sys.argv)
     app.setWindowIcon(QtGui.QIcon("ui/resources/imagenes/carpeta.png"))
-    window = MainWindow()
-    app.exec_()
+    while True:
+        loginWindow = LoginScreen()
+        if loginWindow.exec_() == QtWidgets.QDialog.Accepted:
+            win = MainWindow()
+            app.exec_()
+

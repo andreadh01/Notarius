@@ -14,7 +14,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 Form, Base = uic.loadUiType(os.path.join(current_dir,("../ui/ver-usuario.ui")))
 
 
-class VerUsuario(Base, Form):
+class VerUsuarios(Base, Form):
 	def __init__(self, parent=None):
 		super(self.__class__, self).__init__(parent)
 		self.setupUi(self)

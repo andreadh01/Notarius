@@ -4,7 +4,7 @@ import os
 from bdConexion import obtener_conexion
 from functools import partial
 
-from pages.VerUsuario import VerUsuario
+from pages.VerUsuarios import VerUsuarios
 from usuarios import getListaTablas, getPermisos, getUsuarioLogueado, updateTable
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -215,7 +215,7 @@ class RegistrarUsuario(Form, Base):
                 self.checkBoxAllVer.setChecked(False)
                 self.checkBoxAllEscribir.setChecked(False)
                 self.parent().findChild(EditarPrivilegios).usuarioslist.addItem(nombre_usuario)
-                self.parent().findChild(VerUsuario).setupTable(self.parent().findChild(VerUsuario))
+                self.parent().findChild(VerUsuarios).setupTable(self.parent().findChild(VerUsuarios))
                 self.limpiarDict()
         self.checkThreadTimer = QtCore.QTimer(self)
         self.checkThreadTimer.setInterval(3000)
