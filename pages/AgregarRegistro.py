@@ -63,6 +63,8 @@ class AgregarRegistro(Form, Base):
             attr_label.setText(col+': ')
             layout.addWidget(attr_label)
             self.cols.append(attr_label)
+            if isinstance(tipo_dato, bytes):
+                tipo_dato = tipo_dato.decode('utf-8')
             if pri == 'PRI': 
                     widget = crearInput(self, tipo_dato, name_input,registro=index+1,col=col, enable=False)
                     layout.addWidget(widget)

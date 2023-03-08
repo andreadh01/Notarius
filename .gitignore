@@ -3,4 +3,3 @@ notarius
 .DS_Store
 build
 dist
-*.spec

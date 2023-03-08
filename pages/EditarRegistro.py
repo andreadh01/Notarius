@@ -46,6 +46,8 @@ class EditarRegistro(Form, Base):
             attr_label.setObjectName(name_label)
             attr_label.setText(col+': ')
             layout.addWidget(attr_label)
+            if isinstance(tipo_dato, bytes):
+                tipo_dato = tipo_dato.decode('utf-8')
             if pri == 'PRI': 
                     self.pri_key = (col,registro[col])
                     widget = crearInput(self, tipo_dato, name_input, registro[col],col, enable=False)
