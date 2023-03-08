@@ -1,5 +1,11 @@
 CREATE DATABASE notarius;
 
+CREATE USER 'admin'@'localhost' IDENTIFIED BY '123';
+
+GRANT ALL PRIVILEGES ON mysql.* TO 'admin'@'localhost' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON notarius.* TO 'admin'@'localhost' WITH GRANT OPTION;;
+GRANT RELOAD ON *.* TO 'admin'@'localhost';
+
 USE notarius;
 
 DROP TABLE IF EXISTS `presupuesto`;
