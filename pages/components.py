@@ -1,6 +1,8 @@
 from functools import partial
 import re
 from PyQt5 import uic, QtWidgets,QtCore
+from bdConexion import obtener_conexion
+from usuarios import getUsuarioLogueado
 # en este archivo se generan los componentes de gui que se agregaran de forma dinamica
 
 # esta funcion devuelve un boton de dashboard
@@ -8,88 +10,130 @@ from PyQt5 import uic, QtWidgets,QtCore
 
 # esta funcion devuelve un input con su respectivo label, uno de los parametros es el tipo de input, 
 # segun su tipo regresa un widget diferente.
-def crearInput(self,tipo_dato,name_input, registro='',col='',enable=True): # <---- este sera el metodo input()
-    if 'int' in tipo_dato:   
-        setattr(self, name_input, QtWidgets.QSpinBox(self.scrollAreaWidgetContents))
-        attr = getattr(self,name_input)
-        attr.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
-        attr.setStyleSheet(inputStylesheet(enable))
-        attr.setObjectName(name_input)
-        attr.setMaximum(2147483647)
-        registro = 1 if registro == '' else registro
-        
-        attr.valueChanged.connect(partial(self.actualizarDict, col))
-        attr.setValue(registro)
-        attr.setEnabled(enable)    
-        return attr
-    elif 'date' in tipo_dato:
-        setattr(self, name_input, QtWidgets.QDateEdit(self.scrollAreaWidgetContents))
-        attr = getattr(self,name_input)
-        attr.setCalendarPopup(True)
-        attr.setStyleSheet(inputStylesheet(enable, True))
-        attr.setObjectName(name_input)
-        registro = QtCore.QDate.currentDate() if registro == '' else registro
-        
-        attr.dateChanged.connect(partial(self.actualizarDict, col))
-        attr.setDate(registro)
-        attr.setEnabled(enable)    
-        return attr
-    elif 'varchar' in tipo_dato:
-        setattr(self, name_input, QtWidgets.QLineEdit(self.scrollAreaWidgetContents))
-        attr = getattr(self,name_input)
-        attr.setStyleSheet(inputStylesheet(enable))
-        attr.setObjectName(name_input)
-        max_value = self.limpiarString(tipo_dato)
-        attr.setMaxLength(int(max_value))
-        
-        attr.textChanged.connect(partial(self.actualizarDict, col))
-        attr.setText(registro)
-        attr.setEnabled(enable)    
-        return attr
-    elif 'decimal' in tipo_dato:
-        setattr(self, name_input, QtWidgets.QDoubleSpinBox(self.scrollAreaWidgetContents))
-        attr = getattr(self,name_input)
-        attr.setStyleSheet(inputStylesheet(enable))
-        attr.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
-        attr.setObjectName(name_input)
-        attr.setMaximum(99999999.99)
-        registro = 0 if registro == '' else registro
-        
-        attr.valueChanged.connect(partial(self.actualizarDict, col))
-        attr.setValue(registro)
-        attr.setEnabled(enable)    
-        return attr            
-    elif 'enum' in tipo_dato:
+def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=True): # <---- este sera el metodo input()
+
+    #checar llaves foraneas y si el campo tiene llave foranea
+    user, pwd = getUsuarioLogueado()
+    conn = obtener_conexion(user,pwd)
+    cur = conn.cursor()
+    query=f"SELECT REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = 'notarius' AND TABLE_NAME = '{nombre_tabla}' AND COLUMN_NAME = '{col}';"
+    cur.execute(query)
+    foreign_key = cur.fetchall()
+    if len(foreign_key) > 0:
+      foreign_key = foreign_key[0]
+    es_fk = False
+    if len(foreign_key) > 0: es_fk = True
+    if es_fk:
+        #select todos los resultados de la columna de la tabla
+        query = f"SELECT {foreign_key[1]} FROM {foreign_key[0]};"
+        cur.execute(query)
+        lista_opciones = cur.fetchall()
+        # print(lista_opciones)
+        if len(lista_opciones) > 0:
+            opciones = ['Selecciona una opcion']
+            for indice,tupla in enumerate(lista_opciones):
+                temp = str(lista_opciones[indice][0])
+                opciones.append(temp)
+        else:
+            opciones = ['No existen datos para esta columna']
+
+
+        #prepara combobox
         setattr(self, name_input, QtWidgets.QComboBox(self.scrollAreaWidgetContents))
         attr = getattr(self,name_input)
         attr.setStyleSheet(inputStylesheet(enable,combobox=True))
         attr.setObjectName(name_input)
-        re_pattern = re.compile(r"[^a-z, ()]", re.I)
-        opciones = re.sub(re_pattern, "", tipo_dato)            
-        opciones = opciones.replace('enum(','').replace(')','')
-        opciones = opciones.split(',')
         attr.addItems(opciones)
         
         attr.view().parentWidget().setStyleSheet('background-color: white;\outline:none;')
 
         attr.currentTextChanged.connect(partial(self.actualizarDict, col))
-        attr.setCurrentText(registro)
+        attr.setCurrentIndex(1)
+        attr.removeItem(0)
         attr.setEnabled(enable)    
         return attr
-    elif 'timestamp' in tipo_dato:
-        setattr(self, name_input, QtWidgets.QDateTimeEdit(self.scrollAreaWidgetContents))
-        attr = getattr(self,name_input)
-        attr.setCalendarPopup(True)
-        #attr.setDisplayFormat("yyyy-mm-dd HH:mm:ss")
-        attr.setStyleSheet(inputStylesheet(enable, True))
-        attr.setObjectName(name_input)
-        registro = QtCore.QDate.currentDate() if registro == '' else registro
+    else:
+        if 'int' in tipo_dato:   
+            setattr(self, name_input, QtWidgets.QSpinBox(self.scrollAreaWidgetContents))
+            attr = getattr(self,name_input)
+            attr.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
+            attr.setStyleSheet(inputStylesheet(enable))
+            attr.setObjectName(name_input)
+            attr.setMaximum(2147483647)
+            registro = 1 if registro == '' else registro
+            
+            attr.valueChanged.connect(partial(self.actualizarDict, col))
+            attr.setValue(registro)
+            attr.setEnabled(enable)    
+            return attr
+        elif 'date' in tipo_dato:
+            setattr(self, name_input, QtWidgets.QDateEdit(self.scrollAreaWidgetContents))
+            attr = getattr(self,name_input)
+            attr.setCalendarPopup(True)
+            attr.setStyleSheet(inputStylesheet(enable, True))
+            attr.setObjectName(name_input)
+            registro = QtCore.QDate.currentDate() if registro == '' else registro
+            
+            attr.dateChanged.connect(partial(self.actualizarDict, col))
+            attr.setDate(registro)
+            attr.setEnabled(enable)    
+            return attr
+        elif 'varchar' in tipo_dato:
+            setattr(self, name_input, QtWidgets.QLineEdit(self.scrollAreaWidgetContents))
+            attr = getattr(self,name_input)
+            attr.setStyleSheet(inputStylesheet(enable))
+            attr.setObjectName(name_input)
+            max_value = self.limpiarString(tipo_dato)
+            attr.setMaxLength(int(max_value))
+            
+            attr.textChanged.connect(partial(self.actualizarDict, col))
+            attr.setText(registro)
+            attr.setEnabled(enable)    
+            return attr
+        elif 'decimal' in tipo_dato:
+            setattr(self, name_input, QtWidgets.QDoubleSpinBox(self.scrollAreaWidgetContents))
+            attr = getattr(self,name_input)
+            attr.setStyleSheet(inputStylesheet(enable))
+            attr.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
+            attr.setObjectName(name_input)
+            attr.setMaximum(99999999.99)
+            registro = 0 if registro == '' else registro
+            
+            attr.valueChanged.connect(partial(self.actualizarDict, col))
+            attr.setValue(registro)
+            attr.setEnabled(enable)    
+            return attr            
+        elif 'enum' in tipo_dato:
+            setattr(self, name_input, QtWidgets.QComboBox(self.scrollAreaWidgetContents))
+            attr = getattr(self,name_input)
+            attr.setStyleSheet(inputStylesheet(enable,combobox=True))
+            attr.setObjectName(name_input)
+            re_pattern = re.compile(r"[^a-z, ()]", re.I)
+            opciones = re.sub(re_pattern, "", tipo_dato)            
+            opciones = opciones.replace('enum(','').replace(')','')
+            opciones = opciones.split(',')
+            attr.addItems(opciones)
+            
+            attr.view().parentWidget().setStyleSheet('background-color: white;\outline:none;')
 
-        
-        attr.dateTimeChanged.connect(partial(self.actualizarDict, col))
-        attr.setDate(registro)
-        attr.setEnabled(enable)    
-        return attr
+            attr.currentTextChanged.connect(partial(self.actualizarDict, col))
+            attr.setCurrentText(registro)
+            attr.setEnabled(enable)    
+            return attr
+        elif 'timestamp' in tipo_dato:
+            setattr(self, name_input, QtWidgets.QDateTimeEdit(self.scrollAreaWidgetContents))
+            attr = getattr(self,name_input)
+            attr.setCalendarPopup(True)
+            #attr.setDisplayFormat("yyyy-mm-dd HH:mm:ss")
+            attr.setStyleSheet(inputStylesheet(enable, True))
+            attr.setObjectName(name_input)
+            registro = QtCore.QDate.currentDate() if registro == '' else registro
+
+            
+            attr.dateTimeChanged.connect(partial(self.actualizarDict, col))
+            attr.setDate(registro)
+            attr.setEnabled(enable)    
+            return attr
 
 def crearRadioButton(self,name_input, registro='',col=''):
         si_radiobutton = f"{name_input}_1"

@@ -50,14 +50,14 @@ class EditarRegistro(Form, Base):
                 tipo_dato = tipo_dato.decode('utf-8')
             if pri == 'PRI': 
                     self.pri_key = (col,registro[col])
-                    widget = crearInput(self, tipo_dato, name_input, registro[col],col, enable=False)
+                    widget = crearInput(self, tipo_dato, name_input,tabla, registro[col],col, enable=False)
                     layout.addWidget(widget)
             elif 'tinyint' in tipo_dato:
                 r0,r1 = crearRadioButton(self, name_input, registro[col],col)
                 layout.addWidget(r0)
                 layout.addWidget(r1)
             else:
-                widget = crearInput(self, tipo_dato, name_input, registro[col],col)
+                widget = crearInput(self, tipo_dato, name_input,tabla, registro[col],col)
                 layout.addWidget(widget)
                 
     # este metodo carga el registro seleccionado
