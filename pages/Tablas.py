@@ -85,9 +85,9 @@ class Tablas(Base, Form):
 		self.line_edit_busqueda_presupuesto.textChanged.connect(self.proxy.setFilterRegExp)
 		self.busqueda()
 
-		self.tableView.resizeColumnsToContents();
+		self.tableView.resizeColumnsToContents()
 		
-		self.tableView.horizontalHeader().setStretchLastSection(True);
+		self.tableView.horizontalHeader().setStretchLastSection(True)
 		
 	def createButton(self, Form):
 		button = QPushButton(self.tableView)
