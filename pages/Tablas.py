@@ -17,6 +17,7 @@ base_dir = getBaseDir()
 Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','ver-tabla.ui'))
 
 
+headers = []
 
 class Tablas(Base, Form):
 	def __init__(self, parent=None):
@@ -24,29 +25,30 @@ class Tablas(Base, Form):
 		self.flagTabla = False
 		super(self.__class__, self).__init__(parent)
 		self.setupUi(self)
-		self.setupTableList(self)
+		#self.setupTableList(self)
 		self.setupTable(self)
 		self.mensaje.hide()
 		self.tableView.setEditTriggers(QAbstractItemView.NoEditTriggers)
 		self.pushButton_2.clicked.connect(self.escribirCSV)
-		self.tableslist.currentIndexChanged.connect(partial(self.setupTable,self))
+		#self.tableslist.currentIndexChanged.connect(partial(self.setupTable,self))
 
-	def selectTable(self,Form,tabla):
-		#print("resultado")
-		item = self.tableslist.findText(tabla,Qt.MatchExactly)
-		#index =self.tableslist.row(item[0])
-		self.tableslist.setCurrentIndex(item)
-		#print(self.tableslist.row(item[0]))
-		#self.tableslist.setCurrentRow(0)
+	# def selectTable(self,Form,tabla):
+	# 	#print("resultado")
+	# 	item = self.tableslist.findText(tabla,Qt.MatchExactly)
+	# 	#index =self.tableslist.row(item[0])
+	# 	self.tableslist.setCurrentIndex(item)
+	# 	#print(self.tableslist.row(item[0]))
+	# 	#self.tableslist.setCurrentRow(0)
 
 	# en este metodo se agregan las tablas disponibles para el usuario a una lista	
-	def setupTableList(self,Form):
-		lista_tablas = getListaTablas()
-		self.tableslist.addItems(lista_tablas)
+	# def setupTableList(self,Form):
+	# 	lista_tablas = getListaTablas()
+	# 	self.tableslist.addItems(lista_tablas)
 
 	# en este metodo se actualizan los datos de la tabla, segun la tabla seleccionada en la lista
 	def setupTable(self,Form):
-		tabla_name = self.tableslist.currentText()
+		#tabla_name = self.tableslist.currentText()
+		tabla_name = 'tabla_final'
 		permisos = getPermisos(tabla_name)
 		select = permisos["read"]
 		tabla = getValoresTabla(tabla_name)
@@ -66,6 +68,7 @@ class Tablas(Base, Form):
 		#agregar los registros al modelo con un boton para editar el registro
 		for i, registro in enumerate(tabla):
 			for j, (col, val) in enumerate(registro.items()):
+				if val is None: val =''
 				model.setItem(i,j,QStandardItem(str(val)))
 			
 		#crear un filtro para el widget QTableView
@@ -74,20 +77,16 @@ class Tablas(Base, Form):
 		self.proxy.setSourceModel(model)
 		#agregar el filtro al widget QTableView
 		self.tableView.setModel(self.proxy)
-
-		#obtener una lista enumerada de los campos de la tabla
-		headers = list(enumerate([i for i in header]))
-		#agregar un evento al filtro para cuando se cambia el valor del combobox, comparar el valor del combobox con la lista de campos de la tabla para obtener el indice del campo seleccionado
-		self.comboBox_busqueda_presupuesto.currentIndexChanged.connect(lambda *args, headers= headers: self.setfilterKeyColumn(headers))
+		self.busqueda()
 		#agregar un evento al filtro para cuando se escribe en el line edit
 		self.proxy.setFilterCaseSensitivity(Qt.CaseInsensitive)
 		#agregar un evento al filtro para cuando se escribe en el line edit
 		self.line_edit_busqueda_presupuesto.textChanged.connect(self.proxy.setFilterRegExp)
-		self.busqueda()
-
-		self.tableView.resizeColumnsToContents()
 		
-		self.tableView.horizontalHeader().setStretchLastSection(True)
+
+		self.tableView.resizeColumnsToContents();
+		
+		self.tableView.horizontalHeader().setStretchLastSection(True);
 		
 	def createButton(self, Form):
 		button = QPushButton(self.tableView)
@@ -135,7 +134,8 @@ class Tablas(Base, Form):
 	
 	def modificarRegistro(self):
 		#obtener el nombre de la tabla actual
-		tabla_name = self.tableslist.currentText()
+		#tabla_name = self.tableslist.currentText()
+		tabla_name = 'tabla_final'
 		#obtener el id del registro seleccionado en el QTableView
 
 		if self.tableView.selectedIndexes() == []:
@@ -168,7 +168,8 @@ class Tablas(Base, Form):
 
 	def fillCombo(self):
 		#obtener el nombre de la tabla actual
-		tabla_name = self.tableslist.currentText()
+		#tabla_name = self.tableslist.currentText()
+		tabla_name = 'tabla_final'
 		#obtener la conexion a la base de datos
 		conn = obtener_conexion()
 		#crear un cursor para la conexion
@@ -178,15 +179,22 @@ class Tablas(Base, Form):
 		#ejecutar la consulta
 		cur.execute(query)
 		#obtener los campos de la tabla
-		headers = cur.fetchall()
+		vals = cur.fetchall()
 		#cerrar la conexion
 		cur.close()
 		conn.close()
+		headers  = []
 		#limpiar el combobox
 		self.comboBox_busqueda_presupuesto.clear()
 		#agregar los campos al combobox
-		for i in headers:
-			self.comboBox_busqueda_presupuesto.addItem(i[0])
+		for i, item in enumerate(vals):
+			if item[0] in ['no_presupuesto','no_escritura','proyectista','adquiriente']:
+				headers.append((i,item[0]))
+				self.comboBox_busqueda_presupuesto.addItem(item[0])
+		if len(headers) > 0: self.proxy.setFilterKeyColumn(headers[0][0])
+		#agregar un evento al filtro para cuando se cambia el valor del combobox, comparar el valor del combobox con la lista de campos de la tabla para obtener el indice del campo seleccionado
+		self.comboBox_busqueda_presupuesto.currentIndexChanged.connect(lambda *args, headers= headers: self.setfilterKeyColumn(headers))
+		
 
 
 
@@ -199,8 +207,8 @@ class Tablas(Base, Form):
 				self.proxy.setFilterKeyColumn(keyColumn)
 
 	def escribirCSV(self):
-		tabla = self.tableslist.currentText()
-		path = os.path.expanduser(f"~/NotariusBackup/{tabla}")
+		#tabla = self.tableslist.currentText()
+		path = os.path.expanduser(f"~/NotariusBackup/")
 		if not os.path.exists(path): os.makedirs(path)
 
 		path = f"{path}/{date.today()}.csv"

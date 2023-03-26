@@ -312,3 +312,6 @@ group by E.id
 CREATE TABLE tabla_final AS       SELECT    *  FROM vista_tabla;
 alter table tabla_final add column id int unsigned not null auto_increment primary key first;
 drop view vista_tabla;
+
+alter table tabla_final modify column no_escritura int unsigned null after no_presupuesto;
+alter table tabla_final modify column bis tinyint(1) null after no_escritura;

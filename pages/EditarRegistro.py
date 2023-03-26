@@ -75,7 +75,7 @@ class EditarRegistro(Form, Base):
     def changePage(self):
         from pages.Tablas import Tablas
         self.camposCambiados.clear()
-        self.parent().findChild(Tablas).selectTable(self.parent().findChild(Tablas),self.tabla)
+        #self.parent().findChild(Tablas).selectTable(self.parent().findChild(Tablas),self.tabla)
         self.parent().findChild(Tablas).setupTable(self.parent().findChild(Tablas))
         self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(Tablas)))
         

@@ -11,7 +11,7 @@ from usuarios import getUsuarioLogueado
 # esta funcion devuelve un input con su respectivo label, uno de los parametros es el tipo de input, 
 # segun su tipo regresa un widget diferente.
 def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=True): # <---- este sera el metodo input()
-
+    if registro is None: registro = ''
     #checar llaves foraneas y si el campo tiene llave foranea
     user, pwd = getUsuarioLogueado()
     conn = obtener_conexion(user,pwd)
