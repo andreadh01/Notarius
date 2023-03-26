@@ -66,7 +66,7 @@ class AgregarRegistro(Form, Base):
             if isinstance(tipo_dato, bytes):
                 tipo_dato = tipo_dato.decode('utf-8')
             if pri == 'PRI': 
-                    widget = crearInput(self, tipo_dato, name_input,registro=index+1,col=col, enable=False)
+                    widget = crearInput(self, tipo_dato, name_input,tabla,registro=index+1,col=col, enable=False)
                     layout.addWidget(widget)
                     self.cols.append(widget)
             elif 'tinyint' in tipo_dato:
@@ -76,7 +76,7 @@ class AgregarRegistro(Form, Base):
                 self.cols.append(r0)
                 self.cols.append(r1)
             else:
-                widget = crearInput(self, tipo_dato, name_input, col=col)
+                widget = crearInput(self, tipo_dato, name_input,tabla, col=col)
                 layout.addWidget(widget)
                 self.cols.append(widget)
 

@@ -13,6 +13,7 @@ Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','editar-privilegios.ui'))
 
 class EditarPrivilegios(Base, Form):
 	checkboxList = []
+	foreign_keys = {}
 	diccionario_permisos = {'read':{},
 							'write':{}}
 	def __init__(self, parent=None):
@@ -23,6 +24,7 @@ class EditarPrivilegios(Base, Form):
 		self.setupUsers(self)
 		self.setupTables(self)
 		self.setupColumns(self)
+		self.llavesForaneas()
 		self.checkBoxAllVer.stateChanged.connect(partial(self.checkAll,"read"))
 		self.checkBoxAllEscribir.stateChanged.connect(partial(self.checkAll,"write"))
 		
@@ -35,6 +37,18 @@ class EditarPrivilegios(Base, Form):
 		self.tablaslist.currentTextChanged.connect(self.setupColumns)
 		#self.accioneslist.currentTextChanged.connect(self.resetCheckboxes)
   
+	def llavesForaneas(self):
+		conn = obtener_conexion()
+		cur = conn.cursor()
+		cur.execute("SELECT TABLE_NAME,COLUMN_NAME,REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE CONSTRAINT_SCHEMA = 'notarius' AND REFERENCED_TABLE_NAME IS NOT NULL")
+		for table_name, column_name, referenced_table_name, referenced_column_name in cur:
+			if table_name not in self.foreign_keys:
+				self.foreign_keys[table_name] = []
+			self.foreign_keys[table_name].append((column_name, referenced_table_name, referenced_column_name)) # agregar los valores en una tupla
+		cur.close()
+		conn.close()
+		print(self.foreign_keys)
+
 	def showGrants(self):
 		self.checkBoxAllVer.setChecked(False)
 		self.checkBoxAllEscribir.setChecked(False)
