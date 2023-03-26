@@ -29,7 +29,7 @@ CREATE  TABLE presupuesto (
 CREATE  TABLE usuario ( 
 	id                   INT UNSIGNED NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
 	nombre_usuario       VARCHAR(100)       ,
-	rol                  ENUM('admin','empleado','proyectista','armadores','otro')       
+	rol                  ENUM('admin','proyectista','tramites','juridico','presupuesto','armadores','otro')       
  ) engine=InnoDB;
 
 CREATE  TABLE depositos_presupuesto ( 
