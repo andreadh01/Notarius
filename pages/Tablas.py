@@ -21,8 +21,6 @@ headers = []
 
 class Tablas(Base, Form):
 	def __init__(self, parent=None):
-		self.flag = False
-		self.flagTabla = False
 		super(self.__class__, self).__init__(parent)
 		self.setupUi(self)
 		#self.setupTableList(self)
@@ -49,6 +47,7 @@ class Tablas(Base, Form):
 	def setupTable(self,Form):
 		#tabla_name = self.tableslist.currentText()
 		tabla_name = 'tabla_final'
+		#obtener los permisos del usuario para la tabla seleccionada
 		permisos = getPermisos(tabla_name)
 		select = permisos["read"]
 		tabla = getValoresTabla(tabla_name)
@@ -256,9 +255,6 @@ class Tablas(Base, Form):
 		if len(headers) > 0: self.proxy.setFilterKeyColumn(headers[0][0])
 		#agregar un evento al filtro para cuando se cambia el valor del combobox, comparar el valor del combobox con la lista de campos de la tabla para obtener el indice del campo seleccionado
 		self.comboBox_busqueda_presupuesto.currentIndexChanged.connect(lambda *args, headers= headers: self.setfilterKeyColumn(headers))
-		
-
-
 
 	def setfilterKeyColumn(self,headers:list):
 		#obtener el valor del combobox
