@@ -65,7 +65,12 @@ class Tablas(Base, Form):
 		self.tableView.setModel(model)
 		#agregar los registros al modelo con un boton para editar el registro
 		list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp,desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
-	
+
+		#crear un objeto qitemdelegate para celdas
+		delegate = QItemDelegate(self)
+		#agregar el objeto al widget QTableView
+		self.tableView.setItemDelegate(delegate)
+		
 		for i, registro in enumerate(tabla):
 			for j, (col, val) in enumerate(registro.items()):
 				if val is None: val =''
@@ -78,13 +83,12 @@ class Tablas(Base, Form):
 					if col == 'depositos':
 						col = 'depositos_presupuesto'
 					subtable = self.setupSubTable(i,j,col)
+					subtable.setParent(self.tableView)
 					self.tableView.setIndexWidget(index,subtable)
-				model.setItem(i,j,QStandardItem(str(val)))
+				else:
+					model.setItem(i,j,QStandardItem(str(val)))
 		
-		#crear un objeto qitemdelegate para celdas
-		delegate = QItemDelegate(self)
-		#agregar el objeto al widget QTableView
-		self.tableView.setItemDelegate(delegate)
+		
 
 
 		#crear un filtro para el widget QTableView
@@ -170,6 +174,8 @@ class Tablas(Base, Form):
 		subtable.verticalHeader().setVisible(False)
 		subtable.horizontalHeader().setVisible(False)
 		subtable.horizontalHeader().setStretchLastSection(True)
+		subtable.setMinimumSize(subtable.sizeHint())
+		subtable.setMaximumSize(subtable.sizeHint())
 		subtable.setSortingEnabled(True)
 		subtable.setAlternatingRowColors(True)
 		return subtable
