@@ -3,7 +3,7 @@ from functools import partial
 from PyQt5 import uic
 import pandas as pd
 #python(suversion) -m pip install pandas
-from PyQt5.QtWidgets import QHeaderView, QTableView, QAbstractItemView,QPushButton,QMessageBox,QScrollBar
+from PyQt5.QtWidgets import QHeaderView, QTableView, QAbstractItemView,QPushButton,QMessageBox,QScrollBar,QItemDelegate
 from PyQt5.QtCore import Qt,QSortFilterProxyModel, QTimer
 from PyQt5.QtGui import QStandardItemModel,QStandardItem
 from bdConexion import obtener_conexion
@@ -56,7 +56,6 @@ class Tablas(Base, Form):
 		global Diccionario
 		Diccionario = tabla
 		header = select.split(',')
-
 		model = QStandardItemModel()
 		#agregar los encabezados al modelo
 		for i, item in enumerate(header):
@@ -65,11 +64,29 @@ class Tablas(Base, Form):
 		#agregar el modelo al widget QTableView
 		self.tableView.setModel(model)
 		#agregar los registros al modelo con un boton para editar el registro
+		list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp,desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
+	
 		for i, registro in enumerate(tabla):
 			for j, (col, val) in enumerate(registro.items()):
 				if val is None: val =''
+				if col in list_nested_tables:
+					#si el campo es de una de las tablas en la lista, entonces se guarda su index
+					#para poder acceder a ella mas facilmente
+					index = model.index(i,j)
+					if col == 'pagos':
+						col = 'pagos_presupuesto'
+					if col == 'depositos':
+						col = 'depositos_presupuesto'
+					subtable = self.setupSubTable(i,j,col)
+					self.tableView.setIndexWidget(index,subtable)
 				model.setItem(i,j,QStandardItem(str(val)))
-			
+		
+		#crear un objeto qitemdelegate para celdas
+		delegate = QItemDelegate(self)
+		#agregar el objeto al widget QTableView
+		self.tableView.setItemDelegate(delegate)
+
+
 		#crear un filtro para el widget QTableView
 		self.proxy = QSortFilterProxyModel()
 		#agregar el modelo al filtro
@@ -81,10 +98,7 @@ class Tablas(Base, Form):
 		self.proxy.setFilterCaseSensitivity(Qt.CaseInsensitive)
 		#agregar un evento al filtro para cuando se escribe en el line edit
 		self.line_edit_busqueda_presupuesto.textChanged.connect(self.proxy.setFilterRegExp)
-		
-
 		self.tableView.resizeColumnsToContents()
-		
 		#add horizontal scrollbar to table view widget 
 		# create a scroll bar object
 		scroll_bar = QScrollBar(self.tableView)
@@ -140,13 +154,41 @@ class Tablas(Base, Form):
 "QScrollBar::handle:horizontal:hover, QScrollBar::handle:horizontal:on {\n"
 "    background: rgb(102,102,102);\n"
 "}")
-	
+
         # setting horizontal scroll bar to it
 		self.tableView.setHorizontalScrollBar(scroll_bar)
-
 		self.tableView.horizontalHeader().setStretchLastSection(True)
+	
+	def setupSubTable(self,i,j,column)->QTableView:
+		subtable = QTableView()
+		subtable.setModel(self.setupSubTableModel(column))
+		subtable.verticalHeader().setVisible(False)
+		subtable.horizontalHeader().setVisible(True)
+		subtable.setEditTriggers(QAbstractItemView.NoEditTriggers)
+		subtable.setSelectionBehavior(QAbstractItemView.SelectRows)
+		subtable.setSelectionMode(QAbstractItemView.SingleSelection)
+		subtable.verticalHeader().setVisible(False)
+		subtable.horizontalHeader().setVisible(False)
+		subtable.horizontalHeader().setStretchLastSection(True)
+		subtable.setSortingEnabled(True)
+		subtable.setAlternatingRowColors(True)
+		return subtable
+
+	def setupSubTableModel(self,column)->QStandardItemModel:
+		model = QStandardItemModel()
+		#se ponen los headers de la tabla
+		# queda pendiente model.setHorizontalHeaderLabels()
+		#obtener columnas de la tabla
+		tabla = getValoresTabla(column)
+		#se agregan los datos de la tabla al modelo
+		for i, registro in enumerate(tabla):
+			model.insertRow(i)
+			for j, (col, val) in enumerate(registro.items()):
+				if val is None: val =''
+				model.setItem(i,j,QStandardItem(str(val)))
 		
-		
+		return model
+
 	def createButton(self, Form):
 		button = QPushButton(self.tableView)
 		button.setObjectName("editar")
