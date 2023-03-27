@@ -3,7 +3,7 @@ from functools import partial
 from PyQt5 import uic
 import pandas as pd
 #python(suversion) -m pip install pandas
-from PyQt5.QtWidgets import QHeaderView, QTableView, QAbstractItemView,QPushButton,QMessageBox
+from PyQt5.QtWidgets import QHeaderView, QTableView, QAbstractItemView,QPushButton,QMessageBox,QScrollBar
 from PyQt5.QtCore import Qt,QSortFilterProxyModel, QTimer
 from PyQt5.QtGui import QStandardItemModel,QStandardItem
 from bdConexion import obtener_conexion
@@ -84,9 +84,69 @@ class Tablas(Base, Form):
 		self.line_edit_busqueda_presupuesto.textChanged.connect(self.proxy.setFilterRegExp)
 		
 
-		self.tableView.resizeColumnsToContents();
+		self.tableView.resizeColumnsToContents()
 		
-		self.tableView.horizontalHeader().setStretchLastSection(True);
+		#add horizontal scrollbar to table view widget 
+		# create a scroll bar object
+		scroll_bar = QScrollBar(self.tableView)
+        # setting style sheet
+		scroll_bar.setStyleSheet("QScrollBar:horizontal {\n"
+"    border: 2px grey;\n"
+"    background: white;\n"
+"    height: 15px;\n"
+"    margin: 0px 21px 0 21px;\n"
+"}\n"
+"QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {\n"
+"    background: none;\n"
+"height: 0px;\n"
+"width: 0px;\n"
+"}\n"
+"QScrollBar::add-line:horizontal {\n"
+"background: none;\n"
+"height: 0px;\n"
+"width: 0px;\n"
+"}\n"
+"QScrollBar::sub-line:horizontal {\n"
+"background: none;\n"
+"height: 0px;\n"
+"width: 0px;\n"
+"}\n"
+"QScrollBar::handle:horizontal {\n"
+"    background: rgb(204,204,204);\n"
+"    min-width: 25px;\n"
+"}\n"
+"QScrollBar::add-line:horizontal:hover, QScrollBar::add-line:horizontal:on {\n"
+"    border: 2px grey;\n"
+"    background: white;\n"
+"    height: 15px;\n"
+"    subcontrol-position: right;\n"
+"    subcontrol-origin: margin;\n"
+"}\n"
+"QScrollBar::sub-line:horizontal:hover, QScrollBar::sub-line:horizontal:on {\n"
+"    border: 2px grey;\n"
+"    background: white;\n"
+"    height: 15px;\n"
+"    subcontrol-position: left;\n"
+"    subcontrol-origin: margin;\n"
+"}\n"
+"QScrollBar::left-arrow:horizontal, QScrollBar::right-arrow:horizontal {\n"
+"    border: 2px grey;\n"
+"    width: 3px;\n"
+"    height: 3px;\n"
+"    background: white;\n"
+"}\n"
+"QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {\n"
+"    background: none;\n"
+"}\n"
+"QScrollBar::handle:horizontal:hover, QScrollBar::handle:horizontal:on {\n"
+"    background: rgb(102,102,102);\n"
+"}")
+	
+        # setting horizontal scroll bar to it
+		self.tableView.setHorizontalScrollBar(scroll_bar)
+
+		self.tableView.horizontalHeader().setStretchLastSection(True)
+		
 		
 	def createButton(self, Form):
 		button = QPushButton(self.tableView)
@@ -116,6 +176,8 @@ class Tablas(Base, Form):
 		self.parent().findChild(EditarRegistro).getRegistro(editar, index, tabla, 'id')
 		self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(EditarRegistro)))
   
+  #la funcion getIndexCell obtiene el valor de la celda de la tabla que se encuentra en la columna id, para luego enviarlo a la funcion getRegistro de la clase EditarRegistro
+  #para obtener el registro que se desea editar y mostrarlo en el formulario de edicion de registros de la clase EditarRegistro
 	def getIndexCell(self, row):
 		headercount = self.tableView.model().columnCount()
 		for x in range(headercount):
@@ -165,7 +227,7 @@ class Tablas(Base, Form):
 			#hacer el cambio de pagina al objeto EditarRegistro
 			self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(EditarRegistro)))
 
-
+#la funcion fillcombo obtiene los campos de la tabla actual y los agrega al combobox para que el usuario pueda seleccionar el campo por el cual desea filtrar la tabla	
 	def fillCombo(self):
 		#obtener el nombre de la tabla actual
 		#tabla_name = self.tableslist.currentText()

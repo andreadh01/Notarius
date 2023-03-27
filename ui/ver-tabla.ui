@@ -296,6 +296,9 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
 }
 </string>
        </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAsNeeded</enum>
+       </property>
        <property name="autoScrollMargin">
         <number>30</number>
        </property>
