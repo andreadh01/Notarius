@@ -3,7 +3,7 @@ from functools import partial
 from PyQt5 import uic
 import pandas as pd
 #python(suversion) -m pip install pandas
-from PyQt5.QtWidgets import QHeaderView, QTableView, QAbstractItemView,QPushButton,QMessageBox,QScrollBar,QItemDelegate
+from PyQt5.QtWidgets import QHeaderView, QTableView, QAbstractItemView,QPushButton,QMessageBox,QScrollBar,QItemDelegate,QLabel
 from PyQt5.QtCore import Qt,QSortFilterProxyModel, QTimer
 from PyQt5.QtGui import QStandardItemModel,QStandardItem
 from bdConexion import obtener_conexion
@@ -70,19 +70,21 @@ class Tablas(Base, Form):
 		delegate = QItemDelegate(self)
 		#agregar el objeto al widget QTableView
 		self.tableView.setItemDelegate(delegate)
-		
+
 		for i, registro in enumerate(tabla):
 			for j, (col, val) in enumerate(registro.items()):
 				if val is None: val =''
 				if col in list_nested_tables:
 					#si el campo es de una de las tablas en la lista, entonces se guarda su index
 					#para poder acceder a ella mas facilmente
-					index = model.index(i,j)
+					index = self.tableView.model().index(i,j)
+					index2 = self.tableView.model().index(2,2)
 					if col == 'pagos':
 						col = 'pagos_presupuesto'
 					if col == 'depositos':
 						col = 'depositos_presupuesto'
-					subtable = self.setupSubTable(i,j,col)
+					name = f"subtable_{i}_{j}"
+					subtable = self.setupSubTable(i,j,col,name)
 					subtable.setParent(self.tableView)
 					self.tableView.setIndexWidget(index,subtable)
 				else:
@@ -92,17 +94,18 @@ class Tablas(Base, Form):
 
 
 		#crear un filtro para el widget QTableView
-		self.proxy = QSortFilterProxyModel()
-		#agregar el modelo al filtro
-		self.proxy.setSourceModel(model)
-		#agregar el filtro al widget QTableView
-		self.tableView.setModel(self.proxy)
-		self.busqueda()
-		#agregar un evento al filtro para cuando se escribe en el line edit
-		self.proxy.setFilterCaseSensitivity(Qt.CaseInsensitive)
-		#agregar un evento al filtro para cuando se escribe en el line edit
-		self.line_edit_busqueda_presupuesto.textChanged.connect(self.proxy.setFilterRegExp)
+		# self.proxy = QSortFilterProxyModel()
+		# #agregar el modelo al filtro
+		# self.proxy.setSourceModel(model)
+		# #agregar el filtro al widget QTableView
+		# self.tableView.setModel(self.proxy)
+		# self.busqueda()
+		# #agregar un evento al filtro para cuando se escribe en el line edit
+		# self.proxy.setFilterCaseSensitivity(Qt.CaseInsensitive)
+		# #agregar un evento al filtro para cuando se escribe en el line edit
+		# self.line_edit_busqueda_presupuesto.textChanged.connect(self.proxy.setFilterRegExp)
 		self.tableView.resizeColumnsToContents()
+		self.tableView.resizeRowsToContents()
 		#add horizontal scrollbar to table view widget 
 		# create a scroll bar object
 		scroll_bar = QScrollBar(self.tableView)
@@ -163,8 +166,9 @@ class Tablas(Base, Form):
 		self.tableView.setHorizontalScrollBar(scroll_bar)
 		self.tableView.horizontalHeader().setStretchLastSection(True)
 	
-	def setupSubTable(self,i,j,column)->QTableView:
+	def setupSubTable(self,i,j,column,name)->QTableView:
 		subtable = QTableView()
+		subtable.setObjectName(name)
 		subtable.setModel(self.setupSubTableModel(column))
 		subtable.verticalHeader().setVisible(False)
 		subtable.horizontalHeader().setVisible(True)
@@ -175,7 +179,6 @@ class Tablas(Base, Form):
 		subtable.horizontalHeader().setVisible(False)
 		subtable.horizontalHeader().setStretchLastSection(True)
 		subtable.setMinimumSize(subtable.sizeHint())
-		subtable.setMaximumSize(subtable.sizeHint())
 		subtable.setSortingEnabled(True)
 		subtable.setAlternatingRowColors(True)
 		return subtable
@@ -183,12 +186,10 @@ class Tablas(Base, Form):
 	def setupSubTableModel(self,column)->QStandardItemModel:
 		model = QStandardItemModel()
 		#se ponen los headers de la tabla
-		# queda pendiente model.setHorizontalHeaderLabels()
-		#obtener columnas de la tabla
+		model.setHorizontalHeaderLabels(['Fecha','Monto','Tipo'])
 		tabla = getValoresTabla(column)
 		#se agregan los datos de la tabla al modelo
 		for i, registro in enumerate(tabla):
-			model.insertRow(i)
 			for j, (col, val) in enumerate(registro.items()):
 				if val is None: val =''
 				model.setItem(i,j,QStandardItem(str(val)))
