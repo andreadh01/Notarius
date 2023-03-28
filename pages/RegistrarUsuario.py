@@ -1,9 +1,13 @@
+from re import L
 from PyQt5 import uic, QtWidgets, QtCore
 from pages.EditarPrivilegios import EditarPrivilegios
 import os
+from tabnanny import check
 from bdConexion import obtener_conexion
 from functools import partial
-
+from PyQt5.QtWidgets import QCheckBox, QWidget
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
+from PyQt5.QtCore import Qt
 from pages.VerUsuarios import VerUsuarios
 from usuarios import getListaTablas, getPermisos, getUsuarioLogueado, updateTable
 from deployment import getBaseDir
@@ -21,6 +25,7 @@ class RegistrarUsuario(Form, Base):
     diccionario_proyectista = {'read': {'usuario': {'id': False, 'nombre_usuario': False, 'rol': False}, 'tabla_final': {'id': True, 'no_presupuesto': True, 'proyectista': True, 'gestor': True, 'proyecto': True, 'adquiriente': True, 'enajentante': True, 'valor_operacion': True, 'fecha_honorarios': True, 'pago_de_comision': True, 'no_escritura': True, 'bis': True, 'volumen': True, 'fecha_escritura': True, 'no_expediente': True, 'sr': True, 'clave_catastral': True, 'infonavit': True, 'entrega_testimonio': True, 'observaciones_escritura': True, 'fecha_vence_td': True, 'facturas': False, 'firma': True, 'monto_honorarios': False, 'monto_impuestos': False, 'saldo': False, 'isr_enajenacion': True, 'fecha_aviso_renap': True, 'iva': True, 'uif_poder_irrevocable': True, 'fecha_aviso_dir_not_tpa': True, 'numeracion_folios': True, 'fecha_minuta': True, 'contrato_en_extracto': True, 'minuta': True, 'pendientes': True, 'fecha_entrega_juridico': True, 'otorgamiento': True, 'fecha_cierre_antilavado': True, 'autorizacion': True, 'isr_adquisicion': True, 'fecha_envio_dircc': True, 'fecha_aviso_reloat': True, 'folios': True, 'folio_cancelado': True, 'fecha_apendice': True, 'firmas_en_extracto': True, 'apendice': True, 'no_paso': True, 'fecha_aviso_portal': True, 'no_oficio_escritura': True, 'fecha_envio_escritura': True, 'fecha_solicitud_busqueda_testa_rpp': True, 'fecha_solicitud_busqueda_testa_dircc': True, 'fecha_publicacion_periodico': True, 'fecha_publicacion_boletin': True, 'vencimiento_td': True, 'observaciones_cat_calif': True, 'cat_rev': True, 'fechas_catastro_calif': True, 'cat_terminado': True, 'observaciones_cat_td': True, 'fechas_catastro_td': True, 'folio_rpp': True, 'observaciones_rpp': True, 'registrada': True, 'fechas_rpp': True, 'fecha_presentado': True, 'fecha_salida': True, 'fecha_vence': True, 'desgloce_ppto': False, 'pagos': False, 'depositos': False}, 'aviso_definitivo': {'id': True, 'folio_rpp': True, 'fecha_presentado': True, 'fecha_salida': True, 'fecha_vence': True}, 'bitacora_depositos': {}, 'catastro_calificacion': {'id': True, 'vencimiento_td': True, 'no_presupuesto': True, 'escritura_id': True, 'observaciones': True, 'cat_rev': True}, 'catastro_td': {'id': True, 'escritura_id': True, 'observaciones': True, 'cat_terminado': True}, 'cc_fechas_cc': {'id': True, 'id_cc': True}, 'ctd_fechas_ctd': {'id': True, 'id_ctd': True}, 'depositos_presupuesto': {}, 'direccion_notarias_seguimiento_juicios': {'id': True, 'escritura_id': True, 'no_oficio_escritura': True, 'fecha_envio_escritura': True, 'fecha_solicitud_busqueda_testa_dircc': True, 'fecha_solicitud_busqueda_testa_rpp': True, 'fecha_publicacion_boletin': True, 'fecha_publicacion_periodico': True}, 'escritura': {'id': True, 'no_escritura': True, 'bis': True, 'no_presupuesto': True, 'volumen': True, 'fecha_escritura': True, 'no_expediente': True, 'sr': True, 'clave_catastral': True, 'infonavit': True, 'entrega_testimonio': True, 'observaciones': True, 'fecha_vence_td': True}, 'facturas': {'id': False, 'no_presupuesto': False, 'escritura_id': False}, 'fechas_catastro_calif': {'id': True, 'id_fechas': True, 'cat_envio_calif': True, 'cat_regreso_calif': True, 'observaciones': True}, 'fechas_catastro_td': {'id': True, 'id_fechas': True, 'cat_envio_td': True, 'cat_regreso_td': True, 'observaciones': True}, 'fechas_rpp': {'id': True, 'id_fechas': True, 'envio_rpp': True, 'regreso_rpp': True, 'observaciones': True}, 'juridico': {'id': True, 'escritura_id': True, 'contrato_en_extracto': True, 'firmas_en_extracto': True, 'pendientes': True, 'no_paso': True, 'otorgamiento': True, 'firma': True, 'autorizacion': True, 'fecha_aviso_renap': True, 'fecha_envio_dircc': True, 'uif_poder_irrevocable': True, 'fecha_aviso_reloat': True, 'fecha_aviso_dir_not_tpa': True, 'folios': True, 'numeracion_folios': True, 'folio_cancelado': True, 'fecha_minuta': True, 'fecha_apendice': True, 'minuta': True, 'apendice': True, 'fecha_entrega_juridico': True, 'fecha_aviso_portal': True, 'fecha_cierre_antilavado': True, 'isr_enajenacion': True, 'isr_adquisicion': True, 'iva': True}, 'no_facturas': {}, 'pagos_presupuesto': {'id': False, 'no_presupuesto': False}, 'presupuesto': {}, 'rpp': {'id': True, 'no_presupuesto': True, 'escritura_id': True, 'folio_rpp': True, 'observaciones': True, 'registrada': True}, 'rpp_fechas_rpp': {'id': True, 'id_rpp': True}}, 'write': {'usuario': {'id': False, 'nombre_usuario': False, 'rol': False}, 'tabla_final': {}, 'aviso_definitivo': {}, 'bitacora_depositos': {}, 'catastro_calificacion': {}, 'catastro_td': {}, 'cc_fechas_cc': {}, 'ctd_fechas_ctd': {}, 'depositos_presupuesto': {}, 'direccion_notarias_seguimiento_juicios': {}, 'escritura': {}, 'facturas': {}, 'fechas_catastro_calif': {}, 'fechas_catastro_td': {}, 'fechas_rpp': {}, 'juridico': {}, 'no_facturas': {}, 'pagos_presupuesto': {}, 'presupuesto': {}, 'rpp': {}, 'rpp_fechas_rpp': {}}}
     diccionario_armadores = {'read': {'rpp_fechas_rpp': {'id': False, 'id_rpp': False}, 'tabla_final': {'id': True, 'no_presupuesto': True, 'proyectista': True, 'gestor': True, 'proyecto': True, 'adquiriente': True, 'enajentante': True, 'valor_operacion': True, 'fecha_honorarios': True, 'pago_de_comision': True, 'no_escritura': True, 'bis': True, 'volumen': True, 'fecha_escritura': True, 'no_expediente': True, 'sr': True, 'clave_catastral': True, 'infonavit': True, 'entrega_testimonio': True, 'observaciones_escritura': True, 'fecha_vence_td': True}, 'escritura': {'id': True, 'no_escritura': True, 'bis': True, 'no_presupuesto': True, 'volumen': True, 'fecha_escritura': True, 'no_expediente': True, 'sr': True, 'clave_catastral': True, 'infonavit': True, 'entrega_testimonio': True, 'observaciones': True, 'fecha_vence_td': True}, 'presupuesto': {'id': True, 'no_presupuesto': True, 'proyectista': True, 'proyecto': True, 'gestor': True, 'enajentante': True, 'adquiriente': True, 'valor_operacion': True, 'monto_honorarios': False, 'monto_impuestos': False, 'fecha_honorarios': False, 'saldo': False, 'pago_de_comision': True}}, 'write': {'rpp_fechas_rpp': {}, 'tabla_final': {}, 'escritura': {}, 'presupuesto': {}}}
     diccionario_admin = {'read': {'aviso_definitivo': {'id': True, 'folio_rpp': True, 'fecha_presentado': True, 'fecha_salida': True, 'fecha_vence': True}, 'bitacora_depositos': {'id': True, 'fecha': True, 'no_presupuesto': True, 'concepto': True, 'cantidad': True, 'observaciones': True, 'banco': True, 'tipo': True}, 'bitacora_pagos': {'id': True, 'fecha': True, 'no_presupuesto': True, 'concepto_id': True, 'cantidad': True, 'autorizado_por': True, 'observaciones': True}, 'cat_conceptos_pago': {'id': True, 'concepto': True}, 'catastro_calificacion': {'id': True, 'vencimiento_td': True, 'no_presupuesto': True, 'escritura_id': True, 'observaciones': True, 'cat_rev': True}, 'catastro_td': {'id': True, 'escritura_id': True, 'observaciones': True, 'cat_terminado': True}, 'desgloce_ppto': {'id': True, 'no_presupuesto': True, 'concepto': True, 'cantidad': True, 'pagado': True}, 'direccion_notarias_seguimiento_juicios': {'id': True, 'no_oficio_escritura': True, 'fecha_envio_escritura': True, 'fecha_solicitud_busqueda_testa_dircc': True, 'fecha_solicitud_busqueda_testa_rpp': True, 'fecha_publicacion_boletin': True, 'fecha_publicacion_periodico': True}, 'escritura': {'id': True, 'no_escritura': True, 'bis': True, 'no_presupuesto': True, 'volumen': True, 'fecha': True, 'no_expediente': True, 'sr': True, 'clave_catastral': True, 'infonavit': True, 'entrega_testimonio': True, 'observaciones': True, 'fecha_vence': True}, 'facturas': {'id': True, 'no_presupuesto': True, 'no_factura': True, 'escritura_id': True}, 'fechas_catastro_calif': {'id': True, 'id_cat_calif': True, 'cat_envio_calif': True, 'cat_regreso_calif': True, 'observaciones': True}, 'fechas_catastro_td': {'id': True, 'id_cat_td': True, 'cat_envio_td': True, 'cat_regreso_td': True, 'observaciones': True}, 'fechas_rpp': {'id': True, 'id_rpp': True, 'envio_rpp': True, 'regreso_rpp': True, 'observaciones': True}, 'juridico': {'id': True, 'contrato_en_extracto': True, 'firmas_en_extracto': True, 'pendientes': True, 'no_paso': True, 'otorgamiento': True, 'firma': True, 'autorizacion': True, 'fecha_aviso_renap': True, 'fecha_envio_dircc': True, 'uif_poder_irrevocable': True, 'fecha_aviso_reloat': True, 'fecha_aviso_dir_not_tpa': True, 'folios': True, 'numeracion_folios': True, 'folio_cancelado': True, 'fecha_minuta': True, 'fecha_apendice': True, 'minuta': True, 'apendice': True, 'fecha_entrega_juridico': True, 'fecha_aviso_portal': True, 'fecha_cierre_antilavado': True, 'isr_enajenacion': True, 'isr_adquisicion': True, 'iva': True}, 'presupuesto': {'id': True, 'no_presupuesto': True, 'proyectista': True, 'proyecto': True, 'gestor': True, 'enajentante': True, 'adquiriente': True, 'valor_operacion': True, 'monto_honorarios': True, 'fecha_honorarios': True, 'cantidad': True, 'mes_de_pago': True}, 'rpp': {'id': True, 'no_presupuesto': True, 'escritura_id': True, 'folio_rpp': True, 'observaciones': True, 'registrada': True}, 'usuario': {'id': True, 'nombre_usuario': True, 'rol': True}}, 'write': {'aviso_definitivo': {'id': True, 'folio_rpp': True, 'fecha_presentado': True, 'fecha_salida': True, 'fecha_vence': True}, 'bitacora_depositos': {'id': True, 'fecha': True, 'no_presupuesto': True, 'concepto': True, 'cantidad': True, 'observaciones': True, 'banco': True, 'tipo': True}, 'bitacora_pagos': {'id': True, 'fecha': True, 'no_presupuesto': True, 'concepto_id': True, 'cantidad': True, 'autorizado_por': True, 'observaciones': True}, 'cat_conceptos_pago': {'id': True, 'concepto': True}, 'catastro_calificacion': {'id': True, 'vencimiento_td': True, 'no_presupuesto': True, 'escritura_id': True, 'observaciones': True, 'cat_rev': True}, 'catastro_td': {'id': True, 'escritura_id': True, 'observaciones': True, 'cat_terminado': True}, 'desgloce_ppto': {'id': True, 'no_presupuesto': True, 'concepto': True, 'cantidad': True, 'pagado': True}, 'direccion_notarias_seguimiento_juicios': {'id': True, 'no_oficio_escritura': True, 'fecha_envio_escritura': True, 'fecha_solicitud_busqueda_testa_dircc': True, 'fecha_solicitud_busqueda_testa_rpp': True, 'fecha_publicacion_boletin': True, 'fecha_publicacion_periodico': True}, 'escritura': {'id': True, 'no_escritura': True, 'bis': True, 'no_presupuesto': True, 'volumen': True, 'fecha': True, 'no_expediente': True, 'sr': True, 'clave_catastral': True, 'infonavit': True, 'entrega_testimonio': True, 'observaciones': True, 'fecha_vence': True}, 'facturas': {'id': True, 'no_presupuesto': True, 'no_factura': True, 'escritura_id': True}, 'fechas_catastro_calif': {'id': True, 'id_cat_calif': True, 'cat_envio_calif': True, 'cat_regreso_calif': True, 'observaciones': True}, 'fechas_catastro_td': {'id': True, 'id_cat_td': True, 'cat_envio_td': True, 'cat_regreso_td': True, 'observaciones': True}, 'fechas_rpp': {'id': True, 'id_rpp': True, 'envio_rpp': True, 'regreso_rpp': True, 'observaciones': True}, 'juridico': {'id': True, 'contrato_en_extracto': True, 'firmas_en_extracto': True, 'pendientes': True, 'no_paso': True, 'otorgamiento': True, 'firma': True, 'autorizacion': True, 'fecha_aviso_renap': True, 'fecha_envio_dircc': True, 'uif_poder_irrevocable': True, 'fecha_aviso_reloat': True, 'fecha_aviso_dir_not_tpa': True, 'folios': True, 'numeracion_folios': True, 'folio_cancelado': True, 'fecha_minuta': True, 'fecha_apendice': True, 'minuta': True, 'apendice': True, 'fecha_entrega_juridico': True, 'fecha_aviso_portal': True, 'fecha_cierre_antilavado': True, 'isr_enajenacion': True, 'isr_adquisicion': True, 'iva': True}, 'presupuesto': {'id': True, 'no_presupuesto': True, 'proyectista': True, 'proyecto': True, 'gestor': True, 'enajentante': True, 'adquiriente': True, 'valor_operacion': True, 'monto_honorarios': True, 'fecha_honorarios': True, 'cantidad': True, 'mes_de_pago': True}, 'rpp': {'id': True, 'no_presupuesto': True, 'escritura_id': True, 'folio_rpp': True, 'observaciones': True, 'registrada': True}, 'usuario': {'id': True, 'nombre_usuario': True, 'rol': True}}}
+    foreign_keys = {}
 
     def __init__(self, parent=None):
         super(self.__class__,self).__init__(parent)
@@ -28,6 +33,7 @@ class RegistrarUsuario(Form, Base):
         # se mandan llamar los metodos al correr el programa
         self.setupTables(self)
         self.setupColumns(self)
+        self.llavesForaneas()
         # cada que se actualice el combobox de tablas, se actualizan los checkbox de las columnas
         self.tablaslist.currentTextChanged.connect(self.setupColumns)
         self.lineEdit_contrasenausuario.setEchoMode(QtWidgets.QLineEdit.Password)
@@ -39,8 +45,18 @@ class RegistrarUsuario(Form, Base):
         self.comboBox_roles.currentTextChanged.connect(self.cargarPermisosdeRol)
 
 
+    def llavesForaneas(self):
+        conn = obtener_conexion()
+        cur = conn.cursor()
+        cur.execute("SELECT TABLE_NAME,COLUMN_NAME,REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE CONSTRAINT_SCHEMA = 'notarius' AND REFERENCED_TABLE_NAME IS NOT NULL")
+        for table_name, column_name, referenced_table_name, referenced_column_name in cur:
+            if table_name not in self.foreign_keys:
+                self.foreign_keys[table_name] = []
+            self.foreign_keys[table_name].append((column_name, referenced_table_name, referenced_column_name)) # agregar los valores en una tupla
+        cur.close()
+        conn.close()
+    
 
-    #
     def cargarPermisosdeRol(self):
         rol = self.comboBox_roles.currentText()
         if self.comboBox_roles.currentText() == 'Selecciona un rol...':
@@ -161,6 +177,18 @@ class RegistrarUsuario(Form, Base):
         tabla = self.tablaslist.currentText()
         columna = obj.text()
         self.diccionario_permisos[permiso][tabla][columna] = obj.isChecked()
+
+        for tabla_p, lista_foreignkey in self.foreign_keys.items():
+            lista_tabla_col = lista_foreignkey[0]
+            columna_p = lista_tabla_col[0]
+            tabla_secundaria = lista_tabla_col[1]
+            columna_secundaria = lista_tabla_col[2]
+            if tabla == tabla_p:
+                if columna == columna_p:
+                    if tabla_secundaria not in self.diccionario_permisos['write']:
+                        self.diccionario_permisos['write'][tabla_secundaria] = {}
+                    self.diccionario_permisos['write'][tabla_secundaria][columna_secundaria] = True
+
         if permiso == 'write':
             if tabla not in self.diccionario_permisos['read']:
                 self.diccionario_permisos['read'][tabla] = {}
@@ -168,6 +196,7 @@ class RegistrarUsuario(Form, Base):
                 self.diccionario_permisos['read'][tabla][columna] = self.diccionario_permisos['write'][tabla][columna]
             if self.diccionario_permisos['read'][tabla][columna] == False and self.diccionario_permisos['write'][tabla][columna]:
                 self.diccionario_permisos['read'][tabla][columna] = True
+        
  
 
     #este metodo borra todos los datos del diccionario y desactiva todas las checkboxes. se utiliza al cambiar de usuario a modificar -Jared
@@ -248,6 +277,19 @@ class RegistrarUsuario(Form, Base):
                             cur.execute(query)
                             query=f"GRANT UPDATE ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
                             cur.execute(query)
+                            for tabla_principal, lista_foreignkey in self.foreign_keys.items():
+                                lista_tabla_col = lista_foreignkey[0]
+                                columna_principal = lista_tabla_col[0]
+                                tabla_secundaria = lista_tabla_col[1]
+                                columna_secundaria = lista_tabla_col[2]
+
+                                if tabla_principal == nombre_tabla:
+                                    if columna_principal == nombre_columna:
+                                        query=f"GRANT INSERT ({columna_secundaria}) ON notarius.{tabla_secundaria} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
+                                        cur.execute(query)
+                                        query=f"GRANT UPDATE ({columna_secundaria}) ON notarius.{tabla_secundaria} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
+                                        cur.execute(query)
+
                         if rol == 'admin':
                             query=f"GRANT ALL PRIVILEGES ON mysql.* TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
                             cur.execute(query) 

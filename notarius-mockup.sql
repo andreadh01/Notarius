@@ -47,7 +47,7 @@ CREATE  TABLE desgloce_ppto_presupuesto (
 CREATE  TABLE escritura ( 
 	id                   INT  NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
 	no_escritura         INT UNSIGNED NOT NULL     ,
-	bis                  BOOLEAN   DEFAULT (FALSE)    ,
+	bis                  BOOLEAN   DEFAULT 0    ,
 	no_presupuesto       VARCHAR(15)       ,
 	volumen              INT  NOT NULL     ,
 	fecha_escritura      DATE  NOT NULL     ,

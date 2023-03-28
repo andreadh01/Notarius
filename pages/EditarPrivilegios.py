@@ -19,7 +19,6 @@ class EditarPrivilegios(Base, Form):
 	foreign_keys = {}
 	diccionario_permisos = {'read':{},
 							'write':{}}
-	checkboxes = {}
 	def __init__(self, parent=None):
 		super(self.__class__, self).__init__(parent)
 		self.setupUi(self)
@@ -139,30 +138,17 @@ class EditarPrivilegios(Base, Form):
 		self.checkBoxAllVer.setChecked(False)
 		self.checkBoxAllEscribir.setChecked(False)
 		self.mensaje.setText("Guardado exitosamente")
-		self.repaint()
 		self.checkThreadTimer = QtCore.QTimer(self)
 		self.checkThreadTimer.setInterval(3000)
 		self.checkThreadTimer.start()
 		self.checkThreadTimer.timeout.connect(partial(self.mensaje.setText,''))
 				
 	def checkAll(self,tipo_permiso):
-		names = []
-		tabla_seleccionada = self.tablaslist.currentText()
 		for checkbox in self.checkboxList:
 			permiso = checkbox.objectName()
-			
-			#print(permiso.split('-')[0])
 			permiso = permiso.split('-')[1]
-			
 			if tipo_permiso == permiso:
 				checkbox.setChecked(True)
-			#if tipo_permiso == "write":
-			#	if checkbox.isChecked():
-			#		print("omg es checked :o")
-		for checkbox in self.findChildren(QCheckBox):
-			if checkbox.isChecked():
-				names.append(checkbox.objectName())
-		#print(names)
 
 
 	# en esta funcion se van a cargar los usuarios de la base de datos al combobox de usuarios
@@ -303,15 +289,15 @@ class EditarPrivilegios(Base, Form):
 		self.diccionario_permisos[permiso][tabla][columna] = obj.isChecked()
 		
 		for tabla_p, lista_foreignkey in self.foreign_keys.items():
-					lista_tabla_col = lista_foreignkey[0]
-					columna_p = lista_tabla_col[0]
-					tabla_secundaria = lista_tabla_col[1]
-					columna_secundaria = lista_tabla_col[2]
-					if tabla == tabla_p:
-						if columna == columna_p:
-							if tabla_secundaria not in self.diccionario_permisos['write']:
-								self.diccionario_permisos['write'][tabla_secundaria] = {}
-							self.diccionario_permisos['write'][tabla_secundaria][columna_secundaria] = True
+			lista_tabla_col = lista_foreignkey[0]
+			columna_p = lista_tabla_col[0]
+			tabla_secundaria = lista_tabla_col[1]
+			columna_secundaria = lista_tabla_col[2]
+			if tabla == tabla_p:
+				if columna == columna_p:
+					if tabla_secundaria not in self.diccionario_permisos['write']:
+						self.diccionario_permisos['write'][tabla_secundaria] = {}
+					self.diccionario_permisos['write'][tabla_secundaria][columna_secundaria] = True
 		
 		if permiso == 'write':
 			if tabla not in self.diccionario_permisos['read']:
