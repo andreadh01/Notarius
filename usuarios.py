@@ -4,6 +4,7 @@ from bdConexion import obtener_conexion
 dict_permisos = {}
 usuario = {'user':'','pwd':''}
 lista_tablas = []
+lista_tablas_write = []
 all_tablas = {}
 
 def saveSession(user,pwd):
@@ -122,10 +123,13 @@ def limpiar_lista_permisos(lista_permisos):
 		#permisos["INSERT"] = permiso_insert[1] if len(permiso_insert) > 1 else ''
 		permisos["read"] = permiso_select[1] if len(permiso_select) > 1 else ''
 		permisos["write"] = permiso_update[1] if len(permiso_update) > 1 else ''
-		if 'id' not in permisos["write"]: permisos["write"]=f"id,{permisos['write']}"
+		if permisos["write"] != '':
+			if 'id' not in permisos["write"]: permisos["write"]=f"id,{permisos['write']}"
+			lista_tablas_write.append(nombre_tabla)
+			print(lista_tablas_write)
 		#permisos["write"] = f"id,{str(permisos["write"])}"
 		dict_permisos[nombre_tabla] = permisos
-	
+
 def getAllPermisos():
 	return dict_permisos
 
@@ -157,6 +161,8 @@ def updateTable(tabla):
 def getValoresTabla(tabla):
     return all_tablas[tabla]
 
+def getListaTablasWrite():
+    return lista_tablas_write
 def getRegistro(tabla, col, value):
     for registro in all_tablas[tabla]:
         if registro[col] == value: 

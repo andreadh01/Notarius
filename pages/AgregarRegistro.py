@@ -5,7 +5,7 @@ import re
 
 from bdConexion import obtener_conexion
 from pages.components import crearInput, crearRadioButton
-from usuarios import getListaTablas, getPermisos, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
+from usuarios import getListaTablas, getListaTablasWrite, getPermisos, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
 from deployment import getBaseDir
 
 
@@ -29,7 +29,7 @@ class AgregarRegistro(Form, Base):
 
 	# en esta funcion se van a cargar las tablas de la base de datos al combobox de tablas
     def setupTables(self, Form):
-        lista_tablas = getListaTablas()
+        lista_tablas = getListaTablasWrite()
         #print(lista_tablas)
         self.tablaslist.addItems(lista_tablas)
     
