@@ -61,12 +61,14 @@ class EditarPrivilegios(Base, Form):
 		cur = conn.cursor()
 		usuario_seleccionado = self.usuarioslist.currentText()
 		query=f"SHOW GRANTS FOR '{usuario_seleccionado}'@'localhost';"
-		cur.execute(query)
-		permisos = cur.fetchall()
-		cur.close()
-		conn.close()
-		lista_permisos = [permisos[0] for permisos in permisos[1:]]
-		self.limpiar_lista_permisos(lista_permisos)
+		if usuario_seleccionado != '': 
+			cur.execute(query)
+			permisos = cur.fetchall()
+			lista_permisos = [permisos[0] for permisos in permisos[1:]]
+			self.limpiar_lista_permisos(lista_permisos)
+			cur.close()
+			conn.close()
+		
 	
 	def limpiar_lista_permisos(self,lista_permisos):
 		for texto in lista_permisos:

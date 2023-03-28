@@ -5,13 +5,14 @@ dict_permisos = {}
 usuario = {'user':'','pwd':''}
 lista_tablas = []
 all_tablas = {}
-all_tablas = {}
+
 def saveSession(user,pwd):
     global usuario
     usuario["user"] = user
     usuario["pwd"] = pwd
     listaTablas(user,pwd)
     showGrants(user, pwd)
+    permisosRead(user,pwd)
 
 def clearSession():
     usuario.clear()
@@ -50,7 +51,6 @@ def listaDescribe(tabla, columnas):
         cur.execute(query)
         description = cur.fetchone()
         lista.append(description)
-    dump = cur.fetchall()
     cur.close()
     conn.close()
     return lista
@@ -161,4 +161,27 @@ def getRegistro(tabla, col, value):
     for registro in all_tablas[tabla]:
         if registro[col] == value: 
             return registro
+# este metodo va a regresar en orden las columnas de una tabla que el usuario va a visualizat
+def permisosRead(user,pwd):
+    global dict_permisos
+    tablas = getListaTablas()
+    conn = obtener_conexion(user,pwd)
+    cur = conn.cursor(dictionary=True)
+    for tabla in tablas:
+        query = f"SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{tabla}' and TABLE_SCHEMA='NOTARIUS'"
+        cur.execute(query)
+        valores = cur.fetchall()
+        valores = generarString(valores)
+        dict_permisos[tabla]['read'] = valores
+        
+    cur.close()
+    conn.close()
     
+def generarString(lista):
+        st = ''
+        for dicc in lista[:-1]:
+            for value in dicc.values():
+                st += f'{value},'
+        st += lista[-1]['column_name']
+        
+        return st
