@@ -70,6 +70,8 @@ def permisosAdmin():
         permisos["write"] = lista_columnas
         #permisos["UPDATE"] = lista_columnas
         dict_permisos[tabla] = permisos
+        lista_tablas_write.append(tabla)
+
     cur.close()
     conn.close()
 
