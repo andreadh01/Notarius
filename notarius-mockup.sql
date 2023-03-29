@@ -315,3 +315,18 @@ drop view vista_tabla;
 
 alter table tabla_final modify column no_escritura int unsigned null after no_presupuesto;
 alter table tabla_final modify column bis tinyint(1) null after no_escritura;
+
+alter table tabla_final modify column facturas int unsigned null;
+alter table tabla_final modify column desgloce_ppto int unsigned null;
+alter table tabla_final modify column depositos int unsigned null;
+alter table tabla_final modify column pagos int unsigned null;
+alter table tabla_final modify column fechas_catastro_calif int unsigned null;
+alter table tabla_final modify column fechas_rpp int unsigned null;
+
+alter table tabla_final add constraint fk_facturas foreign key (facturas) references facturas(id);
+alter table tabla_final add constraint fk_desgloce_ppto foreign key (desgloce_ppto) references desgloce_ppto_presupuesto(id);
+alter table tabla_final add constraint fk_depositos foreign key (depositos) references depositos_presupuesto(id);
+alter table tabla_final add constraint fk_pagos foreign key (pagos) references pagos_presupuesto(id);
+alter table tabla_final add constraint fk_fechas_catastro_td foreign key (fechas_catastro_td) references ctd_fechas_ctd(id);
+alter table tabla_final add constraint fk_fechas_catastro_calif foreign key (fechas_catastro_calif) references cc_fechas_cc(id);
+alter table tabla_final add foreign key (fechas_rpp) references rpp_fechas_rpp(id);

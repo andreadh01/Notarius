@@ -177,17 +177,6 @@ class RegistrarUsuario(Form, Base):
         columna = obj.text()
         self.diccionario_permisos[permiso][tabla][columna] = obj.isChecked()
 
-        for tabla_p, lista_foreignkey in self.foreign_keys.items():
-            lista_tabla_col = lista_foreignkey[0]
-            columna_p = lista_tabla_col[0]
-            tabla_secundaria = lista_tabla_col[1]
-            columna_secundaria = lista_tabla_col[2]
-            if tabla == tabla_p:
-                if columna == columna_p:
-                    if tabla_secundaria not in self.diccionario_permisos['read']:
-                        self.diccionario_permisos['read'][tabla_secundaria] = {}
-                    self.diccionario_permisos['read'][tabla_secundaria][columna_secundaria] = True
-
         if permiso == 'write':
             if tabla not in self.diccionario_permisos['read']:
                 self.diccionario_permisos['read'][tabla] = {}
@@ -253,12 +242,52 @@ class RegistrarUsuario(Form, Base):
         self.checkThreadTimer.start()
         self.checkThreadTimer.timeout.connect(partial(self.label_error.setText,''))
 
+    def agregarLlavesForaneas(self,nombre_tabla,nombre_columna,nombre_usuario,cur):
+        subtablas = {'facturas':['no_facturas','no_factura'],'fechas_catastro_calif':['fechas_catastro_calif','cat_envio_calif,cat_regreso_calif,observaciones'],'fechas_catastro_td':['fechas_catastro_td','cat_envio_td,cat_regreso_td,observaciones'],'fechas_rpp':['fechas_rpp','envio_rpp,regreso_rpp,observaciones'],'desgloce_ppto':['desgloce_ppto','concepto,cantidad'],'pagos':['bitacora_pagos','concepto,cantidad,autorizado_por,fecha,observaciones'],'depositos':['bitacora_depositos','concepto,cantidad,tipo,banco,fecha,observaciones']}
+        lista_tabla_col = self.foreign_keys[nombre_tabla]
+        for item in lista_tabla_col:
+            columna_principal = item[0]
+            tabla_secundaria = item[1]
+            columna_secundaria = item[2]
+            print("tiene fk de ",tabla_secundaria,columna_secundaria)
+            if nombre_columna in subtablas.keys():
+                 subtabla = subtablas[nombre_columna]
+                 query=f"GRANT SELECT ({subtabla[1]}) ON notarius.{subtabla[0]} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
+                 cur.execute(query)
+            if columna_principal == nombre_columna:
+                 query=f"GRANT SELECT ({columna_secundaria}) ON notarius.{tabla_secundaria} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
+                 cur.execute(query)
+        # for llave,accion in self.diccionario_permisos.copy().items():
+        #     for tabla,columnas in accion.copy().items():
+        #         for columna,checked in columnas.copy().items():
+        #             print("AGREGANDO FK PARA",tabla,columna,checked)
+        #             if checked:
+        #                 for tabla_p, lista_foreignkey in self.foreign_keys.items():
+        #                     lista_tabla_col = lista_foreignkey[0]
+        #                     columna_p = lista_tabla_col[0]
+        #                     tabla_secundaria = lista_tabla_col[1]
+        #                     columna_secundaria = lista_tabla_col[2]
+        #                     print(tabla_p)
+        #                     if tabla == tabla_p:
+        #                         if columna in ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp,desgloce_ppto','pagos','depositos']: #lista de tablas que deben ser anidadas en los respectivos campos
+        #                             subtabla = self.foreign_keys[tabla_secundaria]
+        #                             tabla_secundaria_subtabla = subtabla[0][1]
+        #                             col_secundaria_subtabla = subtabla[0][2]
+        #                             print("AQUIIII",tabla_secundaria_subtabla,col_secundaria_subtabla)
+        #                             if tabla_secundaria_subtabla not in self.diccionario_permisos['read']:
+        #                                 self.diccionario_permisos['read'][tabla_secundaria_subtabla] = {}
+        #                             self.diccionario_permisos['read'][tabla_secundaria_subtabla][col_secundaria_subtabla] = True
+        #                         if columna == columna_p:
+        #                             if tabla_secundaria not in self.diccionario_permisos['read']:
+        #                                 self.diccionario_permisos['read'][tabla_secundaria] = {}
+        #                             self.diccionario_permisos['read'][tabla_secundaria][columna_secundaria] = True
+                    
     def generarGrants(self,nombre_usuario):
+        #self.agregarLlavesForaneas()
         query = f""
         user, pwd = getUsuarioLogueado()
         conn = obtener_conexion(user,pwd)
         cur = conn.cursor()
-        print("DICT!!!",self.diccionario_permisos)
         query=f"SELECT rol FROM usuario WHERE nombre_usuario='{nombre_usuario}'"
         cur.execute(query)
         rol = cur.fetchall()
@@ -266,9 +295,9 @@ class RegistrarUsuario(Form, Base):
         for llave,accion in self.diccionario_permisos.items():
             
             for nombre_tabla,columnas in accion.items():
-                print(columnas)
                 for nombre_columna,checked in columnas.items():
                     if checked:
+                        self.agregarLlavesForaneas(nombre_tabla,nombre_columna, nombre_usuario,cur)
                         if llave == 'read':
                             query=f"GRANT SELECT ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
                             cur.execute(query)
@@ -277,16 +306,7 @@ class RegistrarUsuario(Form, Base):
                             cur.execute(query)
                             query=f"GRANT UPDATE ({nombre_columna}) ON notarius.{nombre_tabla} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
                             cur.execute(query)
-                            for tabla_principal, lista_foreignkey in self.foreign_keys.items():
-                                lista_tabla_col = lista_foreignkey[0]
-                                columna_principal = lista_tabla_col[0]
-                                tabla_secundaria = lista_tabla_col[1]
-                                columna_secundaria = lista_tabla_col[2]
-
-                                if tabla_principal == nombre_tabla:
-                                    if columna_principal == nombre_columna:
-                                        query=f"GRANT SELECT ({columna_secundaria}) ON notarius.{tabla_secundaria} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
-                                        cur.execute(query)
+                    
 
                         if rol == 'admin':
                             query=f"GRANT ALL PRIVILEGES ON mysql.* TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
