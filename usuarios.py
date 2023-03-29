@@ -194,3 +194,19 @@ def generarString(lista):
         st += lista[-1]['column_name']
         
         return st
+
+def getSubtabla(col,registro):
+    subtablas = {'facturas':['no_facturas','no_factura'],'fechas_catastro_calif':['fechas_catastro_calif','cat_envio_calif,cat_regreso_calif,observaciones'],'fechas_catastro_td':['fechas_catastro_td','cat_envio_td,cat_regreso_td,observaciones'],'fechas_rpp':['fechas_rpp','envio_rpp,regreso_rpp,observaciones'],'desgloce_ppto':['desgloce_ppto','concepto,cantidad'],'pagos':['bitacora_pagos','concepto,cantidad,autorizado_por,fecha,observaciones'],'depositos':['bitacora_depositos','concepto,cantidad,tipo,banco,fecha,observaciones']}
+    index = 'id_fechas' if "fecha" in col else 'id_relacion'
+    print(col,registro)
+    user, pwd = getUsuarioLogueado()
+    conn = obtener_conexion(user,pwd)
+    cur = conn.cursor(dictionary=True)
+    nombre_tabla = subtablas[col][0]
+    select = subtablas[col][1]
+    query = f"SELECT {select} FROM {nombre_tabla} WHERE {index} = '{registro}'"
+    cur.execute(query)
+    valores = cur.fetchall()
+    cur.close()
+    conn.close()
+    return valores

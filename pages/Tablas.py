@@ -10,7 +10,7 @@ from bdConexion import obtener_conexion
 import os
 
 from pages.EditarRegistro import EditarRegistro
-from usuarios import getListaTablas, getPermisos, getValoresTabla
+from usuarios import getListaTablas, getPermisos, getSubtabla, getValoresTabla
 from deployment import getBaseDir
 
 base_dir = getBaseDir()
@@ -66,7 +66,7 @@ class Tablas(Base, Form):
 		#agregar el modelo al widget QTableView
 		self.tableView.setModel(model)
 		#agregar los registros al modelo con un boton para editar el registro
-		list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp,desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
+		list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
 
 		#crear un objeto qitemdelegate para celdas
 		delegate = QItemDelegate(self)
@@ -83,26 +83,24 @@ class Tablas(Base, Form):
 		#agregar un evento al filtro para cuando se escribe en el line edit
 		self.proxy.setFilterCaseSensitivity(Qt.CaseInsensitive)
 		#agregar un evento al filtro para cuando se escribe en el line edit
-
 		for i, registro in enumerate(tabla):
 			for j, (col, val) in enumerate(registro.items()):
 				if val is None: val =''
+				if col == 'id': id_registro = val
 				if col in list_nested_tables:
 					#si el campo es de una de las tablas en la lista, entonces se guarda su index
 					#para poder acceder a ella mas facilmente
 					index = self.tableView.model().index(i,j)
-					if col == 'pagos':
-						col = 'pagos_presupuesto'
-					if col == 'depositos':
-						col = 'depositos_presupuesto'
 					name = f"subtable_{i}_{j}"
-					subtable = self.setupSubTable(i,j,col,name)
-					subtable.setParent(self.tableView)
-					self.tableView.setIndexWidget(self.proxy.index(i,j),subtable)
+					#subtable = self.setupSubTable(i,j,col,name)
+					#subtable.setParent(self.tableView)
+					val = self.generarSubtabla(col,id_registro)
+					model.setItem(i,j,QStandardItem(str(val)))
 				else:
 					model.setItem(i,j,QStandardItem(str(val)))
 		self.line_edit_busqueda_presupuesto.textChanged.connect(self.proxy.setFilterRegExp)
-
+		self.line_edit_busqueda_presupuesto.textChanged.connect(self.tableView.resizeColumnsToContents)
+		self.line_edit_busqueda_presupuesto.textChanged.connect(self.tableView.resizeRowsToContents)
 
 		
 		self.tableView.resizeColumnsToContents()
@@ -166,7 +164,8 @@ class Tablas(Base, Form):
         # setting horizontal scroll bar to it
 		self.tableView.setHorizontalScrollBar(scroll_bar)
 		self.tableView.horizontalHeader().setStretchLastSection(True)
-  		
+
+
 	def setupSubTable(self,i,j,column,name)->QTableView:
 		subtable = QTableView()
 		subtable.setObjectName(name)
@@ -184,18 +183,26 @@ class Tablas(Base, Form):
 		subtable.setAlternatingRowColors(True)
 		return subtable
 
-	def setupSubTableModel(self,column)->QStandardItemModel:
-		model = QStandardItemModel()
+	def generarSubtabla(self,column,registro):
+		#model = QStandardItemModel()
 		#se ponen los headers de la tabla
-		model.setHorizontalHeaderLabels(['Fecha','Monto','Tipo'])
-		tabla = getValoresTabla(column)
+		#model.setHorizontalHeaderLabels(['Fecha','Monto','Tipo'])
+		header = ''
+		text = ''
+		tabla = getSubtabla(column,registro)
 		#se agregan los datos de la tabla al modelo
 		for i, registro in enumerate(tabla):
+			header = ''
 			for j, (col, val) in enumerate(registro.items()):
+				header += f"{col}\t"
 				if val is None: val =''
-				model.setItem(i,j,QStandardItem(str(val)))
-		
-		return model
+				text += f"{val}\t"
+			text += f"\n"
+    
+    
+		val = f"{header}\n{text}"
+		return val
+		#return model
 
 	def createButton(self, Form):
 		button = QPushButton(self.tableView)
