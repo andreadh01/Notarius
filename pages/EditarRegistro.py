@@ -76,7 +76,10 @@ class EditarRegistro(Form, Base):
         from pages.Tablas import Tablas
         self.camposCambiados.clear()
         #self.parent().findChild(Tablas).selectTable(self.parent().findChild(Tablas),self.tabla)
-        self.parent().findChild(Tablas).setupTable(self.parent().findChild(Tablas))
+        tabla_name = 'tabla_final'
+        #obtener los permisos del usuario para la tabla seleccionada
+        tabla = getValoresTabla(tabla_name)
+        self.parent().findChild(Tablas).setupTable(self.parent().findChild(Tablas),tabla)
         self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(Tablas)))
         
     

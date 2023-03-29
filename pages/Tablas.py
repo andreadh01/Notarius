@@ -24,10 +24,11 @@ class Tablas(Base, Form):
 		super(self.__class__, self).__init__(parent)
 		self.setupUi(self)
 		#self.setupTableList(self)
-		self.setupTable(self)
+		self.tabla(self)
 		self.mensaje.hide()
 		self.tableView.setEditTriggers(QAbstractItemView.NoEditTriggers)
 		self.pushButton_2.clicked.connect(self.escribirCSV)
+
 		#self.tableslist.currentIndexChanged.connect(partial(self.setupTable,self))
 
 	# def selectTable(self,Form,tabla):
@@ -42,15 +43,16 @@ class Tablas(Base, Form):
 	# def setupTableList(self,Form):
 	# 	lista_tablas = getListaTablas()
 	# 	self.tableslist.addItems(lista_tablas)
-
-	# en este metodo se actualizan los datos de la tabla, segun la tabla seleccionada en la lista
-	def setupTable(self,Form):
-		#tabla_name = self.tableslist.currentText()
+	def tabla(self,Form):
 		tabla_name = 'tabla_final'
 		#obtener los permisos del usuario para la tabla seleccionada
-		permisos = getPermisos(tabla_name)
-		select = permisos["read"]
 		tabla = getValoresTabla(tabla_name)
+		self.setupTable(self,tabla)
+	# en este metodo se actualizan los datos de la tabla, segun la tabla seleccionada en la lista
+	def setupTable(self,Form,tabla):
+		#tabla_name = self.tableslist.currentText()
+		permisos = getPermisos('tabla_final')
+		select = permisos["read"]
 		if permisos["write"] == '': self.botonModificar.hide()
 		#si puede encontrar una manera menos fea de obtener esto en ves de hacer esta variable globar que toma el dic actual dense porfavor. atte; gracida
 		global Diccionario
@@ -70,6 +72,17 @@ class Tablas(Base, Form):
 		delegate = QItemDelegate(self)
 		#agregar el objeto al widget QTableView
 		self.tableView.setItemDelegate(delegate)
+  
+		#crear un filtro para el widget QTableView
+		self.proxy = QSortFilterProxyModel()
+		#agregar el modelo al filtro
+		self.proxy.setSourceModel(model)
+		#agregar el filtro al widget QTableView
+		self.tableView.setModel(self.proxy)
+		self.busqueda()
+		#agregar un evento al filtro para cuando se escribe en el line edit
+		self.proxy.setFilterCaseSensitivity(Qt.CaseInsensitive)
+		#agregar un evento al filtro para cuando se escribe en el line edit
 
 		for i, registro in enumerate(tabla):
 			for j, (col, val) in enumerate(registro.items()):
@@ -78,7 +91,6 @@ class Tablas(Base, Form):
 					#si el campo es de una de las tablas en la lista, entonces se guarda su index
 					#para poder acceder a ella mas facilmente
 					index = self.tableView.model().index(i,j)
-					index2 = self.tableView.model().index(2,2)
 					if col == 'pagos':
 						col = 'pagos_presupuesto'
 					if col == 'depositos':
@@ -86,24 +98,13 @@ class Tablas(Base, Form):
 					name = f"subtable_{i}_{j}"
 					subtable = self.setupSubTable(i,j,col,name)
 					subtable.setParent(self.tableView)
-					self.tableView.setIndexWidget(index,subtable)
+					self.tableView.setIndexWidget(self.proxy.index(i,j),subtable)
 				else:
 					model.setItem(i,j,QStandardItem(str(val)))
-		
-		
+		self.line_edit_busqueda_presupuesto.textChanged.connect(self.proxy.setFilterRegExp)
 
 
-		#crear un filtro para el widget QTableView
-		# self.proxy = QSortFilterProxyModel()
-		# #agregar el modelo al filtro
-		# self.proxy.setSourceModel(model)
-		# #agregar el filtro al widget QTableView
-		# self.tableView.setModel(self.proxy)
-		# self.busqueda()
-		# #agregar un evento al filtro para cuando se escribe en el line edit
-		# self.proxy.setFilterCaseSensitivity(Qt.CaseInsensitive)
-		# #agregar un evento al filtro para cuando se escribe en el line edit
-		# self.line_edit_busqueda_presupuesto.textChanged.connect(self.proxy.setFilterRegExp)
+		
 		self.tableView.resizeColumnsToContents()
 		self.tableView.resizeRowsToContents()
 		#add horizontal scrollbar to table view widget 
@@ -165,7 +166,7 @@ class Tablas(Base, Form):
         # setting horizontal scroll bar to it
 		self.tableView.setHorizontalScrollBar(scroll_bar)
 		self.tableView.horizontalHeader().setStretchLastSection(True)
-	
+  		
 	def setupSubTable(self,i,j,column,name)->QTableView:
 		subtable = QTableView()
 		subtable.setObjectName(name)

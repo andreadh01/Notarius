@@ -24,6 +24,7 @@ from main import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+
 # GLOBALS
 # ///////////////////////////////////////////////////////////////
 GLOBAL_STATE = False
@@ -335,4 +336,3 @@ def createWidget(self, name):
         setattr(self, name.lower(), instance)
         widget = getattr(self, name.lower())
         self.stackedWidget.addWidget(widget)
-    

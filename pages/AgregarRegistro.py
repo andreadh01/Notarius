@@ -41,6 +41,7 @@ class AgregarRegistro(Form, Base):
         self.resetCombobox(self)
         tabla = self.tablaslist.currentText()
         columnas = getPermisos(tabla)["write"]
+        print("COLUMNAS DE WRITE",columnas)
         lista_columnas = columnas.split(',')
         propiedades_columnas = listaDescribe(tabla,lista_columnas)
         layout = self.verticalLayout
@@ -87,13 +88,17 @@ class AgregarRegistro(Form, Base):
 
 
     def resetCombobox(self, Form):
+         
         for obj in self.cols:
-            self.verticalLayout.removeWidget(obj)
-            obj.deleteLater()
-            del obj
+            try: 
+                self.verticalLayout.removeWidget(obj)
+                obj.deleteLater()
+                del obj
+            except RuntimeError:
+                return
         self.cols.clear()
         self.camposCambiados.clear()
-        
+
     
     def actualizarDict(self,col, val):
         tipo = str(type(val))

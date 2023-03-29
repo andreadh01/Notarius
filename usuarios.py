@@ -21,6 +21,7 @@ def clearSession():
     lista_tablas.clear()
     all_tablas.clear()
     all_tablas.clear()
+    lista_tablas_write.clear()
     
 def getUsuarioLogueado():
     return usuario["user"], usuario["pwd"];
@@ -128,7 +129,7 @@ def limpiar_lista_permisos(lista_permisos):
 		if permisos["write"] != '':
 			if 'id' not in permisos["write"]: permisos["write"]=f"id,{permisos['write']}"
 			lista_tablas_write.append(nombre_tabla)
-			print(lista_tablas_write)
+			print("el usuario puede escribir en",lista_tablas_write)
 		#permisos["write"] = f"id,{str(permisos["write"])}"
 		dict_permisos[nombre_tabla] = permisos
 

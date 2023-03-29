@@ -14,10 +14,11 @@
 #
 # ///////////////////////////////////////////////////////////////
 
+import subprocess
 import sys
 import os
 import platform
-from PyQt5 import QtWidgets,QtGui
+from PyQt5 import QtWidgets,QtGui,QtCore
 
 
 from ui_functions import *
