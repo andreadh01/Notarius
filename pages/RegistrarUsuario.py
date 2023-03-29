@@ -171,11 +171,36 @@ class RegistrarUsuario(Form, Base):
     -Jared
     '''
     def guardar_opcion(self, obj):
+        subtablas = {'facturas':['no_facturas','no_factura'],'fechas_catastro_calif':['fechas_catastro_calif','cat_envio_calif,cat_regreso_calif,observaciones'],'fechas_catastro_td':['fechas_catastro_td','cat_envio_td,cat_regreso_td,observaciones'],'fechas_rpp':['fechas_rpp','envio_rpp,regreso_rpp,observaciones'],'desgloce_ppto':['desgloce_ppto','concepto,cantidad'],'pagos':['bitacora_pagos','concepto,cantidad,autorizado_por,fecha,observaciones'],'depositos':['bitacora_depositos','concepto,cantidad,tipo,banco,fecha,observaciones']}
+
         permiso = obj.objectName()
         permiso = permiso.split('_')[2]
         tabla = self.tablaslist.currentText()
         columna = obj.text()
         self.diccionario_permisos[permiso][tabla][columna] = obj.isChecked()
+        
+        try:
+            lista_foreignkey = self.foreign_keys[tabla]
+            lista_tabla_col = lista_foreignkey[0]
+            columna_p = lista_tabla_col[0]
+            tabla_secundaria = lista_tabla_col[1]
+            columna_secundaria = lista_tabla_col[2]
+            if columna in subtablas.keys():
+                subtabla = subtablas[columna][0]
+                columna_subtabla = subtablas[columna][1].split(',')
+                if "fecha" in columna: columna_subtabla.append('id_fechas') 
+                else: columna_subtabla.append('id_relacion')
+                if subtabla not in self.diccionario_permisos['read']:
+                    self.diccionario_permisos['read'][subtabla] = {}
+                    for columna in columna_subtabla:
+                        self.diccionario_permisos['read'][subtabla][columna] = True                  
+            if columna == columna_p:
+                if tabla_secundaria not in self.diccionario_permisos['read']:
+                    self.diccionario_permisos['read'][tabla_secundaria] = {}
+                    self.diccionario_permisos['read'][tabla_secundaria][columna_secundaria] = True
+        except KeyError as error:
+            print("La tabla no tiene llaves foraneas")
+            return
 
         if permiso == 'write':
             if tabla not in self.diccionario_permisos['read']:
@@ -243,18 +268,17 @@ class RegistrarUsuario(Form, Base):
         self.checkThreadTimer.timeout.connect(partial(self.label_error.setText,''))
 
     def agregarLlavesForaneas(self,nombre_tabla,nombre_columna,nombre_usuario,cur):
-        subtablas = {'facturas':['no_facturas','no_factura'],'fechas_catastro_calif':['fechas_catastro_calif','cat_envio_calif,cat_regreso_calif,observaciones'],'fechas_catastro_td':['fechas_catastro_td','cat_envio_td,cat_regreso_td,observaciones'],'fechas_rpp':['fechas_rpp','envio_rpp,regreso_rpp,observaciones'],'desgloce_ppto':['desgloce_ppto','concepto,cantidad'],'pagos':['bitacora_pagos','concepto,cantidad,autorizado_por,fecha,observaciones'],'depositos':['bitacora_depositos','concepto,cantidad,tipo,banco,fecha,observaciones']}
+        # subtablas = {'facturas':['no_facturas','no_factura'],'fechas_catastro_calif':['fechas_catastro_calif','cat_envio_calif,cat_regreso_calif,observaciones'],'fechas_catastro_td':['fechas_catastro_td','cat_envio_td,cat_regreso_td,observaciones'],'fechas_rpp':['fechas_rpp','envio_rpp,regreso_rpp,observaciones'],'desgloce_ppto':['desgloce_ppto','concepto,cantidad'],'pagos':['bitacora_pagos','concepto,cantidad,autorizado_por,fecha,observaciones'],'depositos':['bitacora_depositos','concepto,cantidad,tipo,banco,fecha,observaciones']}
         try:
             lista_tabla_col = self.foreign_keys[nombre_tabla]
             for item in lista_tabla_col:
                 columna_principal = item[0]
                 tabla_secundaria = item[1]
                 columna_secundaria = item[2]
-                print("tiene fk de ",tabla_secundaria,columna_secundaria)
-                if nombre_columna in subtablas.keys():
-                     subtabla = subtablas[nombre_columna]
-                     query=f"GRANT SELECT ({subtabla[1]}) ON notarius.{subtabla[0]} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
-                     cur.execute(query)
+                # if nombre_columna in subtablas.keys():
+                #      subtabla = subtablas[nombre_columna]
+                #      query=f"GRANT SELECT ({subtabla[1]}) ON notarius.{subtabla[0]} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
+                #      cur.execute(query)
                 if columna_principal == nombre_columna:
                      query=f"GRANT SELECT ({columna_secundaria}) ON notarius.{tabla_secundaria} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
                      cur.execute(query)
