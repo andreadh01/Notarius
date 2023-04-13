@@ -6,7 +6,7 @@ from functools import partial
 from PyQt5.QtWidgets import QCheckBox, QWidget
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
 from PyQt5.QtCore import Qt
-from usuarios import getListaTablas, getPermisos, getUsuarioLogueado, getValoresTabla
+from usuarios import getListaTablas, getPermisos, getTablaRelacionada, getUsuarioLogueado, getValoresTabla
 from deployment import getBaseDir
 
 
@@ -115,21 +115,21 @@ class EditarPrivilegios(Base, Form):
 				if permiso_insert[2] not in self.diccionario_permisos['write']:
 					self.diccionario_permisos['write'][permiso_insert[2]] = {}
 				self.diccionario_permisos['write'][permiso_insert[2]][columna] = True
-				tabla_principal = permiso_insert[2]
+				#tabla_principal = permiso_insert[2]
 				#columna = columna_principal
 
 
-				#  Aquí
-				for tabla_p, lista_foreignkey in self.foreign_keys.items():
-					lista_tabla_col = lista_foreignkey[0]
-					columna_p = lista_tabla_col[0]
-					tabla_secundaria = lista_tabla_col[1]
-					columna_secundaria = lista_tabla_col[2]
-					if tabla_principal == tabla_p:
-						if columna == columna_p:
-							if tabla_secundaria not in self.diccionario_permisos['write']:
-								self.diccionario_permisos['write'][tabla_secundaria] = {}
-							self.diccionario_permisos['write'][tabla_secundaria][columna_secundaria] = True
+				# #  Aquí
+				# for tabla_p, lista_foreignkey in self.foreign_keys.items():
+				# 	lista_tabla_col = lista_foreignkey[0]
+				# 	columna_p = lista_tabla_col[0]
+				# 	tabla_secundaria = lista_tabla_col[1]
+				# 	columna_secundaria = lista_tabla_col[2]
+				# 	if tabla_principal == tabla_p:
+				# 		if columna == columna_p:
+				# 			if tabla_secundaria not in self.diccionario_permisos['write']:
+				# 				self.diccionario_permisos['write'][tabla_secundaria] = {}
+				# 			self.diccionario_permisos['write'][tabla_secundaria][columna_secundaria] = True
 
 
 	def guardarCambios(self):
@@ -161,7 +161,7 @@ class EditarPrivilegios(Base, Form):
 
 	# en esta funcion se van a cargar las tablas de la base de datos al combobox de tablas
 	def setupTables(self, Form):
-		lista_tablas = getListaTablas()
+		lista_tablas = ['tabla_final','desgloce_ppto','bitacora_pagos','bitacora_depositos','fechas_rpp','fechas_catastro_td','fechas_catastro_calif']
 		self.tablaslist.addItems(lista_tablas)
 		self.tablaslist.setCurrentIndex(0)
 	
@@ -231,24 +231,43 @@ class EditarPrivilegios(Base, Form):
 							cur.execute(query)
 
 							#Aquí se le ponen los permisos de escritura a las llaves foráneas cuando se guarda
-							for tabla_principal, lista_foreignkey in self.foreign_keys.items():
-								lista_tabla_col = lista_foreignkey[0]
-								columna_principal = lista_tabla_col[0]
-								tabla_secundaria = lista_tabla_col[1]
-								columna_secundaria = lista_tabla_col[2]
+							# for tabla_principal, lista_foreignkey in self.foreign_keys.items():
+							# 	lista_tabla_col = lista_foreignkey[0]
+							# 	columna_principal = lista_tabla_col[0]
+							# 	tabla_secundaria = lista_tabla_col[1]
+							# 	columna_secundaria = lista_tabla_col[2]
 
-								if tabla_principal == nombre_tabla:
-									if columna_principal == nombre_columna:
-										query=f"GRANT INSERT ({columna_secundaria}) ON notarius.{tabla_secundaria} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
-										cur.execute(query)
-										query=f"GRANT UPDATE ({columna_secundaria}) ON notarius.{tabla_secundaria} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
-										cur.execute(query)	
+							# 	if tabla_principal == nombre_tabla:
+							# 		if columna_principal == nombre_columna:
+							# 			query=f"GRANT INSERT ({columna_secundaria}) ON notarius.{tabla_secundaria} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
+							# 			cur.execute(query)
+							# 			query=f"GRANT UPDATE ({columna_secundaria}) ON notarius.{tabla_secundaria} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
+							# 			cur.execute(query)	
 						if rol == 'admin':
 							query=f"GRANT ALL PRIVILEGES ON mysql.* TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
 							cur.execute(query)
 
 		cur.close()
 		conn.close()
+
+	def agregarLlavesForaneas(self,nombre_tabla,nombre_columna,nombre_usuario,cur):
+		# subtablas = {'facturas':['no_facturas','no_factura'],'fechas_catastro_calif':['fechas_catastro_calif','cat_envio_calif,cat_regreso_calif,observaciones'],'fechas_catastro_td':['fechas_catastro_td','cat_envio_td,cat_regreso_td,observaciones'],'fechas_rpp':['fechas_rpp','envio_rpp,regreso_rpp,observaciones'],'desgloce_ppto':['desgloce_ppto','concepto,cantidad'],'pagos':['bitacora_pagos','concepto,cantidad,autorizado_por,fecha,observaciones'],'depositos':['bitacora_depositos','concepto,cantidad,tipo,banco,fecha,observaciones']}
+		try:
+			lista_tabla_col = self.foreign_keys[nombre_tabla]
+			for item in lista_tabla_col:
+				columna_principal = item[0]
+				tabla_secundaria = item[1]
+				columna_secundaria = item[2]
+				# if nombre_columna in subtablas.keys():
+				#      subtabla = subtablas[nombre_columna]
+				#      query=f"GRANT SELECT ({subtabla[1]}) ON notarius.{subtabla[0]} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
+				#      cur.execute(query)
+				if columna_principal == nombre_columna:
+					query=f"GRANT SELECT ({columna_secundaria}) ON notarius.{tabla_secundaria} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
+					cur.execute(query)
+		except KeyError as error:
+			print("La tabla no tiene llaves foraneas")
+			return
 
 	def resetCombobox(self, Form):
 		for obj in self.checkboxList:
@@ -282,23 +301,13 @@ class EditarPrivilegios(Base, Form):
 	-Jared
 	'''
 	def guardar_opcion(self, obj):
-		tabla = self.tablaslist.currentText()
-		columna = obj.text()
+		subtablas = {'facturas':['no_facturas','no_factura'],'fechas_catastro_calif':['fechas_catastro_calif','cat_envio_calif,cat_regreso_calif,observaciones'],'fechas_catastro_td':['fechas_catastro_td','cat_envio_td,cat_regreso_td,observaciones'],'fechas_rpp':['fechas_rpp','envio_rpp,regreso_rpp,observaciones'],'desgloce_ppto':['desgloce_ppto','concepto,cantidad'],'pagos':['bitacora_pagos','concepto,cantidad,autorizado_por,fecha,observaciones'],'depositos':['bitacora_depositos','concepto,cantidad,tipo,banco,fecha,observaciones']}
+		tablas_no_validas = ['no_facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','bitacora_pagos','bitacora_depositos','usuario']
 		permiso = obj.objectName()
 		permiso = permiso.split('-')[1]
+		tabla = self.tablaslist.currentText()
+		columna = obj.text()
 		self.diccionario_permisos[permiso][tabla][columna] = obj.isChecked()
-		
-		for tabla_p, lista_foreignkey in self.foreign_keys.items():
-			lista_tabla_col = lista_foreignkey[0]
-			columna_p = lista_tabla_col[0]
-			tabla_secundaria = lista_tabla_col[1]
-			columna_secundaria = lista_tabla_col[2]
-			if tabla == tabla_p:
-				if columna == columna_p:
-					if tabla_secundaria not in self.diccionario_permisos['write']:
-						self.diccionario_permisos['write'][tabla_secundaria] = {}
-					self.diccionario_permisos['write'][tabla_secundaria][columna_secundaria] = True
-		
 		if permiso == 'write':
 			if tabla not in self.diccionario_permisos['read']:
 				self.diccionario_permisos['read'][tabla] = {}
@@ -306,6 +315,52 @@ class EditarPrivilegios(Base, Form):
 				self.diccionario_permisos['read'][tabla][columna] = self.diccionario_permisos['write'][tabla][columna]
 			if self.diccionario_permisos['read'][tabla][columna] == False and self.diccionario_permisos['write'][tabla][columna]:
 				self.diccionario_permisos['read'][tabla][columna] = True
+		tabla_relacionada = getTablaRelacionada(columna)
+
+		if columna in subtablas.keys():
+			subtabla = subtablas[columna][0]
+			columna_subtabla = subtablas[columna][1].split(',')
+			columna_subtabla.append('id')
+			if "fecha" in columna: columna_subtabla.append('id_fechas') 
+			else: columna_subtabla.append('id_relacion')
+			if subtabla not in self.diccionario_permisos[permiso]:
+				self.diccionario_permisos[permiso][subtabla] = {}
+				for columna in columna_subtabla:
+					self.diccionario_permisos[permiso][subtabla][columna] = True                  
+			else: self.diccionario_permisos[permiso][subtabla][columna] = obj.isChecked()
+		for registro in tabla_relacionada:
+			for tabla_val in registro.values():
+				if tabla_val == tabla or tabla_val in tablas_no_validas: continue
+				if tabla_val not in self.diccionario_permisos[permiso]:
+					self.diccionario_permisos[permiso][tabla_val] = {}
+				self.diccionario_permisos[permiso][tabla_val][columna] = obj.isChecked()
+				if permiso == 'write':
+					if tabla_val not in self.diccionario_permisos['read']:
+						self.diccionario_permisos['read'][tabla_val] = {}
+					if columna not in self.diccionario_permisos['read'][tabla_val]:
+						self.diccionario_permisos['read'][tabla_val][columna] = self.diccionario_permisos['write'][tabla_val][columna]
+					if self.diccionario_permisos['read'][tabla_val][columna] == False and self.diccionario_permisos['write'][tabla_val][columna]:
+						self.diccionario_permisos['read'][tabla_val][columna] = obj.isChecked()
+					if self.diccionario_permisos['read'][tabla_val][columna] == False and self.diccionario_permisos['write'][tabla_val][columna] == False:
+						self.diccionario_permisos['read'][tabla_val][columna] = obj.isChecked()
+				try:
+					lista_foreignkey = self.foreign_keys[tabla_val]
+					lista_tabla_col = lista_foreignkey[0]
+					columna_p = lista_tabla_col[0]
+					tabla_secundaria = lista_tabla_col[1]
+					columna_secundaria = lista_tabla_col[2]
+					if tabla_val not in self.diccionario_permisos[permiso]:
+						self.diccionario_permisos[permiso][tabla_val] = {}
+					self.diccionario_permisos[permiso][tabla_val][columna_p] = obj.isChecked()
+
+					if columna == columna_p:
+						if tabla_secundaria not in self.diccionario_permisos[permiso]:
+							self.diccionario_permisos[permiso][tabla_secundaria] = {}
+						self.diccionario_permisos[permiso][tabla_secundaria][columna_secundaria] = obj.isChecked()
+				except KeyError as error:
+					print("La tabla no tiene llaves foraneas")
+					return
+		self.resetCheckboxes(self)
 
 	#este metodo borra todos los datos del diccionario y desactiva todas las checkboxes. se utiliza al cambiar de usuario a modificar -Jared
 	def limpiarDict(self):

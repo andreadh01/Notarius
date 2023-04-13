@@ -273,6 +273,7 @@ font-size: 12px;
 border: 1px solid rgba(0, 0, 0, 10%);
 padding: 5px;
 background-color: #fff;
+color: black;
 outline: 0px;
 }
 
@@ -280,6 +281,7 @@ outline: 0px;
 QComboBox QListView::item {
 padding-left: 10px;
 background-color: #fff;
+color: black;
 }
 QComboBox QListView::item:hover {
 background-color: #d3c393;

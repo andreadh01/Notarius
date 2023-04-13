@@ -204,18 +204,31 @@ def getSubtabla(col,registro):
     conn = obtener_conexion(user,pwd)
     cur = conn.cursor(dictionary=True)
     nombre_tabla = subtablas[col][0]
-    select = subtablas[col][1]
+    select = subtablas[col][1].split(',')
     select_permisos = ''
     query = f"SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{nombre_tabla}' and TABLE_SCHEMA='NOTARIUS'"
     cur.execute(query)
     valores = cur.fetchall()
+    print(valores)
     for dicc in valores[:-1]:
         for value in dicc.values():
-            if select in value: select_permisos += f"{value},"
-    select_permisos += valores[-1]['column_name']
+            if value in select: select_permisos += f"{value},"
+    select_permisos += valores[-1]['column_name'] if valores[-1]['column_name'] in select else ''
     
     
     query = f"SELECT {select_permisos} FROM {nombre_tabla} WHERE {index} = '{registro}'"
+    print(query)
+    cur.execute(query)
+    valores = cur.fetchall()
+    cur.close()
+    conn.close()
+    return valores
+
+def getTablaRelacionada(col):
+    user, pwd = getUsuarioLogueado()
+    conn = obtener_conexion(user,pwd)
+    cur = conn.cursor(dictionary=True)
+    query = f" SELECT DISTINCT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME IN ('{col}') AND TABLE_SCHEMA='notarius' AND TABLE_NAME != 'tabla_final'"
     cur.execute(query)
     valores = cur.fetchall()
     cur.close()

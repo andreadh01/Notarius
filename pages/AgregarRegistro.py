@@ -41,7 +41,6 @@ class AgregarRegistro(Form, Base):
         self.resetCombobox(self)
         tabla = self.tablaslist.currentText()
         columnas = getPermisos(tabla)["write"]
-        print("COLUMNAS DE WRITE",columnas)
         lista_columnas = columnas.split(',')
         propiedades_columnas = listaDescribe(tabla,lista_columnas)
         layout = self.verticalLayout
