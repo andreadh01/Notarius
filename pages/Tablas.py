@@ -10,7 +10,7 @@ from bdConexion import obtener_conexion
 import os
 
 from pages.EditarRegistro import EditarRegistro
-from usuarios import getListaTablas, getPermisos, getSubtabla, getValoresTabla
+from usuarios import getListaTablas, getPermisos, getRegistro, getRegistrosSubtabla, getValoresTabla
 from deployment import getBaseDir
 
 base_dir = getBaseDir()
@@ -20,6 +20,7 @@ Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','ver-tabla.ui'))
 headers = []
 
 class Tablas(Base, Form):
+
 	def __init__(self, parent=None):
 		super(self.__class__, self).__init__(parent)
 		self.setupUi(self)
@@ -28,6 +29,7 @@ class Tablas(Base, Form):
 		self.mensaje.hide()
 		self.tableView.setEditTriggers(QAbstractItemView.NoEditTriggers)
 		self.pushButton_2.clicked.connect(self.escribirCSV)
+		self.tableView.doubleClicked.connect(self.changePage)
 
 		#self.tableslist.currentIndexChanged.connect(partial(self.setupTable,self))
 
@@ -53,51 +55,33 @@ class Tablas(Base, Form):
 		#tabla_name = self.tableslist.currentText()
 		permisos = getPermisos('tabla_final')
 		select = permisos["read"]
-		if permisos["write"] == '': self.botonModificar.hide()
 		#si puede encontrar una manera menos fea de obtener esto en ves de hacer esta variable globar que toma el dic actual dense porfavor. atte; gracida
 		global Diccionario
 		Diccionario = tabla
 		header = select.split(',')
-		model = QStandardItemModel()
+		self.model = QStandardItemModel()
 		#agregar los encabezados al modelo
 		for i, item in enumerate(header):
-			model.setHorizontalHeaderItem(i,QStandardItem(item))		
-
+			self.model.setHorizontalHeaderItem(i,QStandardItem(item))		
 		#agregar el modelo al widget QTableView
-		self.tableView.setModel(model)
+		self.tableView.setModel(self.model)
 		#agregar los registros al modelo con un boton para editar el registro
-		list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
-
+		self.cargarRegistros(tabla, self.model)
 		#crear un objeto qitemdelegate para celdas
 		delegate = QItemDelegate(self)
 		#agregar el objeto al widget QTableView
 		self.tableView.setItemDelegate(delegate)
-  
 		#crear un filtro para el widget QTableView
 		self.proxy = QSortFilterProxyModel()
 		#agregar el modelo al filtro
-		self.proxy.setSourceModel(model)
+		self.proxy.setSourceModel(self.model)
+		
+
 		#agregar el filtro al widget QTableView
 		self.tableView.setModel(self.proxy)
 		self.busqueda()
 		#agregar un evento al filtro para cuando se escribe en el line edit
 		self.proxy.setFilterCaseSensitivity(Qt.CaseInsensitive)
-		#agregar un evento al filtro para cuando se escribe en el line edit
-		for i, registro in enumerate(tabla):
-			for j, (col, val) in enumerate(registro.items()):
-				if val is None: val =''
-				if col == 'id': id_registro = val
-				if col in list_nested_tables:
-					#si el campo es de una de las tablas en la lista, entonces se guarda su index
-					#para poder acceder a ella mas facilmente
-					index = self.tableView.model().index(i,j)
-					name = f"subtable_{i}_{j}"
-					#subtable = self.setupSubTable(i,j,col,name)
-					#subtable.setParent(self.tableView)
-					val = self.generarSubtabla(col,id_registro)
-					model.setItem(i,j,QStandardItem(str(val)))
-				else:
-					model.setItem(i,j,QStandardItem(str(val)))
 		self.line_edit_busqueda_presupuesto.textChanged.connect(self.proxy.setFilterRegExp)
 		self.line_edit_busqueda_presupuesto.textChanged.connect(self.tableView.resizeColumnsToContents)
 		self.line_edit_busqueda_presupuesto.textChanged.connect(self.tableView.resizeRowsToContents)
@@ -189,7 +173,7 @@ class Tablas(Base, Form):
 		#model.setHorizontalHeaderLabels(['Fecha','Monto','Tipo'])
 		header = ''
 		text = ''
-		tabla = getSubtabla(column,registro)
+		tabla = getRegistrosSubtabla(column,registro)
 		#se agregan los datos de la tabla al modelo
 		for i, registro in enumerate(tabla):
 			header = ''
@@ -225,11 +209,12 @@ class Tablas(Base, Form):
 "}")
 		return button
 	
-	def changePage(self, Form, row,tabla):
+	def changePage(self,index):
+		row = index.row()
 		index = self.getIndexCell(row)
 		editar = EditarRegistro()
 		self.parent().addWidget(editar)
-		self.parent().findChild(EditarRegistro).getRegistro(editar, index, tabla, 'id')
+		self.parent().findChild(EditarRegistro).getRegistro(editar, index, 'tabla_final', 'id')
 		self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(EditarRegistro)))
   
   #la funcion getIndexCell obtiene el valor de la celda de la tabla que se encuentra en la columna id, para luego enviarlo a la funcion getRegistro de la clase EditarRegistro
@@ -248,40 +233,7 @@ class Tablas(Base, Form):
 		#evento para que al presionar el botón de buscar se ejecute el metodo getTableContent()
 		#self.pushButton_3.clicked.connect(self.getTableContent)
 		#evento para que al presionar el boton modificar se obtenga el elemento seleccionado en el QTableView, en caso de que no se haya seleccionado ninguno, de un mensaje de error. Además, en el caso de tener seleccionado un elemento se hace un cambio de pagina para poder modificar el registro en cuestion con respecto a su id.
-		self.botonModificar.clicked.connect(self.modificarRegistro)
 	
-	def modificarRegistro(self):
-		#obtener el nombre de la tabla actual
-		#tabla_name = self.tableslist.currentText()
-		tabla_name = 'tabla_final'
-		#obtener el id del registro seleccionado en el QTableView
-
-		if self.tableView.selectedIndexes() == []:
-			# agregar mensaje de error
-			self.mensaje.show()
-			self.mensaje.setText("No tiene ningun registro seleccionado para modificar")
-			self.timerAndHide()
-			return
-		elif len(self.tableView.selectedIndexes())>1:
-			self.mensaje.show()
-			self.mensaje.setText("Elija solamente un campo para modificar el registro")
-			self.timerAndHide()
-			return
-		else:
-			row = self.tableView.selectedIndexes()[0].row()
-			index = self.getIndexCell(row)
-			#se obtiene de la lista de campos de la tabla actual
-			id_name = self.tableView.model().headerData(0, Qt.Horizontal)
-			#crear un objeto de la clase EditarRegistro
-			editar = EditarRegistro()
-			#agregar el objeto a la pila de widgets del QStackedWidget
-			self.parent().addWidget(editar)
-			#obtener el objeto EditarRegistro de la pila de widgets del QStackedWidget
-			editar = self.parent().findChild(EditarRegistro)
-			#ejecutar el metodo getRegistro del objeto EditarRegistro
-			editar.getRegistro(editar, index, tabla_name, id_name)
-			#hacer el cambio de pagina al objeto EditarRegistro
-			self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(EditarRegistro)))
 
 #la funcion fillcombo obtiene los campos de la tabla actual y los agrega al combobox para que el usuario pueda seleccionar el campo por el cual desea filtrar la tabla	
 	def fillCombo(self):
@@ -312,6 +264,59 @@ class Tablas(Base, Form):
 		if len(headers) > 0: self.proxy.setFilterKeyColumn(headers[0][0])
 		#agregar un evento al filtro para cuando se cambia el valor del combobox, comparar el valor del combobox con la lista de campos de la tabla para obtener el indice del campo seleccionado
 		self.comboBox_busqueda_presupuesto.currentIndexChanged.connect(lambda *args, headers= headers: self.setfilterKeyColumn(headers))
+	def cargarRegistros(self, tabla, model):
+		list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
+
+		#agregar un evento al filtro para cuando se escribe en el line edit
+		for i, registro in enumerate(tabla):
+			for j, (col, val) in enumerate(registro.items()):
+				if val is None: val =''
+				if col in list_nested_tables:
+					#si el campo es de una de las tablas en la lista, entonces se guarda su index
+					#para poder acceder a ella mas facilmente
+					index = self.tableView.model().index(i,j)
+					name = f"subtable_{i}_{j}"
+					#subtable = self.setupSubTable(i,j,col,name)
+					#subtable.setParent(self.tableView)
+					val = self.generarSubtabla(col,val)
+					model.setItem(i,j,QStandardItem(str(val)))
+				else:
+					model.setItem(i,j,QStandardItem(str(val)))
+	
+	def agregarRegistro(self,index):
+		list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
+
+		registro = getRegistro('tabla_final','id',index)
+		for j, (col, val) in enumerate(registro.items()):
+				if val is None: val =''
+				if col in list_nested_tables:
+					#si el campo es de una de las tablas en la lista, entonces se guarda su index
+					#para poder acceder a ella mas facilmente
+					index = self.tableView.model().index(registro['id'],j)
+					name = f"subtable_{registro['id']}_{j}"
+					#subtable = self.setupSubTable(i,j,col,name)
+					#subtable.setParent(self.tableView)
+					val = self.generarSubtabla(col,val)
+					self.model.setItem(registro['id']-1,j,QStandardItem(str(val)))
+				else:
+					self.model.setItem(registro['id']-1,j,QStandardItem(str(val)))
+		self.proxy.dataChanged.emit(self.proxy.index(0, 0), self.proxy.index(self.proxy.rowCount(), self.proxy.columnCount()))
+		self.tableView.resizeColumnsToContents()
+		self.tableView.resizeRowsToContents()
+
+	def actualizarRegistro(self,index):
+		list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
+
+		new_values = getRegistro('tabla_final','id',index)
+		for i, (col,val) in enumerate(new_values.items()):
+			index = self.proxy.index(new_values['id']-1, i)
+			if col in list_nested_tables:
+					val = self.generarSubtabla(col,val)
+			self.proxy.setData(index, val, Qt.EditRole)
+		#self.proxy.dataChanged.emit(self.proxy.index(0, 0), self.proxy.index(self.proxy.rowCount(), self.proxy.columnCount()))
+		self.tableView.resizeColumnsToContents()
+		self.tableView.resizeRowsToContents()
+		self.tableView.viewport().update()
 
 	def setfilterKeyColumn(self,headers:list):
 		#obtener el valor del combobox

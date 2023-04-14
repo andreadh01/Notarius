@@ -4,8 +4,9 @@ import os
 import re
 
 from bdConexion import obtener_conexion
-from pages.components import crearInput, crearRadioButton
-from usuarios import getListaTablas, getListaTablasWrite, getPermisos, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
+from pages.Tablas import Tablas
+from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla
+from usuarios import getListaTablas, getListaTablasWrite, getPermisos, getRegistrosSubtabla, getSubtabla, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
 from deployment import getBaseDir
 
 
@@ -14,32 +15,25 @@ Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','agregar-registros.ui'))
 
 
 class AgregarRegistro(Form, Base):
+    del_btns = []
     cols=[]
     camposCambiados = {}
     def __init__(self, parent=None):
         super(self.__class__,self).__init__(parent)
         self.setupUi(self)
         # se mandan llamar los metodos al correr el programa
-        self.setupTables(self)
         self.setupColumns(self)
         # cada que se actualice el combobox de tablas, se actualizan los labels de las columnas y se agregan sus debidos inputs
-        self.tablaslist.currentTextChanged.connect(self.setupColumns)
         self.pushButton_confirmar.clicked.connect(self.guardarRegistro)
         self.pushButton_cancelar.clicked.connect(self.restartRegistro)
-
-	# en esta funcion se van a cargar las tablas de la base de datos al combobox de tablas
-    def setupTables(self, Form):
-        lista_tablas = getListaTablasWrite()
-        #print(lista_tablas)
-        self.tablaslist.addItems(lista_tablas)
-    
 			
  	# en esta funcion se van a actualizar los labels y se agregaran los inputs segun los labels de las columnas
     def setupColumns(self, Form):
+        list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
         # se eliminan los combobox anteriores
         self.camposCambiados.clear()
         self.resetCombobox(self)
-        tabla = self.tablaslist.currentText()
+        tabla = 'tabla_final'
         columnas = getPermisos(tabla)["write"]
         lista_columnas = columnas.split(',')
         propiedades_columnas = listaDescribe(tabla,lista_columnas)
@@ -52,6 +46,9 @@ class AgregarRegistro(Form, Base):
             tipo_dato = propiedades_columnas[i][1]
             auto_increment = propiedades_columnas[i][5]
             pri = propiedades_columnas[i][3]
+            if col in list_nested_tables:
+                self.setupInputsSubtabla(col)
+                continue
             setattr(self, name_label, QtWidgets.QLabel(self.scrollAreaWidgetContents))
             # Label
             attr_label = getattr(self,name_label)
@@ -80,12 +77,71 @@ class AgregarRegistro(Form, Base):
                 layout.addWidget(widget)
                 self.cols.append(widget)
 
+    def setupInputsSubtabla(self,column):
+        nombre_tabla,select = getSubtabla(column)
+        columnas = getPermisos(nombre_tabla)["write"]
+        lista_columnas = select.split(',')
+        propiedades_columnas = listaDescribe(nombre_tabla,lista_columnas)
+        layout = self.verticalLayout
+        gridLayout = QtWidgets.QGridLayout(objectName=f'grid_layout_{nombre_tabla}')
 
+        name_label = f"label_{column}"
+        setattr(self, name_label, QtWidgets.QLabel(self.scrollAreaWidgetContents))
+            # Label
+        attr_label = getattr(self,name_label)
+        attr_label.setStyleSheet("\n"
+		"font: 75 16pt;\n"
+		"color: #957F5F;\n" 
+        "font-weight: 700;")
+        attr_label.setObjectName(name_label)
+        attr_label.setText(column)
+        #horizontal = QtWidgets.QHBoxLayout()
+        layout.addWidget(attr_label)
+        lastVLayout = QtWidgets.QVBoxLayout(objectName='col_eliminar')
+        gridLayout.addLayout(lastVLayout,1,len(lista_columnas)+1)
+        add_btn = crearBoton('+')
+        add_btn.clicked.connect(partial(agregarInputsSubtabla,self,column))
+        gridLayout.addWidget(add_btn,0,len(lista_columnas)+1)
+        layout.addLayout(gridLayout)
+        # aqui se crea los widgets del label con sus input y se agrega al gui
+        for i, col in enumerate(lista_columnas):
+            name_label = f'label_{i}'
+            tipo_dato = propiedades_columnas[i][1]
+            auto_increment = propiedades_columnas[i][5]
+            pri = propiedades_columnas[i][3]
+            setattr(self, name_label, QtWidgets.QLabel(self.scrollAreaWidgetContents))
+            # Label
+            attr_label = getattr(self,name_label)
+            attr_label.setStyleSheet("\n"
+			"font: 75 14pt;\n"
+			"color: #957F5F;\n")
+            attr_label.setObjectName(name_label)
+            attr_label.setText(col)
+            #attr_label.setAlignment(Qt.AlignCenter)
+            
+            gridLayout.addWidget(attr_label,0,i)
+            vLayout = QtWidgets.QVBoxLayout(objectName=f'layout_{col}_{i}_{nombre_tabla}')
+            gridLayout.addLayout(vLayout,1,i)
+            
+        agregarInputsSubtabla(self,column)
+            
+        
+        
     def limpiarString(self,cadena_sucia):
         string_limpio = re.sub("[^0-9]","",cadena_sucia)
         return string_limpio
 
+    def on_text_changed(self,attr):
+        # Get the current text in the QTextEdit
+        current_text = attr.toPlainText()
 
+        # Check if the current text length is greater than 500
+        if len(current_text) > 500:
+            # Truncate the text to 500 characters
+            truncated_text = current_text[:500]
+
+            # Update the QTextEdit with the truncated text
+            attr.setPlainText(truncated_text)
     def resetCombobox(self, Form):
          
         for obj in self.cols:
@@ -106,7 +162,7 @@ class AgregarRegistro(Form, Base):
         self.camposCambiados[col] = val
         
     def guardarRegistro(self):
-        tabla = self.tablaslist.currentText()
+        tabla = 'tabla_final'
         user, pwd = getUsuarioLogueado()
         conn = obtener_conexion(user,pwd)
         cur = conn.cursor()
@@ -124,7 +180,8 @@ class AgregarRegistro(Form, Base):
         conn.commit()
         cur.close()
         conn.close()
-        updateTable(tabla)
+        #updateTable(tabla)
+        self.parent().findChild(Tablas).agregarRegistro(self.camposCambiados['id'])
         self.label_exito.setText("Registro guardado exitosamente")
         self.checkThreadTimer = QtCore.QTimer(self)
         self.checkThreadTimer.setInterval(3000)

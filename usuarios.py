@@ -195,28 +195,33 @@ def generarString(lista):
         
         return st
 
-def getSubtabla(col,registro):
-    subtablas = {'facturas':['no_facturas','no_factura'],'fechas_catastro_calif':['fechas_catastro_calif','cat_envio_calif,cat_regreso_calif,observaciones'],'fechas_catastro_td':['fechas_catastro_td','cat_envio_td,cat_regreso_td,observaciones'],'fechas_rpp':['fechas_rpp','envio_rpp,regreso_rpp,observaciones'],'desgloce_ppto':['desgloce_ppto','concepto,cantidad'],'pagos':['bitacora_pagos','concepto,cantidad,autorizado_por,fecha,observaciones'],'depositos':['bitacora_depositos','concepto,cantidad,tipo,banco,fecha,observaciones']}
-    index = 'id_fechas' if "fecha" in col else 'id_relacion'
-    
-    print(col,registro)
+def getSubtabla(col):
     user, pwd = getUsuarioLogueado()
     conn = obtener_conexion(user,pwd)
     cur = conn.cursor(dictionary=True)
+
+    subtablas = {'facturas':['no_facturas','no_factura'],'fechas_catastro_calif':['fechas_catastro_calif','cat_envio_calif,cat_regreso_calif,observaciones'],'fechas_catastro_td':['fechas_catastro_td','cat_envio_td,cat_regreso_td,observaciones'],'fechas_rpp':['fechas_rpp','envio_rpp,regreso_rpp,observaciones'],'desgloce_ppto':['desgloce_ppto','concepto,cantidad'],'pagos':['bitacora_pagos','concepto,cantidad,autorizado_por,fecha,observaciones'],'depositos':['bitacora_depositos','concepto,cantidad,tipo,banco,fecha,observaciones']}
     nombre_tabla = subtablas[col][0]
     select = subtablas[col][1].split(',')
     select_permisos = ''
     query = f"SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{nombre_tabla}' and TABLE_SCHEMA='NOTARIUS'"
     cur.execute(query)
     valores = cur.fetchall()
-    print(valores)
+    #aqui se eliminan aquellas columnas que el usuario no tiene permitido visualizar
     for dicc in valores[:-1]:
         for value in dicc.values():
             if value in select: select_permisos += f"{value},"
     select_permisos += valores[-1]['column_name'] if valores[-1]['column_name'] in select else ''
     
     
-    query = f"SELECT {select_permisos} FROM {nombre_tabla} WHERE {index} = '{registro}'"
+    return nombre_tabla, select_permisos
+def getRegistrosSubtabla(col,id_registro):
+    index = 'id_fechas' if "fecha" in col else 'id_relacion'
+    nombre_tabla, select = getSubtabla(col)
+    user, pwd = getUsuarioLogueado()
+    conn = obtener_conexion(user,pwd)
+    cur = conn.cursor(dictionary=True)
+    query = f"SELECT {select} FROM {nombre_tabla} WHERE {index} = '{id_registro}'"
     print(query)
     cur.execute(query)
     valores = cur.fetchall()

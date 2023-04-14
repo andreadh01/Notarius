@@ -1,8 +1,9 @@
 from functools import partial
 import re
-from PyQt5 import uic, QtWidgets,QtCore
+from PyQt5 import uic, QtWidgets,QtGui,QtCore
+from PyQt5.QtCore import Qt
 from bdConexion import obtener_conexion
-from usuarios import getUsuarioLogueado
+from usuarios import getSubtabla, getUsuarioLogueado, listaDescribe
 # en este archivo se generan los componentes de gui que se agregaran de forma dinamica
 
 # esta funcion devuelve un boton de dashboard
@@ -72,21 +73,23 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             attr.setCalendarPopup(True)
             attr.setStyleSheet(inputStylesheet(enable, True))
             attr.setObjectName(name_input)
-            registro = QtCore.QDate.currentDate() if registro == '' else registro
-            
+            registro = QtCore.QDate() if registro == '' else registro
             attr.dateChanged.connect(partial(self.actualizarDict, col))
             attr.setDate(registro)
             attr.setEnabled(enable)    
             return attr
         elif 'varchar' in tipo_dato:
-            setattr(self, name_input, QtWidgets.QLineEdit(self.scrollAreaWidgetContents))
+            widget = QtWidgets.QTextEdit(self.scrollAreaWidgetContents) if 'varchar(500)' in tipo_dato else QtWidgets.QLineEdit(self.scrollAreaWidgetContents)
+            setattr(self, name_input, widget)
             attr = getattr(self,name_input)
             attr.setStyleSheet(inputStylesheet(enable))
             attr.setObjectName(name_input)
             max_value = self.limpiarString(tipo_dato)
-            attr.setMaxLength(int(max_value))
-            
-            attr.textChanged.connect(partial(self.actualizarDict, col))
+            try:
+                attr.setMaxLength(int(max_value))
+                attr.textChanged.connect(partial(self.actualizarDict, col))
+            except:
+                attr.textChanged.connect((partial(self.on_text_changed,attr)))
             attr.setText(registro)
             attr.setEnabled(enable)    
             return attr
@@ -127,9 +130,7 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             #attr.setDisplayFormat("yyyy-mm-dd HH:mm:ss")
             attr.setStyleSheet(inputStylesheet(enable, True))
             attr.setObjectName(name_input)
-            registro = QtCore.QDate.currentDate() if registro == '' else registro
-
-            
+            registro = QtCore.QDate() if registro == '' else registro
             attr.dateTimeChanged.connect(partial(self.actualizarDict, col))
             attr.setDate(registro)
             attr.setEnabled(enable)    
@@ -296,3 +297,120 @@ background-color: #d3c393;
     return  stylesheet
 # esta funcion devuelve un checkbox
 #
+
+def crearBoton(text):
+    button = QtWidgets.QPushButton(text)
+    button.setFixedSize(40,40)
+    styleSheet = """
+QPushButton {
+    border-radius: 20px;
+    background-color: #957F5F;
+    color: white;
+    font-size: 16px;
+    padding: 10px 10px;
+}
+
+QPushButton:hover {
+    background-color: rgb(116, 91, 47);
+    color: rgb(255, 255, 255);
+}
+
+QPushButton:pressed {
+    border-style: inset;
+    background-color: rgb(103, 80, 41);
+    color: rgb(255, 255, 255);
+    border: 3px solid  rgb(103, 80, 41);
+}
+"""
+    button.setStyleSheet(styleSheet)
+    return button
+
+def messageBox():
+    custom_box = QtWidgets.QMessageBox()
+    custom_box.setWindowTitle("Confirmation")
+    custom_box.setText("¿Está seguro de que quiere eliminar el registro?")
+    custom_box.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+    custom_box.setDefaultButton(QtWidgets.QMessageBox.No)
+    yes_button = custom_box.button(QtWidgets.QMessageBox.Yes)
+    yes_button.setText("Si")    
+    styleSheet = """
+        QMessageBox {
+            background-color: white;
+            color: #666666;
+            font-size: 16px;
+        }
+        QMessageBox QLabel {
+            color: #666666;
+        }
+        QMessageBox QPushButton {
+            border-radius: 8px;
+            background-color: #957F5F;
+            color: white;
+            font-size: 16px;
+            padding: 10px 30px;
+        }
+        QMessageBox QPushButton:hover {
+            background-color: rgb(116, 91, 47);
+            color: rgb(255, 255, 255);
+        }
+        QMessageBox QPushButton:pressed {
+            border-style: inset;
+            background-color: rgb(103, 80, 41);
+            color: rgb(255, 255, 255);
+        }
+    """
+    custom_box.setStyleSheet(styleSheet)
+    result = custom_box.exec_()
+    return result
+
+def agregarInputsSubtabla(self,column):
+        nombre_tabla,select = getSubtabla(column)
+        gridLayout = self.findChild(QtWidgets.QGridLayout,f'grid_layout_{nombre_tabla}')
+        lista_columnas = select.split(',')
+        propiedades_columnas = listaDescribe(nombre_tabla,lista_columnas)
+        lastVLayout = gridLayout.findChild(QtWidgets.QVBoxLayout,'col_eliminar')
+        del_btn = crearBoton('-')
+        lastVLayout.addWidget(del_btn)
+        self.del_btns.append(del_btn)
+        index = self.del_btns.index(del_btn)
+        del_btn.clicked.connect(partial(eliminarInputsSubtabla,self,index,column))
+        for i, col in enumerate(lista_columnas):
+            name_input = f"input_{i}"
+            tipo_dato = propiedades_columnas[i][1]
+            auto_increment = propiedades_columnas[i][5]
+            pri = propiedades_columnas[i][3]
+            
+            vLayout = self.findChild(QtWidgets.QVBoxLayout, f'layout_{col}_{i}_{nombre_tabla}')
+            if isinstance(tipo_dato, bytes):
+                tipo_dato = tipo_dato.decode('utf-8')
+            elif pri == 'PRI': 
+                    widget = crearInput(self, tipo_dato, name_input,'tabla_final', '',col, enable=False)
+                    vLayout.addWidget(widget)
+            elif 'tinyint' in tipo_dato:
+                r0,r1 = crearRadioButton(self, name_input, '',col)
+                vLayout.addWidget(r0)
+                vLayout.addWidget(r1)
+            else:
+                widget = crearInput(self, tipo_dato, name_input,'tabla_final', '',col)
+                vLayout.addWidget(widget)
+
+def eliminarInputsSubtabla(self,index,column):
+        result = messageBox()
+        
+        if result == QtWidgets.QMessageBox.Yes:
+            nombre_tabla,select = getSubtabla(column)
+            lista_columnas = select.split(',')
+            widget_to_remove = self.del_btns[index]
+            gridLayout = self.findChild(QtWidgets.QGridLayout,f'grid_layout_{nombre_tabla}')
+            lastVLayout = gridLayout.findChild(QtWidgets.QVBoxLayout,'col_eliminar')
+            index = lastVLayout.indexOf(widget_to_remove)
+            lastVLayout.removeWidget(widget_to_remove)
+            widget_to_remove.deleteLater()
+            for i, col in enumerate(lista_columnas):
+                layout = self.findChild(QtWidgets.QVBoxLayout, f'layout_{col}_{i}_{nombre_tabla}')
+                widget_to_remove = layout.itemAt(index).widget()
+                layout.removeWidget(widget_to_remove)
+                widget_to_remove.deleteLater()
+            print("Confirmed")
+        else:
+            print("Not confirmed")
