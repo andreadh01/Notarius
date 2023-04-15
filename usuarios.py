@@ -129,7 +129,7 @@ def limpiar_lista_permisos(lista_permisos):
 		if permisos["write"] != '':
 			if 'id' not in permisos["write"]: permisos["write"]=f"id,{permisos['write']}"
 			lista_tablas_write.append(nombre_tabla)
-			print("el usuario puede escribir en",lista_tablas_write)
+			#print("el usuario puede escribir en",lista_tablas_write)
 		#permisos["write"] = f"id,{str(permisos["write"])}"
 		dict_permisos[nombre_tabla] = permisos
 
@@ -222,7 +222,7 @@ def getRegistrosSubtabla(col,id_registro):
     conn = obtener_conexion(user,pwd)
     cur = conn.cursor(dictionary=True)
     query = f"SELECT {select} FROM {nombre_tabla} WHERE {index} = '{id_registro}'"
-    print(query)
+    #print(query)
     cur.execute(query)
     valores = cur.fetchall()
     cur.close()

@@ -27,7 +27,7 @@ class EditarRegistro(Form, Base):
     def setupInputs(self, Form, registro, subtabla=False):
         # se eliminan los inputs anteriores
         columnas = getPermisos('tabla_final')["write"]
-        print('registroooo tabla',registro)
+        #print('registroooo tabla',registro)
         lista_columnas = columnas.split(',')
         propiedades_columnas = listaDescribe('tabla_final',lista_columnas)
         list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos

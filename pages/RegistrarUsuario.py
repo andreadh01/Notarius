@@ -133,7 +133,7 @@ class RegistrarUsuario(Form, Base):
             permiso = permiso.split('_')[2]
             if tipo_permiso == permiso:
                 checkbox.setChecked(True)
-        print(self.diccionario_permisos)
+        #print(self.diccionario_permisos)
 
     def resetCombobox(self, Form):
         for obj in self.checkboxList:
