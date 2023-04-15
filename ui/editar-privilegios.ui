@@ -134,7 +134,7 @@ border: none;
         </property>
         <property name="styleSheet">
          <string notr="true">QWidget#scrollAreaWidgetContents{
-background:rgba(149,127,95);
+background:rgba(149,127,95,1);
 
 }</string>
         </property>
@@ -202,7 +202,7 @@ border: none;
         </property>
         <property name="styleSheet">
          <string notr="true">QWidget#scrollAreaWidgetContents_2{
-background:rgba(149,127,95);
+background:rgba(149,127,95,1);
 
 }</string>
         </property>
