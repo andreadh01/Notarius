@@ -1,9 +1,11 @@
+DROP DATABASE IF EXISTS notarius;
 CREATE DATABASE notarius;
 
+DROP USER 'admin'@'localhost';
 CREATE USER 'admin'@'localhost' IDENTIFIED BY '123';
 
 GRANT ALL PRIVILEGES ON mysql.* TO 'admin'@'localhost' WITH GRANT OPTION;
-GRANT ALL PRIVILEGES ON notarius.* TO 'admin'@'localhost' WITH GRANT OPTION;;
+GRANT ALL PRIVILEGES ON notarius.* TO 'admin'@'localhost' WITH GRANT OPTION;
 GRANT RELOAD ON *.* TO 'admin'@'localhost';
 
 USE notarius;
@@ -36,13 +38,13 @@ CREATE  TABLE depositos_presupuesto (
 	id                   INT UNSIGNED NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
 	no_presupuesto       VARCHAR(15)  NOT NULL     ,
 	CONSTRAINT fk_desgloce_ppto_presupuesto_2 FOREIGN KEY ( no_presupuesto ) REFERENCES presupuesto( no_presupuesto ) ON DELETE NO ACTION ON UPDATE NO ACTION
- );
+ ) engine=InnoDB;
 
 CREATE  TABLE desgloce_ppto_presupuesto ( 
 	id                   INT UNSIGNED NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
 	no_presupuesto       VARCHAR(15)  NOT NULL     ,
 	CONSTRAINT fk_desgloce_ppto_presupuesto_0 FOREIGN KEY ( no_presupuesto ) REFERENCES presupuesto( no_presupuesto ) ON DELETE NO ACTION ON UPDATE NO ACTION
- );
+ )engine=InnoDB;
 
 CREATE  TABLE escritura ( 
 	id                   INT  NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
@@ -107,13 +109,13 @@ CREATE  TABLE no_facturas (
 	id_relacion          INT UNSIGNED NOT NULL     ,
 	no_factura           INT  NOT NULL     ,
 	CONSTRAINT fk_facturas_facturas_escritura FOREIGN KEY ( id_relacion ) REFERENCES facturas( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
- );
+ )engine=InnoDB;
 
 CREATE  TABLE pagos_presupuesto ( 
 	id                   INT UNSIGNED NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
 	no_presupuesto       VARCHAR(15)  NOT NULL     ,
 	CONSTRAINT fk_desgloce_ppto_presupuesto_1 FOREIGN KEY ( no_presupuesto ) REFERENCES presupuesto( no_presupuesto ) ON DELETE NO ACTION ON UPDATE NO ACTION
- );
+ )engine=InnoDB;
 
 CREATE  TABLE rpp ( 
 	id                   INT UNSIGNED NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
@@ -131,7 +133,7 @@ CREATE  TABLE rpp_fechas_rpp (
 	id                   INT UNSIGNED NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
 	id_rpp               INT UNSIGNED NOT NULL     ,
 	CONSTRAINT fk_rpp_fechas_rpp_rpp FOREIGN KEY ( id_rpp ) REFERENCES rpp( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
- );
+ )engine=InnoDB;
 
 CREATE  TABLE aviso_definitivo ( 
   id                   INT  NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
@@ -188,13 +190,13 @@ CREATE  TABLE cc_fechas_cc (
 	id                   INT UNSIGNED NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
 	id_cc                INT UNSIGNED NOT NULL     ,
 	CONSTRAINT fk_cc_fechas_cc_catastro_calificacion FOREIGN KEY ( id_cc ) REFERENCES catastro_calificacion( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
- );
+ )engine=InnoDB;
 
 CREATE  TABLE ctd_fechas_ctd ( 
 	id                   INT UNSIGNED NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
 	id_ctd               INT UNSIGNED NOT NULL     ,
 	CONSTRAINT fk_ctd_fechas_ctd_catastro_td FOREIGN KEY ( id_ctd ) REFERENCES catastro_td( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
- );
+ )engine=InnoDB;
 
 CREATE  TABLE desgloce_ppto ( 
 	id                   INT  NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
@@ -232,7 +234,7 @@ CREATE  TABLE fechas_catastro_td (
 	cat_regreso_td       DATE       ,
 	observaciones        VARCHAR(500)       ,
 	CONSTRAINT fk_fechas_catastro_td_ctd_fechas_ctd FOREIGN KEY ( id_fechas ) REFERENCES ctd_fechas_ctd( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
- );
+ )engine=InnoDB;
 
 CREATE  TABLE fechas_rpp ( 
 	id                   INT  NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
@@ -241,7 +243,7 @@ CREATE  TABLE fechas_rpp (
 	regreso_rpp          DATE       ,
 	observaciones        VARCHAR(500)       ,
 	CONSTRAINT fk_fechas_rpp_rpp_fechas_rpp FOREIGN KEY ( id_fechas ) REFERENCES rpp_fechas_rpp( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
- );
+ )engine=InnoDB;
 
 
  
