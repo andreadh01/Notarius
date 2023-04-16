@@ -266,7 +266,7 @@ class EditarPrivilegios(Base, Form):
 					query=f"GRANT SELECT ({columna_secundaria}) ON notarius.{tabla_secundaria} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
 					cur.execute(query)
 		except KeyError as error:
-			print("La tabla no tiene llaves foraneas")
+			#print("La tabla no tiene llaves foraneas")
 			return
 
 	def resetCombobox(self, Form):
@@ -330,7 +330,7 @@ class EditarPrivilegios(Base, Form):
 					self.diccionario_permisos[permiso][subtabla] = {}
 				elif col not in self.diccionario_permisos[permiso][subtabla]: 
 					self.diccionario_permisos[permiso][subtabla][col] = True
-				elif obj.isChecked():
+				elif obj.isChecked()  and columna not in 'facturas':
 					self.diccionario_permisos[permiso][subtabla][col] = self.diccionario_permisos[permiso][subtabla][col]
 				else:
 					self.diccionario_permisos[permiso][subtabla][col] = obj.isChecked()
@@ -376,7 +376,7 @@ class EditarPrivilegios(Base, Form):
 							self.diccionario_permisos[permiso][tabla_secundaria] = {}
 						self.diccionario_permisos[permiso][tabla_secundaria][columna_secundaria] = obj.isChecked()
 				except KeyError as error:
-					print("La tabla no tiene llaves foraneas")
+					#print("La tabla no tiene llaves foraneas")
 					return
 		self.resetCheckboxes(self)
 
