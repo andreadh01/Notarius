@@ -53,6 +53,7 @@ def listaDescribe(tabla, columnas):
         cur.execute(query)
         description = cur.fetchone()
         lista.append(description)
+    cur.fetchall()
     cur.close()
     conn.close()
     return lista
@@ -180,12 +181,22 @@ def permisosRead(user,pwd):
         query = f"SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{tabla}' and TABLE_SCHEMA='NOTARIUS'"
         cur.execute(query)
         valores = cur.fetchall()
-        valores = generarString(valores)
-        dict_permisos[tabla]['read'] = valores
+        valores_read = generarString(valores)
+        valores_write = ordenarPermisosWrite(valores,tabla)
+        dict_permisos[tabla]['read'] = valores_read
+        dict_permisos[tabla]['write'] = valores_write
         
     cur.close()
     conn.close()
-    
+
+def ordenarPermisosWrite(lista,tabla):
+        values = []
+        for i, dicc in enumerate(lista):
+            for value in dicc.values():
+                if value in dict_permisos[tabla]['write']:
+                    values.append(value)
+                    
+        return ','.join(values)        
 def generarString(lista):
         st = ''
         for dicc in lista[:-1]:
@@ -207,6 +218,8 @@ def getSubtabla(col):
     query = f"SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{nombre_tabla}' and TABLE_SCHEMA='NOTARIUS'"
     cur.execute(query)
     valores = cur.fetchall()
+    cur.close()
+    conn.close()
     #aqui se eliminan aquellas columnas que el usuario no tiene permitido visualizar
     for dicc in valores[:-1]:
         for value in dicc.values():

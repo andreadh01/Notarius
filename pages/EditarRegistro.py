@@ -58,15 +58,17 @@ class EditarRegistro(Form, Base):
     def setupInputs(self, Form, registro, subtabla=False):
         # se eliminan los inputs anteriores
         self.listaregistros_editarregistros = []
-        columnas = getPermisos('tabla_final')["write"]
+        columnas = getPermisos('tabla_final')["read"]
         #print('registroooo tabla',registro)
         lista_columnas = columnas.split(',')
         propiedades_columnas = listaDescribe('tabla_final',lista_columnas)
+        print('propiedades columnas',propiedades_columnas,'lista columnas',lista_columnas)
         list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
 
         layout = self.verticalLayout
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
+            print('la columna actual es',col)
             name_input = f"input_{i}"
             name_label = f'label_{i}'
             tipo_dato = propiedades_columnas[i][1]

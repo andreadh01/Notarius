@@ -186,19 +186,28 @@ class RegistrarUsuario(Form, Base):
                 self.diccionario_permisos['read'][tabla][columna] = True
         tabla_relacionada = getTablaRelacionada(columna)
         
+        # en este metodo se agrega o modifica los permisos de las columnas de las subtablas
         if columna in subtablas.keys():
             subtabla = subtablas[columna][0]
             columna_subtabla = subtablas[columna][1].split(',')
             columna_subtabla.append('id')
+            todos_false = True
             if "fecha" in columna: columna_subtabla.append('id_fechas') 
             else: columna_subtabla.append('id_relacion')
-    
             if subtabla not in self.diccionario_permisos[permiso]:
                 self.diccionario_permisos[permiso][subtabla] = {}
-                for columna in columna_subtabla:
-                    self.diccionario_permisos[permiso][subtabla][columna] = obj.isChecked()                  
-            else: self.diccionario_permisos[permiso][subtabla][columna] = obj.isChecked()
+            for col in columna_subtabla:
+                if subtabla not in self.diccionario_permisos[permiso]:
+                    self.diccionario_permisos[permiso][subtabla] = {}
+                elif col not in self.diccionario_permisos[permiso][subtabla]: 
+                    self.diccionario_permisos[permiso][subtabla][col] = True
+                elif obj.isChecked():
+                    self.diccionario_permisos[permiso][subtabla][col] = self.diccionario_permisos[permiso][subtabla][col] 
+                else:
+                    self.diccionario_permisos[permiso][subtabla][col] = obj.isChecked()
 
+                
+        # en este metodo se agregan o modifican los permisos de las tablas relacionadas a la tabla final
         for registro in tabla_relacionada:
             for tabla_val in registro.values():
                 if tabla_val == tabla or tabla_val in tablas_no_validas: continue
@@ -215,6 +224,7 @@ class RegistrarUsuario(Form, Base):
                     if self.diccionario_permisos['read'][tabla_val][columna] == False and self.diccionario_permisos['write'][tabla_val][columna] == False:
                         self.diccionario_permisos['read'][tabla_val][columna] = obj.isChecked()
                 try:
+                    # aqui se agregan los permisos de las llaves foraneas
                     lista_foreignkey = self.foreign_keys[tabla_val]
                     lista_tabla_col = lista_foreignkey[0]
                     columna_p = lista_tabla_col[0]
@@ -231,6 +241,23 @@ class RegistrarUsuario(Form, Base):
                 except KeyError as error:
                     print("La tabla no tiene llaves foraneas")
                     return
+        
+        # este metodo verifica que al deseleccionar todos los elementos de una subtabla que esta subtabla se le quiten los permisos en la tabla final
+        # en caso de que no todas las columnas se deseleccionaron, la casilla de la subtabla se queda en true
+        for key in subtablas:
+            subtabla = subtablas[key][0]
+            columna_subtabla = subtablas[key][1].split(',')
+            if subtabla == tabla:
+                for col in columna_subtabla:
+                    if col not in self.diccionario_permisos[permiso][subtabla]:
+                        self.diccionario_permisos[permiso][subtabla][col] = obj.isChecked()
+                    if 'tabla_final' not in  self.diccionario_permisos[permiso]: self.diccionario_permisos[permiso]['tabla_final'] = {}
+                    if self.diccionario_permisos[permiso][subtabla][col] == False:
+                        self.diccionario_permisos[permiso]['tabla_final'][key] = False
+                    else:
+                        self.diccionario_permisos[permiso]['tabla_final'][key] = True
+                        break
+        
         self.resetCheckboxes(self)
  
 
@@ -271,11 +298,7 @@ class RegistrarUsuario(Form, Base):
                 
                 self.lineEdit_nombreusuario.setText("")
                 self.lineEdit_contrasenausuario.setText("")
-                self.mensaje.setText("Usuario registrado exitosamente")
-                self.checkThreadTimer = QtCore.QTimer(self)
-                self.checkThreadTimer.setInterval(10000)
-                self.checkThreadTimer.start()
-                self.checkThreadTimer.timeout.connect(partial(self.mensaje.setText,''))
+               
                 updateTable('usuario')
                 self.checkBoxAllVer.setChecked(False)
                 self.checkBoxAllEscribir.setChecked(False)
@@ -363,6 +386,11 @@ class RegistrarUsuario(Form, Base):
                             query=f"GRANT ALL PRIVILEGES ON mysql.* TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
                             cur.execute(query) 
                         
+        self.mensaje.setText("Usuario registrado exitosamente")
+        self.checkThreadTimer = QtCore.QTimer(self)
+        self.checkThreadTimer.setInterval(10000)
+        self.checkThreadTimer.start()
+        self.checkThreadTimer.timeout.connect(partial(self.mensaje.setText,''))
         cur.close()
         conn.close()
     
