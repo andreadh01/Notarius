@@ -93,9 +93,9 @@ def limpiar_lista_permisos(lista_permisos):
 		subcadena_select = ''
 		subcadena_insert = ''
 		subcadena_update = ''
-		if 'GRANT ALL' in texto: 
+		if 'GRANT ALL' or 'GRANT RELOAD' in texto: 
 			permisosAdmin()
-			return
+			break
 		permisos = {}
 		select_i = texto.find("SELECT")
 		insert_i = texto.find("INSERT")
@@ -198,13 +198,11 @@ def ordenarPermisosWrite(lista,tabla):
                     
         return ','.join(values)        
 def generarString(lista):
-        st = ''
+        st = []
         for dicc in lista[:-1]:
             for value in dicc.values():
-                st += f'{value},'
-        st += lista[-1]['column_name']
-        
-        return st
+                st.append(value)
+        return ','.join(st)
 
 def getSubtabla(col):
     user, pwd = getUsuarioLogueado()
