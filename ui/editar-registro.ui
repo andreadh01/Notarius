@@ -27,19 +27,96 @@
     <number>12</number>
    </property>
    <item>
-    <widget class="QLabel" name="titulo">
-     <property name="styleSheet">
-      <string notr="true">font: 24pt &quot;Arial Rounded MT Bold&quot;;
+    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="6,2,2,2,2">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="titulo">
+       <property name="styleSheet">
+        <string notr="true">font: 24pt &quot;Arial Rounded MT Bold&quot;;
 color: #957F5F;
 </string>
-     </property>
-     <property name="text">
-      <string>Vista de Formulario</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
+       </property>
+       <property name="text">
+        <string>Vista de Formulario</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_4">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_pdf">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+border-radius: 8px;
+background-color: #957F5F;
+color: white;
+font-size: 16px;
+padding: 10px 30px;
+}
+
+QPushButton:hover {
+	background-color: rgb(116, 91, 47);
+	color: rgb(255, 255, 255);
+}
+
+QPushButton:pressed {
+    border-style: inset;
+    background-color: rgb(103, 80, 41);
+	color: rgb(255, 255, 255);
+	border: 3px solid  rgb(103, 80, 41);
+}</string>
+       </property>
+       <property name="text">
+        <string>Crear PDF</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QScrollArea" name="scrollArea">
@@ -121,7 +198,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
         <x>0</x>
         <y>0</y>
         <width>1081</width>
-        <height>24</height>
+        <height>18</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -149,6 +226,34 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
      <property name="leftMargin">
       <number>0</number>
      </property>
+     <item row="0" column="2">
+      <widget class="QPushButton" name="pushButton_confirmar">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+border-radius: 8px;
+background-color: #957F5F;
+color: white;
+font-size: 16px;
+padding: 10px 30px;
+}
+
+QPushButton:hover {
+	background-color: rgb(116, 91, 47);
+	color: rgb(255, 255, 255);
+}
+
+QPushButton:pressed {
+    border-style: inset;
+    background-color: rgb(103, 80, 41);
+	color: rgb(255, 255, 255);
+	border: 3px solid  rgb(103, 80, 41);
+}</string>
+       </property>
+       <property name="text">
+        <string>Confirmar</string>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QPushButton" name="pushButton_cancelar">
        <property name="styleSheet">
@@ -175,34 +280,6 @@ QPushButton:pressed {
        </property>
        <property name="text">
         <string>Cancelar</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QPushButton" name="pushButton_confirmar">
-       <property name="styleSheet">
-        <string notr="true">QPushButton {
-border-radius: 8px;
-background-color: #957F5F;
-color: white;
-font-size: 16px;
-padding: 10px 30px;
-}
-
-QPushButton:hover {
-	background-color: rgb(116, 91, 47);
-	color: rgb(255, 255, 255);
-}
-
-QPushButton:pressed {
-    border-style: inset;
-    background-color: rgb(103, 80, 41);
-	color: rgb(255, 255, 255);
-	border: 3px solid  rgb(103, 80, 41);
-}</string>
-       </property>
-       <property name="text">
-        <string>Confirmar</string>
        </property>
       </widget>
      </item>

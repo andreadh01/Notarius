@@ -7,11 +7,18 @@ from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crea
 from usuarios import getPermisos, getRegistro, getRegistrosSubtabla, getSubtabla, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
 from PyQt5.QtCore import Qt
 from deployment import getBaseDir
+#from reportlab.pdfgen import canvas, 
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from PyQt5.QtWidgets import QFileDialog
 
 base_dir = getBaseDir()
 Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','editar-registro.ui'))
 
 class EditarRegistro(Form, Base):
+    listaregistros_editarregistros = []
     camposCambiados = {}
     pri_key = ()
     del_btns = []
@@ -23,9 +30,34 @@ class EditarRegistro(Form, Base):
         #self.setupInputs(self)
         self.pushButton_cancelar.clicked.connect(self.changePage)
         self.pushButton_confirmar.clicked.connect(self.actualizarRegistro)
-			
+        self.pushButton_pdf.clicked.connect(self.crearPDF)
+	
+    def crearPDF(self):
+        #se abre el filechooser o ajá
+        file_path, _ = QFileDialog.getSaveFileName(filter='PDF Files (*.pdf)')
+        # Create a new PDF
+        if file_path != '':
+            pdf = SimpleDocTemplate(file_path,pagesize=letter, topMargin=10)
+            styles = getSampleStyleSheet()
+            normal_style = styles["Normal"]
+            parrafos = []
+
+            logo = Image("logo.png")
+            logo.hAlign = 'LEFT'
+            logo.spaceBefore = 20
+            logo.drawHeight = 4*inch*logo.drawHeight/logo.drawWidth
+            logo.drawWidth = 4*inch
+            parrafos.append(logo)
+
+            for element in self.listaregistros_editarregistros:
+                parrafo = Paragraph(str(element[0])+': '+str(element[1]),normal_style)
+                parrafos.append(parrafo)
+                parrafos.append(Spacer(1,12))
+            pdf.build(parrafos)
+
     def setupInputs(self, Form, registro, subtabla=False):
         # se eliminan los inputs anteriores
+        self.listaregistros_editarregistros = []
         columnas = getPermisos('tabla_final')["write"]
         #print('registroooo tabla',registro)
         lista_columnas = columnas.split(',')
@@ -68,6 +100,8 @@ class EditarRegistro(Form, Base):
             else:
                 widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col)
                 layout.addWidget(widget)
+            if registro[col] is not None:
+                self.listaregistros_editarregistros.append((col,registro[col]))
                 
     # este metodo carga el registro seleccionado
     def getRegistro(self, Form, index, tabla, col):
