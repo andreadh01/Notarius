@@ -152,7 +152,7 @@ CREATE  TABLE bitacora_depositos (
 	cantidad             DECIMAL(10,2)  NOT NULL     ,
 	observaciones        VARCHAR(500)       ,
 	banco                VARCHAR(100)       ,
-	tipo                 ENUM('honorario','impuestos')       
+	tipo                 ENUM('honorario','impuestos')       ,
 	CONSTRAINT fk_bitacora_depositos_pagos_presupuesto FOREIGN KEY ( id_relacion ) REFERENCES pagos_presupuesto( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
  ) engine=InnoDB;
 
