@@ -10,8 +10,10 @@ from deployment import getBaseDir
 #from reportlab.pdfgen import canvas, 
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
+from reportlab.lib import colors
+from reportlab.lib.enums import TA_LEFT
 from PyQt5.QtWidgets import QFileDialog
 
 base_dir = getBaseDir()
@@ -19,6 +21,7 @@ Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','editar-registro.ui'))
 
 class EditarRegistro(Form, Base):
     listaregistros_editarregistros = []
+    diccionarioregistros_editarregistros_subtablas = {}
     camposCambiados = {}
     pri_key = ()
     del_btns = []
@@ -35,6 +38,14 @@ class EditarRegistro(Form, Base):
     def crearPDF(self):
         #se abre el filechooser o ajá
         file_path, _ = QFileDialog.getSaveFileName(filter='PDF Files (*.pdf)')
+        bold_style = ParagraphStyle(
+        name='Bold',
+        fontName='Helvetica-Bold',
+        fontSize=12,
+        leading=16,
+        textColor=colors.black,
+        alignment=TA_LEFT,
+        )
         # Create a new PDF
         if file_path != '':
             pdf = SimpleDocTemplate(file_path,pagesize=letter, topMargin=10)
@@ -49,17 +60,45 @@ class EditarRegistro(Form, Base):
             logo.drawWidth = 4*inch
             parrafos.append(logo)
 
+            #este for es para la informacion normal
             for element in self.listaregistros_editarregistros:
                 parrafo = Paragraph(str(element[0])+': '+str(element[1]),normal_style)
                 parrafos.append(parrafo)
                 parrafos.append(Spacer(1,12))
+
+
+            #este for es para las subtablas     
+            for key, value in self.diccionarioregistros_editarregistros_subtablas.items():
+                diccionario = {}
+                parrafo = Paragraph(key,bold_style)
+                parrafos.append(parrafo)
+                parrafos.append(Spacer(1,12))
+                diccionario = self.organizardiccionario(value, diccionario)
+                lista = []
+                for key, value in diccionario.items():
+                        lista.append(value)
+                for j, element in enumerate(lista[0]):
+                    for k in range(0, len(diccionario)):
+                        parrafo = Paragraph(str(list(diccionario.keys())[k])+': '+str(diccionario[list(diccionario.keys())[k]][j]),normal_style)
+                        parrafos.append(parrafo)
+                        parrafos.append(Spacer(1,12))
             pdf.build(parrafos)
+
+    def organizardiccionario(self, value, diccionario):
+        for element in value:
+                if element[0] not in diccionario:
+                    diccionario[element[0]] = []
+                    diccionario[element[0]].append(element[1])
+                else:
+                    diccionario[element[0]].append(element[1])
+        return diccionario
+
+
 
     def setupInputs(self, Form, registro, subtabla=False):
         # se eliminan los inputs anteriores
         self.listaregistros_editarregistros = []
         columnas = getPermisos('tabla_final')["write"]
-        #print('registroooo tabla',registro)
         lista_columnas = columnas.split(',')
         propiedades_columnas = listaDescribe('tabla_final',lista_columnas)
         list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
@@ -126,6 +165,22 @@ class EditarRegistro(Form, Base):
    
     def setupInputsSubtabla(self,column,registros):
         nombre_tabla,select = getSubtabla(column)
+        listaderegistros = []
+        tablename = nombre_tabla
+        if nombre_tabla == "no_facturas":
+            tablename = 'facturas'
+        if nombre_tabla == "no_fechas_catastro_calif":
+            tablename = 'fechas_catastro_calif'
+        if nombre_tabla == "no_fechas_catastro_td":
+            tablename = 'fechas_catastro_td'
+        if nombre_tabla == "no_fechas_rpp":
+            tablename = 'fechas_rpp'
+        if nombre_tabla == "no_desgloce_ppto":
+            tablename = 'desgloce_ppto'
+        if nombre_tabla == "bitacora_pagos":
+            tablename = 'pagos'
+        if nombre_tabla == "bitacora_depositos":
+            tablename = 'depositos'
         columnas = getPermisos(nombre_tabla)["write"]
         lista_columnas = select.split(',')
         propiedades_columnas = listaDescribe(nombre_tabla,lista_columnas)
@@ -151,7 +206,7 @@ class EditarRegistro(Form, Base):
         #horizontal.addWidget(attr_label)
         #horizontal.addWidget(add_btn)
         
-        
+
         for i in enumerate(registros): 
             del_btn = crearBoton('-')
             lastVLayout.addWidget(del_btn)
@@ -193,6 +248,13 @@ class EditarRegistro(Form, Base):
                 else:
                     widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col)
                     vLayout.addWidget(widget)
+                #guardar los registros que se van a editar en una lista
+                if registro[col] != '':
+                    self.diccionarioregistros_editarregistros_subtablas[tablename] = []
+                    listaderegistros.append((col,registro[col]))
+        if listaderegistros != []:
+            self.diccionarioregistros_editarregistros_subtablas[tablename] = listaderegistros
+
         layout.addLayout(gridLayout)
 
     def changePage(self):
