@@ -136,7 +136,7 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             attr.setEnabled(enable)    
             return attr
 
-def crearRadioButton(self,name_input, registro='',col=''):
+def crearRadioButton(self,name_input, registro='',col='',enable=True):
         si_radiobutton = f"{name_input}_1"
         no_radiobutton = f"{name_input}_0"
         setattr(self, si_radiobutton, QtWidgets.QRadioButton("Si"))
@@ -149,6 +149,8 @@ def crearRadioButton(self,name_input, registro='',col=''):
         attr.addButton(r1)
         r1.setStyleSheet("font: 100 11pt 'Segoe UI';\ncolor: #666666")
         r0.setStyleSheet("font: 100 11pt 'Segoe UI';\ncolor: #666666")
+        r1.setEnabled(enable)
+        r0.setEnabled(enable)
         r1.toggled.connect(partial(self.actualizarDict, col, True))
         r0.toggled.connect(partial(self.actualizarDict, col, False))
         if registro == 1:
@@ -164,7 +166,7 @@ def inputStylesheet(enable, date=False, combobox=False):
     if date: 
         stylesheet = """
         QDateTimeEdit {
-            font: 12pt "Arial";\ncolor: #666666;\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\nheight: 50px; padding:0 10px;
+            font: 12pt "Arial";\ncolor: #666666;\nbackground-color: """+bg+""";\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\nheight: 50px; padding:0 10px;
         }
         QDateEdit::drop-down{
             background-color:#957F5F;
@@ -176,7 +178,7 @@ border-bottom-right-radius:8px;
     image:url(:/resources/resources/icons/calendario.png);
         }
         QDateEdit {
-            font: 12pt "Arial";\ncolor: #666666;\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\nheight: 50px; padding:0 10px;
+            font: 12pt "Arial";\ncolor: #666666;\nbackground-color: """+bg+""";\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\nheight: 50px; padding:0 10px;
         }
         QDateTimeEdit::drop-down{
             background-color:#957F5F;
@@ -199,15 +201,15 @@ QCalendarWidget QMenu {
 width: 90px;
 color: #957F5F;
 font-size: 14px;
-background-color: white;
+background-color: """+bg+""";
 }
 QCalendarWidget QSpinBox {
 width: 70px;
 font-size:14px;
 color: #957F5F;
-background-color: white;
+background-color: """+bg+""";
 selection-background-color: #957F5F;
-selection-color: white;
+selection-color: """+bg+""";
 }
 QCalendarWidget QSpinBox::up-button { subcontrol-origin: border; subcontrol-position: top right; width:20px; }
 QCalendarWidget QSpinBox::down-button {subcontrol-origin: border; subcontrol-position: bottom right; width:20px;}
@@ -226,16 +228,16 @@ QCalendarWidget QAbstractItemView:enabled
 {
 font-size:14;
 color: #957F5F;
-background-color: white;
+background-color: """+bg+""";
 selection-background-color: #957F5F;
-selection-color:white;
+selection-color:"""+bg+""";
 }
 
 /* days in other months */
 /* navigation bar */
 QCalendarWidget QWidget#qt_calendar_navigationbar
 {
-background-color: white;
+background-color: """+bg+""";
 }
 
 QCalendarWidget QAbstractItemView:disabled
@@ -250,7 +252,7 @@ QCalendarWidget {
     elif combobox:
         stylesheet = """
         QComboBox {
-            font: 12pt "Arial";\ncolor: #666666;\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;
+            font: 12pt "Arial";\ncolor: #666666;\nbackground-color: """+bg+""";\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;
         }
 
 /* style for drop down area */
@@ -273,7 +275,7 @@ QComboBox QListView {
 font-size: 12px;
 border: 1px solid rgba(0, 0, 0, 10%);
 padding: 5px;
-background-color: #fff;
+background-color:"""+bg+""";
 color: black;
 outline: 0px;
 }
@@ -281,7 +283,7 @@ outline: 0px;
 /* style for list items */
 QComboBox QListView::item {
 padding-left: 10px;
-background-color: #fff;
+background-color: """+bg+""";
 color: black;
 }
 QComboBox QListView::item:hover {
@@ -369,17 +371,19 @@ def agregarInputsSubtabla(self,column):
         lista_columnas = select.split(',')
         propiedades_columnas = listaDescribe(nombre_tabla,lista_columnas)
         lastVLayout = gridLayout.findChild(QtWidgets.QVBoxLayout,'col_eliminar')
-        del_btn = crearBoton('-')
-        lastVLayout.addWidget(del_btn)
-        self.del_btns.append(del_btn)
-        index = self.del_btns.index(del_btn)
-        del_btn.clicked.connect(partial(eliminarInputsSubtabla,self,index,column))
+        
 
         columnas_write = getPermisos(nombre_tabla)["write"]
         lista_columnas_write = columnas_write.split(',')
         lista_write = []
         columnas_con_write = []
 
+        if len(lista_columnas_write)>0:
+            del_btn = crearBoton('-')
+            lastVLayout.addWidget(del_btn)
+            self.del_btns.append(del_btn)
+            index = self.del_btns.index(del_btn)
+            del_btn.clicked.connect(partial(eliminarInputsSubtabla,self,index,column))
         for i, col in enumerate(lista_columnas_write):
             name_input = f"input_{i}"
             columnas_con_write.append(col)

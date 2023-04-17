@@ -89,11 +89,14 @@ def showGrants(user, pwd):
 	limpiar_lista_permisos(lista_permisos)
 
 def limpiar_lista_permisos(lista_permisos):
+	print('AQUI!!!!!!',lista_permisos)
 	for texto in lista_permisos:
+		print('dentro de forloop')
 		subcadena_select = ''
 		subcadena_insert = ''
 		subcadena_update = ''
-		if 'GRANT ALL' or 'GRANT RELOAD' in texto: 
+		if 'GRANT ALL PRIVILEGES' in texto: 
+			print('permisos admin?',texto)
 			permisosAdmin()
 			break
 		permisos = {}
@@ -127,6 +130,7 @@ def limpiar_lista_permisos(lista_permisos):
 		#permisos["INSERT"] = permiso_insert[1] if len(permiso_insert) > 1 else ''
 		permisos["read"] = permiso_select[1] if len(permiso_select) > 1 else ''
 		permisos["write"] = permiso_update[1] if len(permiso_update) > 1 else ''
+		print("PERMISOS DE GRANT")
 		if permisos["write"] != '':
 			if 'id' not in permisos["write"]: permisos["write"]=f"id,{permisos['write']}"
 			lista_tablas_write.append(nombre_tabla)
@@ -193,6 +197,7 @@ def ordenarPermisosWrite(lista,tabla):
         values = []
         for i, dicc in enumerate(lista):
             for value in dicc.values():
+                print(dict_permisos[tabla]['write'],value)
                 if value in dict_permisos[tabla]['write']:
                     values.append(value)
                     

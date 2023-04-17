@@ -4,7 +4,7 @@ from PyQt5 import uic, QtWidgets
 import os
 from bdConexion import obtener_conexion
 from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla, messageBox
-from usuarios import getPermisos, getRegistro, getRegistrosSubtabla, getSubtabla, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
+from usuarios import getAllPermisos, getPermisos, getRegistro, getRegistrosSubtabla, getSubtabla, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
 from PyQt5.QtCore import Qt
 from deployment import getBaseDir
 #from reportlab.pdfgen import canvas, 
@@ -109,7 +109,7 @@ class EditarRegistro(Form, Base):
         lista_write = []
         for i, col in enumerate(lista_columnas_write):
             name_input = f"input_{i}"
-            lista_write.append(name_input)
+            lista_write.append(col)
 
         list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
 
@@ -142,13 +142,18 @@ class EditarRegistro(Form, Base):
                     self.pri_key = (col,registro[col])
                     widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col, enable=False)
                     layout.addWidget(widget)
-            elif 'tinyint' in tipo_dato:
-                r0,r1 = crearRadioButton(self, name_input, registro[col],col)
-                layout.addWidget(r0)
-                layout.addWidget(r1)
-            elif any(write == name_input for write in lista_write):
+            elif col in lista_write:
                 widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col)
                 layout.addWidget(widget)
+                if 'tinyint' in tipo_dato:
+                    r0,r1 = crearRadioButton(self, name_input, registro[col],col)
+                    layout.addWidget(r0)
+                    layout.addWidget(r1)
+            elif 'tinyint' in tipo_dato:
+                r0,r1 = crearRadioButton(self, name_input, registro[col],col, enable=False)
+                layout.addWidget(r0)
+                layout.addWidget(r1)
+
             else:
                 widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col, enable=False)
                 layout.addWidget(widget)
@@ -196,17 +201,9 @@ class EditarRegistro(Form, Base):
         if nombre_tabla == "bitacora_depositos":
             tablename = 'depositos'
         columnas_write = getPermisos(nombre_tabla)["write"]
-        #print('registroooo tabla',registro)
         lista_columnas_write = columnas_write.split(',')
+        print(nombre_tabla,columnas_write,len(lista_columnas_write))
 
-        lista_write = []
-        columnas_con_write = []
-        for i, col in enumerate(lista_columnas_write):
-            name_input = f"input_{i}"
-            columnas_con_write.append(col)
-            lista_write.append(name_input)
-
-        print("Esto es lista_write:",lista_write)
         lista_columnas = select.split(',')
         propiedades_columnas = listaDescribe(nombre_tabla,lista_columnas)
         layout = self.verticalLayout
@@ -223,21 +220,22 @@ class EditarRegistro(Form, Base):
         attr_label.setText(column)
         #horizontal = QtWidgets.QHBoxLayout()
         layout.addWidget(attr_label)
-        lastVLayout = QtWidgets.QVBoxLayout(objectName='col_eliminar')
-        gridLayout.addLayout(lastVLayout,1,len(lista_columnas)+1)
-        add_btn = crearBoton('+')
-        add_btn.clicked.connect(partial(agregarInputsSubtabla,self,column))
-        gridLayout.addWidget(add_btn,0,len(lista_columnas)+1)
         #horizontal.addWidget(attr_label)
         #horizontal.addWidget(add_btn)
         
+        if len(lista_columnas_write) > 1: 
+            lastVLayout = QtWidgets.QVBoxLayout(objectName='col_eliminar')
+            gridLayout.addLayout(lastVLayout,1,len(lista_columnas)+1)
+            add_btn = crearBoton('+')
+            add_btn.clicked.connect(partial(agregarInputsSubtabla,self,column))
+            gridLayout.addWidget(add_btn,0,len(lista_columnas)+1)
 
-        for i in enumerate(registros): 
-            del_btn = crearBoton('-')
-            lastVLayout.addWidget(del_btn)
-            self.del_btns.append(del_btn)
-            index = self.del_btns.index(del_btn)
-            del_btn.clicked.connect(partial(eliminarInputsSubtabla,self,index,column))
+            for i in enumerate(registros): 
+                del_btn = crearBoton('-')
+                lastVLayout.addWidget(del_btn)
+                self.del_btns.append(del_btn)
+                index = self.del_btns.index(del_btn)
+                del_btn.clicked.connect(partial(eliminarInputsSubtabla,self,index,column))
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
             name_input = f"input_{i}"
@@ -266,13 +264,17 @@ class EditarRegistro(Form, Base):
                     self.pri_key = (col,registro[col])
                     widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col, enable=False)
                     vLayout.addWidget(widget)
-                elif 'tinyint' in tipo_dato:
-                    r0,r1 = crearRadioButton(self, name_input, registro[col],col)
-                    vLayout.addWidget(r0)
-                    vLayout.addWidget(r1)
-                elif any(write == col for write in columnas_con_write):
+                elif col in lista_columnas_write:
                     widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col)
                     vLayout.addWidget(widget)
+                    if 'tinyint' in tipo_dato:
+                        r0,r1 = crearRadioButton(self, name_input, registro[col],col)
+                        vLayout.addWidget(r0)
+                        vLayout.addWidget(r1)
+                elif 'tinyint' in tipo_dato:
+                    r0,r1 = crearRadioButton(self, name_input, registro[col],col, enable=False)
+                    vLayout.addWidget(r0)
+                    vLayout.addWidget(r1)
                 else:
                     widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col,enable=False)
                     vLayout.addWidget(widget)
