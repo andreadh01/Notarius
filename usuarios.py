@@ -233,7 +233,7 @@ def getRegistrosSubtabla(col,id_registro):
     conn = obtener_conexion(user,pwd)
     cur = conn.cursor(dictionary=True)
     query = f"SELECT {select} FROM {nombre_tabla} WHERE {index} = '{id_registro}'"
-    print(query)
+    #print(query)
     cur.execute(query)
     valores = cur.fetchall()
     cur.close()

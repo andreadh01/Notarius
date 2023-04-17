@@ -3,7 +3,7 @@ import re
 from PyQt5 import uic, QtWidgets,QtGui,QtCore
 from PyQt5.QtCore import Qt
 from bdConexion import obtener_conexion
-from usuarios import getSubtabla, getUsuarioLogueado, listaDescribe
+from usuarios import getPermisos, getSubtabla, getUsuarioLogueado, listaDescribe
 # en este archivo se generan los componentes de gui que se agregaran de forma dinamica
 
 # esta funcion devuelve un boton de dashboard
@@ -374,6 +374,17 @@ def agregarInputsSubtabla(self,column):
         self.del_btns.append(del_btn)
         index = self.del_btns.index(del_btn)
         del_btn.clicked.connect(partial(eliminarInputsSubtabla,self,index,column))
+
+        columnas_write = getPermisos(nombre_tabla)["write"]
+        lista_columnas_write = columnas_write.split(',')
+        lista_write = []
+        columnas_con_write = []
+
+        for i, col in enumerate(lista_columnas_write):
+            name_input = f"input_{i}"
+            columnas_con_write.append(col)
+            lista_write.append(name_input)
+
         for i, col in enumerate(lista_columnas):
             name_input = f"input_{i}"
             tipo_dato = propiedades_columnas[i][1]
@@ -383,15 +394,18 @@ def agregarInputsSubtabla(self,column):
             vLayout = self.findChild(QtWidgets.QVBoxLayout, f'layout_{col}_{i}_{nombre_tabla}')
             if isinstance(tipo_dato, bytes):
                 tipo_dato = tipo_dato.decode('utf-8')
-            elif pri == 'PRI': 
+            elif pri == 'PRI':
                     widget = crearInput(self, tipo_dato, name_input,'tabla_final', '',col, enable=False)
                     vLayout.addWidget(widget)
             elif 'tinyint' in tipo_dato:
                 r0,r1 = crearRadioButton(self, name_input, '',col)
                 vLayout.addWidget(r0)
                 vLayout.addWidget(r1)
-            else:
+            elif any(write == col for write in columnas_con_write):
                 widget = crearInput(self, tipo_dato, name_input,'tabla_final', '',col)
+                vLayout.addWidget(widget)
+            else:
+                widget = crearInput(self, tipo_dato, name_input,'tabla_final', '',col, enable=False)
                 vLayout.addWidget(widget)
 
 def eliminarInputsSubtabla(self,index,column):
