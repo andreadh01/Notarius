@@ -68,14 +68,12 @@ padding: 0 20px;
 QPushButton:hover {
 	background-color: rgb(116, 91, 47);
 	color: rgb(255, 255, 255);
-	border: 3px solid  rgb(116, 91, 47);
 }
 
 QPushButton:pressed {
     border-style: inset;
     background-color: rgb(103, 80, 41);
 	color: rgb(255, 255, 255);
-	border: 3px solid  rgb(103, 80, 41);
 }</string>
        </property>
        <property name="text">

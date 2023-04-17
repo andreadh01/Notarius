@@ -266,7 +266,7 @@ class EditarPrivilegios(Base, Form):
 					query=f"GRANT SELECT ({columna_secundaria}) ON notarius.{tabla_secundaria} TO '{nombre_usuario}'@'localhost' WITH GRANT OPTION;"
 					cur.execute(query)
 		except KeyError as error:
-			print("La tabla no tiene llaves foraneas")
+			#print("La tabla no tiene llaves foraneas")
 			return
 
 	def resetCombobox(self, Form):
@@ -325,9 +325,27 @@ class EditarPrivilegios(Base, Form):
 			else: columna_subtabla.append('id_relacion')
 			if subtabla not in self.diccionario_permisos[permiso]:
 				self.diccionario_permisos[permiso][subtabla] = {}
-				for columna in columna_subtabla:
-					self.diccionario_permisos[permiso][subtabla][columna] = True                  
-			else: self.diccionario_permisos[permiso][subtabla][columna] = obj.isChecked()
+			for col in columna_subtabla:
+				if subtabla not in self.diccionario_permisos[permiso]:
+					self.diccionario_permisos[permiso][subtabla] = {}
+				elif col not in self.diccionario_permisos[permiso][subtabla]: 
+					self.diccionario_permisos[permiso][subtabla][col] = True
+				elif obj.isChecked()  and columna not in 'facturas':
+					self.diccionario_permisos[permiso][subtabla][col] = self.diccionario_permisos[permiso][subtabla][col]
+				else:
+					self.diccionario_permisos[permiso][subtabla][col] = obj.isChecked()
+
+		for key in subtablas:
+			subtabla = subtablas[key][0]
+			columna_subtabla = subtablas[key][1].split(',')
+			if subtabla == tabla:
+				for col in columna_subtabla:
+					if self.diccionario_permisos[permiso][subtabla][col] == False:
+						self.diccionario_permisos[permiso]['tabla_final'][key] = False
+					else:
+						self.diccionario_permisos[permiso]['tabla_final'][key] = True
+						break
+
 		for registro in tabla_relacionada:
 			for tabla_val in registro.values():
 				if tabla_val == tabla or tabla_val in tablas_no_validas: continue
@@ -358,7 +376,7 @@ class EditarPrivilegios(Base, Form):
 							self.diccionario_permisos[permiso][tabla_secundaria] = {}
 						self.diccionario_permisos[permiso][tabla_secundaria][columna_secundaria] = obj.isChecked()
 				except KeyError as error:
-					print("La tabla no tiene llaves foraneas")
+					#print("La tabla no tiene llaves foraneas")
 					return
 		self.resetCheckboxes(self)
 

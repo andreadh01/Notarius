@@ -53,6 +53,7 @@ def listaDescribe(tabla, columnas):
         cur.execute(query)
         description = cur.fetchone()
         lista.append(description)
+    cur.fetchall()
     cur.close()
     conn.close()
     return lista
@@ -180,12 +181,22 @@ def permisosRead(user,pwd):
         query = f"SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{tabla}' and TABLE_SCHEMA='NOTARIUS'"
         cur.execute(query)
         valores = cur.fetchall()
-        valores = generarString(valores)
-        dict_permisos[tabla]['read'] = valores
+        valores_read = generarString(valores)
+        valores_write = ordenarPermisosWrite(valores,tabla)
+        dict_permisos[tabla]['read'] = valores_read
+        dict_permisos[tabla]['write'] = valores_write
         
     cur.close()
     conn.close()
-    
+
+def ordenarPermisosWrite(lista,tabla):
+        values = []
+        for i, dicc in enumerate(lista):
+            for value in dicc.values():
+                if value in dict_permisos[tabla]['write']:
+                    values.append(value)
+                    
+        return ','.join(values)        
 def generarString(lista):
         st = ''
         for dicc in lista[:-1]:
@@ -203,18 +214,20 @@ def getSubtabla(col):
     subtablas = {'facturas':['no_facturas','no_factura'],'fechas_catastro_calif':['fechas_catastro_calif','cat_envio_calif,cat_regreso_calif,observaciones'],'fechas_catastro_td':['fechas_catastro_td','cat_envio_td,cat_regreso_td,observaciones'],'fechas_rpp':['fechas_rpp','envio_rpp,regreso_rpp,observaciones'],'desgloce_ppto':['desgloce_ppto','concepto,cantidad'],'pagos':['bitacora_pagos','concepto,cantidad,autorizado_por,fecha,observaciones'],'depositos':['bitacora_depositos','concepto,cantidad,tipo,banco,fecha,observaciones']}
     nombre_tabla = subtablas[col][0]
     select = subtablas[col][1].split(',')
-    select_permisos = ''
+    select_permisos = []
     query = f"SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{nombre_tabla}' and TABLE_SCHEMA='NOTARIUS'"
     cur.execute(query)
     valores = cur.fetchall()
+    cur.close()
+    conn.close()
     #aqui se eliminan aquellas columnas que el usuario no tiene permitido visualizar
-    for dicc in valores[:-1]:
+    for dicc in valores:
         for value in dicc.values():
-            if value in select: select_permisos += f"{value},"
-    select_permisos += valores[-1]['column_name'] if valores[-1]['column_name'] in select else ''
+            if value in select: select_permisos.append(value)
     
     
-    return nombre_tabla, select_permisos
+    
+    return nombre_tabla, ','.join(select_permisos)
 def getRegistrosSubtabla(col,id_registro):
     index = 'id_fechas' if "fecha" in col else 'id_relacion'
     nombre_tabla, select = getSubtabla(col)

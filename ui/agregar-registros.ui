@@ -181,7 +181,6 @@ QPushButton:pressed {
     border-style: inset;
     background-color: rgb(103, 80, 41);
 	color: rgb(255, 255, 255);
-	border: 3px solid  rgb(103, 80, 41);
 }</string>
        </property>
        <property name="text">
@@ -209,7 +208,6 @@ QPushButton:pressed {
     border-style: inset;
     background-color: rgb(103, 80, 41);
 	color: rgb(255, 255, 255);
-	border: 3px solid  rgb(103, 80, 41);
 }</string>
        </property>
        <property name="text">

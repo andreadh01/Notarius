@@ -98,14 +98,24 @@ class EditarRegistro(Form, Base):
     def setupInputs(self, Form, registro, subtabla=False):
         # se eliminan los inputs anteriores
         self.listaregistros_editarregistros = []
-        columnas = getPermisos('tabla_final')["write"]
+        columnas = getPermisos('tabla_final')["read"]
+        columnas_write = getPermisos('tabla_final')["write"]
+        #print('registroooo tabla',registro)
         lista_columnas = columnas.split(',')
+        lista_columnas_write = columnas_write.split(',')
         propiedades_columnas = listaDescribe('tabla_final',lista_columnas)
+        lista_write = []
+        for i, col in enumerate(lista_columnas_write):
+            name_input = f"input_{i}"
+            lista_write.append(name_input)
+
+        print('propiedades columnas',propiedades_columnas,'lista columnas',lista_columnas)
         list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
 
         layout = self.verticalLayout
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
+            print('la columna actual es',col)
             name_input = f"input_{i}"
             name_label = f'label_{i}'
             tipo_dato = propiedades_columnas[i][1]
@@ -136,9 +146,13 @@ class EditarRegistro(Form, Base):
                 r0,r1 = crearRadioButton(self, name_input, registro[col],col)
                 layout.addWidget(r0)
                 layout.addWidget(r1)
-            else:
+            elif any(write == name_input for write in lista_write):
                 widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col)
                 layout.addWidget(widget)
+            else:
+                widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col, enable=False)
+                layout.addWidget(widget)
+                
             if registro[col] is not None:
                 self.listaregistros_editarregistros.append((col,registro[col]))
                 
