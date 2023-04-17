@@ -16,6 +16,7 @@ from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
 from PyQt5.QtWidgets import QFileDialog
 
+
 base_dir = getBaseDir()
 Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','editar-registro.ui'))
 
@@ -82,6 +83,7 @@ class EditarRegistro(Form, Base):
                         parrafo = Paragraph(str(list(diccionario.keys())[k])+': '+str(diccionario[list(diccionario.keys())[k]][j]),normal_style)
                         parrafos.append(parrafo)
                         parrafos.append(Spacer(1,12))
+                    parrafos.append(Spacer(1,25))
             pdf.build(parrafos)
 
     def organizardiccionario(self, value, diccionario):
