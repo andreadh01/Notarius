@@ -111,13 +111,11 @@ class EditarRegistro(Form, Base):
             name_input = f"input_{i}"
             lista_write.append(name_input)
 
-        print('propiedades columnas',propiedades_columnas,'lista columnas',lista_columnas)
         list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
 
         layout = self.verticalLayout
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
-            print('la columna actual es',col)
             name_input = f"input_{i}"
             name_label = f'label_{i}'
             tipo_dato = propiedades_columnas[i][1]
@@ -197,7 +195,18 @@ class EditarRegistro(Form, Base):
             tablename = 'pagos'
         if nombre_tabla == "bitacora_depositos":
             tablename = 'depositos'
-        columnas = getPermisos(nombre_tabla)["write"]
+        columnas_write = getPermisos(nombre_tabla)["write"]
+        #print('registroooo tabla',registro)
+        lista_columnas_write = columnas_write.split(',')
+
+        lista_write = []
+        columnas_con_write = []
+        for i, col in enumerate(lista_columnas_write):
+            name_input = f"input_{i}"
+            columnas_con_write.append(col)
+            lista_write.append(name_input)
+
+        print("Esto es lista_write:",lista_write)
         lista_columnas = select.split(',')
         propiedades_columnas = listaDescribe(nombre_tabla,lista_columnas)
         layout = self.verticalLayout
@@ -254,15 +263,18 @@ class EditarRegistro(Form, Base):
                 if isinstance(tipo_dato, bytes):
                     tipo_dato = tipo_dato.decode('utf-8')
                 elif pri == 'PRI': 
-                        self.pri_key = (col,registro[col])
-                        widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col, enable=False)
-                        vLayout.addWidget(widget)
+                    self.pri_key = (col,registro[col])
+                    widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col, enable=False)
+                    vLayout.addWidget(widget)
                 elif 'tinyint' in tipo_dato:
                     r0,r1 = crearRadioButton(self, name_input, registro[col],col)
                     vLayout.addWidget(r0)
                     vLayout.addWidget(r1)
-                else:
+                elif any(write == col for write in columnas_con_write):
                     widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col)
+                    vLayout.addWidget(widget)
+                else:
+                    widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col,enable=False)
                     vLayout.addWidget(widget)
                 #guardar los registros que se van a editar en una lista
                 if registro[col] != '':
