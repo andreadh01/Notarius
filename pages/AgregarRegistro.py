@@ -18,8 +18,8 @@ Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','agregar-registros.ui'))
 class AgregarRegistro(Form, Base):
     del_btns = []
     cols=[]
-    layouts=[]
-    verticalLayouts=[]
+    layouts={}
+    widgetLayout=[]
     camposCambiados = {}
     def __init__(self, parent=None):
         super(self.__class__,self).__init__(parent)
@@ -32,6 +32,7 @@ class AgregarRegistro(Form, Base):
 			
  	# en esta funcion se van a actualizar los labels y se agregaran los inputs segun los labels de las columnas
     def setupColumns(self, Form):
+        registros_id = {'id_cc':'cc_fechas_cc','id_ctd':'ctd_fechas_ctd','id_rpp':'rpp_fechas_rpp'}
         list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
         # se eliminan los combobox anteriores
         self.camposCambiados.clear()
@@ -66,8 +67,11 @@ class AgregarRegistro(Form, Base):
             self.cols.append(attr_label)
             if isinstance(tipo_dato, bytes):
                 tipo_dato = tipo_dato.decode('utf-8')
-            if pri == 'PRI': 
-                    widget = crearInput(self, tipo_dato, name_input,tabla,registro=index+1,col=col, enable=False)
+            if pri == 'PRI' or col in registros_id.keys():
+                    index = index+1
+                    if col in registros_id.keys(): index = getAutoIncrement(registros_id[col])
+                    
+                    widget = crearInput(self, tipo_dato, name_input,tabla,registro=index,col=col, enable=False)
                     layout.addWidget(widget)
                     self.cols.append(widget)
             elif 'tinyint' in tipo_dato:
@@ -88,7 +92,8 @@ class AgregarRegistro(Form, Base):
         propiedades_columnas = listaDescribe(nombre_tabla,lista_columnas)
         layout = self.verticalLayout
         gridLayout = QtWidgets.QGridLayout()
-        self.layouts.append(gridLayout)
+        self.widgetLayout.append(gridLayout)
+        self.layouts[f'grid_layout_{nombre_tabla}'] = {}
         name_label = f"label_{column}"
         setattr(self, name_label, QtWidgets.QLabel(self.scrollAreaWidgetContents))
             # Label
@@ -103,7 +108,7 @@ class AgregarRegistro(Form, Base):
         #horizontal = QtWidgets.QHBoxLayout()
         layout.addWidget(attr_label)
         lastVLayout = QtWidgets.QVBoxLayout()
-        self.verticalLayouts.append(lastVLayout)
+        self.layouts[f'grid_layout_{nombre_tabla}']['col_eliminar'] = lastVLayout
         gridLayout.addLayout(lastVLayout,1,len(lista_columnas)+1)
         add_btn = crearBoton('+')
         add_btn.clicked.connect(partial(agregarInputsSubtabla,self,column))
@@ -127,7 +132,7 @@ class AgregarRegistro(Form, Base):
             
             gridLayout.addWidget(attr_label,0,i)
             vLayout = QtWidgets.QVBoxLayout()
-            self.verticalLayouts.append(vLayout)
+            self.layouts[f'grid_layout_{nombre_tabla}'][f'layout_{col}_{i}_{nombre_tabla}'] = vLayout
             gridLayout.addLayout(vLayout,1,i)
             
         agregarInputsSubtabla(self,column)
@@ -152,14 +157,15 @@ class AgregarRegistro(Form, Base):
         self.actualizarDict(attr,name_input,tabla,col,attr.toPlainText())
     def resetCombobox(self, Form):
 
-        for v_layout in self.verticalLayouts:
-            while v_layout.count():
-                child = v_layout.takeAt(0)
-                if child.widget():
-                    widget = child.widget()
-                    widget.deleteLater()
-                    del widget
-        for layout in self.layouts:
+        for dicc in self.layouts.values():
+            for layout in dicc.values():
+                while layout.count():
+                    child = layout.takeAt(0)
+                    if child.widget():
+                        widget = child.widget()
+                        widget.deleteLater()
+                        del widget
+        for layout in self.widgetLayout:
             while layout.count():
                 child = layout.takeAt(0)
                 if child.widget():
@@ -173,7 +179,7 @@ class AgregarRegistro(Form, Base):
                 del obj
             except RuntimeError:
                 return
-        self.verticalLayouts.clear()
+        self.widgetLayout.clear()
         self.layouts.clear()
         self.cols.clear()
         self.camposCambiados.clear()
@@ -248,7 +254,7 @@ class AgregarRegistro(Form, Base):
         
         if tabla in relacionadas.keys():
             i = name_input.split('_')[1]
-            vLayout = self.verticalLayouts[int(i)+1]
+            vLayout = self.layouts[f'grid_layout_{tabla}'][f'layout_{col}_{i}_{tabla}']
             index = 'id_fechas' if 'fecha' in tabla else 'id_relacion'
             col_name = tabla if tabla != 'no_facturas' else 'facturas'
             print(col_name,'colnameee')

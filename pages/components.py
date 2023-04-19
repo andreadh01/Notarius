@@ -11,7 +11,7 @@ from usuarios import getPermisos, getSubtabla, getUsuarioLogueado, listaDescribe
 
 # esta funcion devuelve un input con su respectivo label, uno de los parametros es el tipo de input, 
 # segun su tipo regresa un widget diferente.
-def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=True,modificar=True): # <---- este sera el metodo input()
+def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=True): # <---- este sera el metodo input()
     if registro is None: registro = ''
     #checar llaves foraneas y si el campo tiene llave foranea
     user, pwd = getUsuarioLogueado()
@@ -49,10 +49,8 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
         attr.view().parentWidget().setStyleSheet('background-color: white;\outline:none;')
 
         attr.currentTextChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla, col))
-        attr.setCurrentIndex(1)
-        attr.removeItem(0)
+        attr.setCurrentIndex(0)
         attr.setEnabled(enable)    
-        if not modificar: attr.setEditable(True)
         return attr
     else:
         if 'int' in tipo_dato:   
@@ -116,8 +114,9 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             opciones = re.sub(re_pattern, "", tipo_dato)            
             opciones = opciones.replace('enum(','').replace(')','')
             opciones = opciones.split(',')
+            opciones.insert(0,'Seleccionar')
             attr.addItems(opciones)
-            
+            if registro == '': attr.setCurrentIndex(0)
             attr.view().parentWidget().setStyleSheet('background-color: white;\outline:none;')
 
             attr.currentTextChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla,col))
@@ -368,10 +367,10 @@ def messageBox():
 
 def agregarInputsSubtabla(self,column):
         nombre_tabla,select = getSubtabla(column)
-        gridLayout = self.layouts[0]
+        gridLayout = self.layouts[f'grid_layout_{nombre_tabla}']
         lista_columnas = select.split(',')
         propiedades_columnas = listaDescribe(nombre_tabla,lista_columnas)
-        lastVLayout = self.verticalLayouts[0]
+        lastVLayout = gridLayout['col_eliminar']
 
 
         del_btn = crearBoton('-')
@@ -386,7 +385,7 @@ def agregarInputsSubtabla(self,column):
             auto_increment = propiedades_columnas[i][5]
             pri = propiedades_columnas[i][3]
             
-            vLayout = self.verticalLayouts[i+1]
+            vLayout = gridLayout[f'layout_{col}_{i}_{nombre_tabla}']
             
             if isinstance(tipo_dato, bytes):
                 tipo_dato = tipo_dato.decode('utf-8')
@@ -409,18 +408,19 @@ def eliminarInputsSubtabla(self,index,column):
             nombre_tabla,select = getSubtabla(column)
             lista_columnas = select.split(',')
             widget_to_remove = self.del_btns[index]
-            gridLayout = self.findChild(QtWidgets.QGridLayout,f'grid_layout_{nombre_tabla}')
-            lastVLayout = gridLayout.findChild(QtWidgets.QVBoxLayout,'col_eliminar')
+            gridLayout = self.layouts[f'grid_layout_{nombre_tabla}']
+            lastVLayout = gridLayout['col_eliminar']
             index = lastVLayout.indexOf(widget_to_remove)
             lastVLayout.removeWidget(widget_to_remove)
             widget_to_remove.deleteLater()
             for i, col in enumerate(lista_columnas):
-                del self.camposCambiados[nombre_tabla][index][col]
-                layout = self.findChild(QtWidgets.QVBoxLayout, f'layout_{col}_{i}_{nombre_tabla}')
+                if nombre_tabla in self.camposCambiados: 
+                    if index in self.camposCambiados[nombre_tabla]: del self.camposCambiados[nombre_tabla][index][col]
+                layout = gridLayout[f'layout_{col}_{i}_{nombre_tabla}']
                 widget_to_remove = layout.itemAt(index).widget()
                 layout.removeWidget(widget_to_remove)
                 widget_to_remove.deleteLater()
-            updateIndices(self,nombre_tabla)
+            if nombre_tabla in self.camposCambiados: updateIndices(self,nombre_tabla)
             print("Confirmed")
         else:
             print("Not confirmed")
