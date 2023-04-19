@@ -149,8 +149,8 @@ def crearRadioButton(self,name_input, nombre_tabla,registro='',col='',enable=Tru
         r0.setStyleSheet("font: 100 11pt 'Segoe UI';\ncolor: #666666")
         r1.setEnabled(enable)
         r0.setEnabled(enable)
-        r1.toggled.connect(partial(self.actualizarDict, r1,name_input,nombre_tabla,col,enable))
-        r0.toggled.connect(partial(self.actualizarDict, r0,name_input,nombre_tabla,col, enable))
+        r1.toggled.connect(partial(self.actualizarDict, r1,name_input,nombre_tabla,col,enable, True))
+        r0.toggled.connect(partial(self.actualizarDict, r0,name_input,nombre_tabla,col, enable,False))
         if registro == 1:
             r1.setChecked(True)
         else: 
