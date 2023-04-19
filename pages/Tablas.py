@@ -235,7 +235,6 @@ class Tablas(Base, Form):
 				if col in list_nested_tables:
 					#si el campo es de una de las tablas en la lista, entonces se guarda su index
 					#para poder acceder a ella mas facilmente
-					index = self.tableView.model().index(registro[col],j)
 					name = f"subtable_{registro['id']}_{j}"
 					#subtable = self.setupSubTable(i,j,col,name)
 					#subtable.setParent(self.tableView)

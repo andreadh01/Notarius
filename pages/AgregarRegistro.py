@@ -2,12 +2,14 @@ from collections import OrderedDict
 from functools import partial
 from PyQt5 import uic,QtWidgets,QtCore
 import os
+import mysql.connector
+
 import re
 
 from bdConexion import obtener_conexion
 from pages.Tablas import Tablas
 from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla
-from usuarios import getLastElement, getAutoIncrement, getListaTablas, getListaTablasWrite, getPermisos, getRegistrosSubtabla, getSubtabla, getTablaRelacionada, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
+from usuarios import getLastElement, getAutoIncrement, getListaTablas, getListaTablasWrite, getPermisos, getRegistroBD, getRegistrosSubtabla, getSubtabla, getTablaRelacionada, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
 from deployment import getBaseDir
 
 
@@ -156,7 +158,7 @@ class AgregarRegistro(Form, Base):
 
             # Update the QTextEdit with the truncated text
             attr.setPlainText(truncated_text)
-        self.actualizarDict(attr,name_input,tabla,col,attr.toPlainText(),enable)
+        self.actualizarDict(attr,name_input,tabla,col,enable,attr.toPlainText())
     def resetCombobox(self, Form):
 
         for dicc in self.layouts.values():
@@ -187,10 +189,12 @@ class AgregarRegistro(Form, Base):
         self.camposCambiados.clear()
 
     
-    def actualizarDict(self,widget,name_input,tabla,col, val,enable):
+    def actualizarDict(self,widget,name_input,tabla,col, enable,val):
         tablas_no_validas = ['no_facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos','usuario']
         lista_subtablas_cols = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos']
         relacionadas = {'no_facturas':'facturas','fechas_catastro_calif':'cc_fechas_cc','fechas_catastro_td':'ctd_fechas_ctd','fechas_rpp':'rpp_fechas_rpp','desgloce_ppto':'desgloce_ppto_presupuesto','pagos':'pagos_presupuesto','depositos':'depositos_presupuesto'}
+        columnas_write = getPermisos(tabla)['write'].split(',')
+        columnas_write_tf = getPermisos('tabla_final')['write'].split(',')
         #subtablas = {'facturas':['no_facturas','no_factura'],'fechas_catastro_calif':['fechas_catastro_calif','cat_envio_calif,cat_regreso_calif,observaciones'],'fechas_catastro_td':['fechas_catastro_td','cat_envio_td,cat_regreso_td,observaciones'],'fechas_rpp':['fechas_rpp','envio_rpp,regreso_rpp,observaciones'],'desgloce_ppto':['desgloce_ppto','concepto,cantidad'],'pagos':['pagos','concepto,cantidad,autorizado_por,fecha,observaciones'],'depositos':['depositos','concepto,cantidad,tipo,banco,fecha,observaciones']}
         #relacionadas={'facturas':'no_presupuesto,escritura_id','cc_fechas_cc':'catastro_calificacion,id_cc','ctd_fechas_ctd':'catastro_td,id_ctd','rpp':'rpp_fechas_rpp,id_rpp','desgloce_ppto_presupuesto':'no_presupuesto','pagos_presupuesto':'no_presupuesto','depositos_presupuesto':'no_presupuesto'}
         tipo = str(type(val))
@@ -265,16 +269,17 @@ class AgregarRegistro(Form, Base):
             if key not in self.camposCambiados[tabla]:
                 self.camposCambiados[tabla][key] = {}
             if index not in self.camposCambiados[tabla][key]: self.camposCambiados[tabla][key][index] = getAutoIncrement(relacionadas[tabla])
-            self.camposCambiados[tabla][key][col] = val
+            if col in columnas_write: self.camposCambiados[tabla][key][col] = val
         else:
             if tabla not in self.camposCambiados:
                 self.camposCambiados[tabla] = {}
-            self.camposCambiados[tabla][col] = val                    
+            if col in columnas_write: self.camposCambiados[tabla][col] = val                    
         
         for tabla, relacion in relacionadas.items():
+            if relacion not in getListaTablasWrite(): continue
             if relacion not in self.camposCambiados: 
                 self.camposCambiados[relacion] = {}
-            cols_rel = getPermisos(relacion)['read'].split(',')
+            cols_rel = getPermisos(relacion)['write'].split(',')
             col_name = tabla if tabla != 'no_facturas' else 'facturas'
             for col_rel in cols_rel:
                 value = getAutoIncrement(relacion)
@@ -282,12 +287,12 @@ class AgregarRegistro(Form, Base):
                 if col_rel == 'no_presupuesto':  
                     if 'no_presupuesto' in  self.camposCambiados['tabla_final']:
                         self.camposCambiados[relacion][col_rel] =  self.camposCambiados['tabla_final']['no_presupuesto']
-                        self.camposCambiados['tabla_final'][col_name] = value
+                        if col_name in columnas_write_tf: self.camposCambiados['tabla_final'][col_name] = value
                 else: 
                     self.camposCambiados[relacion][col_rel] = value
-                    self.camposCambiados['tabla_final'][col_rel] = value
-                    self.camposCambiados['tabla_final'][col_name] = value
-                        
+                    if col_rel in columnas_write_tf: self.camposCambiados['tabla_final'][col_rel] = value
+                    if col_name in columnas_write_tf: self.camposCambiados['tabla_final'][col_name] = value
+        print(self.camposCambiados)
     def guardarRegistro(self):
         lista_pagos = []
         saldo = 0
@@ -319,9 +324,19 @@ class AgregarRegistro(Form, Base):
                     saldo = val
             #print(query+vals)
             if not subtabla: 
+                try:
                     cur.execute(query+vals)
                     conn.commit()
-
+                except mysql.connector.errors.IntegrityError as error:
+                    print(error)
+                    self.label_exito.setStyleSheet("color:red")
+                    self.label_exito.setText("Registro ese registro ya existe, busquelo en la tabla y haga doble clic para modificarlo")
+                    self.checkThreadTimer = QtCore.QTimer(self)
+                    self.checkThreadTimer.setInterval(10000)
+                    self.checkThreadTimer.start()
+                    self.checkThreadTimer.timeout.connect(partial(self.label_exito.setText,''))
+                    self.restartRegistro()
+                    return
 
         for tabla in subtablas:
             if tabla in self.camposCambiados:
@@ -351,14 +366,17 @@ class AgregarRegistro(Form, Base):
         conn.commit()
         cur.close()
         conn.close()
-        registro = getLastElement('tabla_final')
+        
+        registro = getRegistroBD('tabla_final','id',self.camposCambiados['tabla_final']['id'])[0]
+        print(registro)
         updateTable('tabla_final')
+        self.label_exito.setStyleSheet("color:green")
         self.label_exito.setText("Registro guardado exitosamente")
         self.checkThreadTimer = QtCore.QTimer(self)
         self.checkThreadTimer.setInterval(10000)
         self.checkThreadTimer.start()
         self.checkThreadTimer.timeout.connect(partial(self.label_exito.setText,''))
-        self.parent().findChild(Tablas).agregarRegistro(registro)
+        self.parent().findChild(Tablas).tabla(self.parent().findChild(Tablas))
         self.restartRegistro()
                 
         #insert into {nombre_tabla} (cols[0]) cols[1]
