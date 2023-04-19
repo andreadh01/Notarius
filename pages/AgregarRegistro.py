@@ -16,6 +16,7 @@ Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','agregar-registros.ui'))
 
 
 class AgregarRegistro(Form, Base):
+    id_registro = 0
     del_btns = []
     cols=[]
     layouts={}
@@ -69,6 +70,8 @@ class AgregarRegistro(Form, Base):
             if pri == 'PRI' or col in registros_id.keys():
                     if col in registros_id.keys(): index = getAutoIncrement(registros_id[col])
                     else: index = getAutoIncrement('tabla_final')
+                    if pri == 'PRI':
+                        self.id_registro = index
                     widget = crearInput(self, tipo_dato, name_input,tabla,registro=index,col=col, enable=False)
                     layout.addWidget(widget)
                     self.cols.append(widget)
@@ -285,6 +288,8 @@ class AgregarRegistro(Form, Base):
                     self.camposCambiados['tabla_final'][col_name] = value
                         
     def guardarRegistro(self):
+        lista_pagos = []
+        saldo = 0
         tabla = 'tabla_final'
         subtablas = ['no_facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos']
 
@@ -309,6 +314,9 @@ class AgregarRegistro(Form, Base):
                 else: 
                     query+=f"{col},"
                     vals+= f"'{val}', "
+                if col == 'saldo':
+                    saldo = val
+            #print(query+vals)
             if not subtabla: 
                     cur.execute(query+vals)
                     conn.commit()
@@ -326,11 +334,20 @@ class AgregarRegistro(Form, Base):
                         else: 
                             query+=f"{col},"
                             vals+= f"'{val}', "
+                  
+                        if tabla == 'pagos' and col == 'cantidad':
+                            saldo = saldo - val
+                        if tabla == 'depositos' and col == 'cantidad':
+                            saldo = saldo + val
+                    
+                    #print(query+vals)
                     cur.execute(query+vals)
                     conn.commit()
                                 
         cur.execute("SET FOREIGN_KEY_CHECKS = 1")
-        
+        query=f"UPDATE tabla_final SET saldo = {saldo} WHERE id = {self.id_registro};"
+        cur.execute(query)
+        conn.commit()
         cur.close()
         conn.close()
         registro = getLastElement('tabla_final')
