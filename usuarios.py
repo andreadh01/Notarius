@@ -146,7 +146,8 @@ def tablaToDict(user, pwd):
     cur = conn.cursor(dictionary=True)
     for tabla, permisos in dict_permisos.items():
         select = permisos["read"]
-        query = f"SELECT {select} FROM {tabla}"
+        if tabla == 'tabla_final': query = f"SELECT {select} FROM {tabla} order by no_escritura asc"
+        else: query = f"SELECT {select} FROM {tabla}"
         cur.execute(query)
         valores = cur.fetchall()
         all_tablas[tabla] = valores
@@ -158,7 +159,8 @@ def updateTable(tabla):
     conn = obtener_conexion(usuario["user"],usuario["pwd"])
     cur = conn.cursor(dictionary=True)
     select = permisos["read"]
-    query = f"SELECT {select} FROM {tabla}"
+    if tabla == 'tabla_final': query = f"SELECT {select} FROM {tabla} order by no_escritura asc"
+    else: query = f"SELECT {select} FROM {tabla}"
     cur.execute(query)
     valores = cur.fetchall()
     all_tablas[tabla] = valores
@@ -181,7 +183,7 @@ def getRegistroBD(tabla,col,value):
     cur = conn.cursor(dictionary=True)
     select = dict_permisos[tabla]["read"]
     cur.execute(f'SELECT {select} FROM {tabla} WHERE {col}="{value}"')
-    registro = cur.fetchone()
+    registro = cur.fetchall()
     cur.close()
     conn.close()
     return registro

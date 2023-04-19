@@ -22,6 +22,7 @@ Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','editar-registro.ui'))
 
 class EditarRegistro(Form, Base):
     listaregistros_editarregistros = []
+    previous = {}
     diccionarioregistros_editarregistros_subtablas = {}
     camposCambiados = {}
     pri_key = {}
@@ -102,6 +103,7 @@ class EditarRegistro(Form, Base):
     def setupInputs(self, Form, registro, subtabla=False):
         # se eliminan los inputs anteriores
         self.listaregistros_editarregistros = []
+        self.registro_viejo = registro
         columnas = getPermisos('tabla_final')["read"]
         columnas_write = getPermisos('tabla_final')["write"]
         #print('registroooo tabla',registro)
@@ -217,15 +219,15 @@ class EditarRegistro(Form, Base):
             self.layouts[f'grid_layout_{nombre_tabla}']['col_eliminar'] = lastVLayout
             gridLayout.addLayout(lastVLayout,1,len(lista_columnas)+1)
             add_btn = crearBoton('+')
-            add_btn.clicked.connect(partial(agregarInputsSubtabla,self,column))
+            add_btn.clicked.connect(partial(agregarInputsSubtabla,self,column,False))
             gridLayout.addWidget(add_btn,0,len(lista_columnas)+1)
 
-            for i in enumerate(registros): 
-                del_btn = crearBoton('-')
-                lastVLayout.addWidget(del_btn)
-                self.del_btns.append(del_btn)
-                index = self.del_btns.index(del_btn)
-                del_btn.clicked.connect(partial(eliminarInputsSubtabla,self,index,column))
+            # for i in enumerate(registros): 
+            #     del_btn = crearBoton('-')
+            #     lastVLayout.addWidget(del_btn)
+            #     self.del_btns.append(del_btn)
+            #     index = self.del_btns.index(del_btn)
+            #     del_btn.clicked.connect(partial(eliminarInputsSubtabla,self,index,column))
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
             
@@ -256,12 +258,13 @@ class EditarRegistro(Form, Base):
                     widget = crearInput(self, tipo_dato, name_input,nombre_tabla, registro[col],col, enable=False)
                     vLayout.addWidget(widget)
                 elif col in lista_columnas_write:
-                    widget = crearInput(self, tipo_dato, name_input,nombre_tabla, registro[col],col)
-                    vLayout.addWidget(widget)
                     if 'tinyint' in tipo_dato:
                         r0,r1 = crearRadioButton(self, name_input,nombre_tabla, registro[col],col)
                         vLayout.addWidget(r0)
                         vLayout.addWidget(r1)
+                    else:
+                        widget = crearInput(self, tipo_dato, name_input,nombre_tabla, registro[col],col)
+                        vLayout.addWidget(widget)
                 elif 'tinyint' in tipo_dato:
                     r0,r1 = crearRadioButton(self, name_input, nombre_tabla,registro[col],col, enable=False)
                     vLayout.addWidget(r0)
@@ -283,7 +286,8 @@ class EditarRegistro(Form, Base):
     def changePage(self):
         from pages.Tablas import Tablas
         self.camposCambiados.clear()
-        
+        self.tablas_agregar.clear()
+        self.pri_key.clear()
         #obtener los permisos del usuario para la tabla seleccionada
         self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(Tablas)))
         
@@ -296,30 +300,33 @@ class EditarRegistro(Form, Base):
         
         
         
-        if tabla not in self.pri_key: self.pri_key[tabla] = {}
-        if tabla not in self.tablas_agregar: self.tablas_agregar[tabla] = {}
+        
         
         tipo = str(type(val))
         if 'QDate' in tipo: val = val.toString("yyyy-MM-dd")
         if type(val) == bool: val = 1 if val else 0
         if val is None: val = ''
-        if tabla in relacionadas.keys():
+        
+        if tabla in relacionadas:
             i = name_input.split('_')[1]
             vLayout = self.layouts[f'grid_layout_{tabla}'][f'layout_{col}_{i}_{tabla}']
             index = 'id_fechas' if 'fecha' in tabla else 'id_relacion'
             col_name = tabla if tabla != 'no_facturas' else 'facturas'
-            if vLayout.indexOf(widget) != -1: key = vLayout.indexOf(widget) 
-            else: return
+            key = vLayout.indexOf(widget)
+            print('keyyy',key)
+            if key == -1: return 
             id_col = self.pri_key['tabla_final'][0]
             id_val = self.pri_key['tabla_final'][1]
+            # al ser de las subtablas, todo registro que se agregue se va a insertar
             registro_id = getRegistro('tabla_final',id_col,id_val)[col_name]
-            if registro_id is None: 
-                relacion = relacionadas[tabla]
-                value = getAutoIncrement(relacion)
+            relacion = relacionadas[tabla]
+            value = getAutoIncrement(relacion)
+            if registro_id is None:
                 if tabla not in self.tablas_agregar:
                     self.tablas_agregar[tabla] = {}
                 if key not in self.tablas_agregar[tabla]: self.tablas_agregar[tabla][key] = {}
-                if index not in self.tablas_agregar[tabla][key]: self.tablas_agregar[tabla][key][index] = getAutoIncrement(relacion)
+                if index not in self.tablas_agregar[tabla][key]: 
+                    self.tablas_agregar[tabla][key][index] = getAutoIncrement(relacion)
                 self.tablas_agregar[tabla][key][col] = val
                 if relacion not in self.tablas_agregar:
                     self.tablas_agregar[relacion] = {}
@@ -331,20 +338,48 @@ class EditarRegistro(Form, Base):
                         self.tablas_agregar[relacion][col_rel] =  self.camposCambiados['tabla_final']['no_presupuesto']
                     else: 
                         self.tablas_agregar[relacion][col_rel] = value
-            else: 
-                # si ya existe un registro en la columna, se puede hace update
-                self.pri_key[relacionadas[tabla]] = ('id',registro_id)
-                if tabla not in self.camposCambiados:
-                    self.camposCambiados[tabla] = {}
-                if key not in self.camposCambiados[tabla]:
-                    self.camposCambiados[tabla][key] = {}
-                if index not in self.camposCambiados[tabla][key]: 
-                    id_col = self.pri_key['tabla_final'][0]
-                    id_val = self.pri_key['tabla_final'][1]
-                    registro = getRegistro('tabla_final',id_col,id_val)[col_name]
-                    if registro is None:registro = getAutoIncrement(relacionadas[tabla])                    
-                    self.camposCambiados[tabla][key][index] = registro
-                self.camposCambiados[tabla][key][col] = val
+            else:
+                registro_viejo = getRegistroBD(tabla,index,registro_id)
+                print(registro_viejo)
+                for registro in registro_viejo:
+                    print(registro,col)
+                    if tabla in self.previous:
+                        print('primer if')
+                        if col in self.previous[tabla]:
+                            print('segundo if')
+                            if name_input in self.previous[tabla][col]:
+                                print('tercer if')
+                                if self.previous[tabla][col][name_input] == registro[col]:
+                                    print('same')
+                                    self.pri_key[tabla] = ('id',registro['id'])
+                                    self.pri_key[relacionadas[tabla]] = ('id',registro_id)
+                                    if tabla not in self.camposCambiados:
+                                        self.camposCambiados[tabla] = {}
+                                    if key not in self.camposCambiados[tabla]:
+                                        self.camposCambiados[tabla][key] = {}
+                                    if index not in self.camposCambiados[tabla][key]: 
+                                        self.camposCambiados[tabla][key][index] = registro_id
+                                    self.camposCambiados[tabla][key][col] = val
+                if tabla in self.camposCambiados:
+                    if key in self.camposCambiados[tabla]:
+                        if col in self.camposCambiados[tabla][key]:  self.camposCambiados[tabla][key][col] = val
+                if key > len(registro_viejo)-1:
+                    if tabla not in self.tablas_agregar:
+                        self.tablas_agregar[tabla] = {}
+                    if key not in self.tablas_agregar[tabla]: self.tablas_agregar[tabla][key] = {}
+                    if index not in self.tablas_agregar[tabla][key]: 
+                        self.tablas_agregar[tabla][key][index] = registro_id
+                    self.tablas_agregar[tabla][key][col] = val
+                    if relacion not in self.tablas_agregar:
+                        self.tablas_agregar[relacion] = {}
+                    cols_rel = getPermisos(relacion)['read'].split(',')
+                    # estas son las columnas de las tablas que se tienen que agregar NO UPDATE
+                    for col_rel in cols_rel:
+                        if col_rel == 'id': continue
+                        if col_rel == 'no_presupuesto':  
+                            self.tablas_agregar[relacion][col_rel] =  self.camposCambiados['tabla_final']['no_presupuesto']
+                        else: 
+                            self.tablas_agregar[relacion][col_rel] = value
         else:
             if tabla not in self.camposCambiados:
                 self.camposCambiados[tabla] = {}
@@ -364,14 +399,19 @@ class EditarRegistro(Form, Base):
                 if col_rel == 'id': continue
                 if col_rel == 'no_presupuesto':  
                     if 'no_presupuesto' in  self.camposCambiados['tabla_final']:
-                        self.camposCambiados[relacion][col_rel] =  self.camposCambiados['tabla_final']['no_presupuesto']
                         self.camposCambiados['tabla_final'][col_name] = value
+                        if relacion not in self.tablas_agregar:
+                            self.tablas_agregar[relacion] = {}
+                        self.tablas_agregar[relacion][col_rel] = self.camposCambiados['tabla_final']['no_presupuesto']
                 else: 
-                    self.camposCambiados[relacion][col_rel] = value
                     self.camposCambiados['tabla_final'][col_rel] = value
                     self.camposCambiados['tabla_final'][col_name] = value
-                    
-
+                    if relacion not in self.tablas_agregar:
+                        self.tablas_agregar[relacion] = {}
+                    self.tablas_agregar[relacion][col_rel] = value
+        print("TABLAS DE INSERT",self.tablas_agregar)
+        print("LLAVES PRIMARIAS",self.pri_key)                    
+        print('CAMPOS CAMBIADOS',self.camposCambiados)
         
     def actualizarRegistro(self):
         subtablas = ['no_facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos']
@@ -386,21 +426,37 @@ class EditarRegistro(Form, Base):
         print("LLAVES PRIMARIAS",self.pri_key)
         
         for tabla, registro in self.tablas_agregar.items():
+            execute = True
             query = f"INSERT INTO {tabla} (" 
             vals = "values ("
-            execute = True
             if not registro: execute = False
-            for i, (col,val) in enumerate(registro.items()):
-                if i+1 == len(dicc): 
-                    query+= f"{col}) "
-                    vals+= f"'{val}');"
-                else: 
-                    query+=f"{col},"
-                    vals+= f"'{val}', "
-            if execute:
-                print(query+vals)
-                cur.execute(query+vals)
-                conn.commit()
+            if tabla in subtablas: 
+                for dicc in registro.values():
+                    query = f"INSERT INTO {tabla} (" 
+                    vals = "values ("
+                    for i, (col,val) in enumerate(dicc.items()):
+                        if i+1 == len(dicc): 
+                            query+= f"{col}) "
+                            vals+= f"'{val}');"
+                        else: 
+                            query+=f"{col},"
+                            vals+= f"'{val}', "
+                    if execute:
+                        print(query+vals)
+                        cur.execute(query+vals)
+                        conn.commit()
+            else:
+                for i, (col,val) in enumerate(registro.items()):
+                    if i+1 == len(registro): 
+                        query+= f"{col}) "
+                        vals+= f"'{val}');"
+                    else: 
+                        query+=f"{col},"
+                        vals+= f"'{val}', "
+                if execute:
+                    print(query+vals)
+                    cur.execute(query+vals)
+                    conn.commit()
                     
         for tabla, dicc in self.camposCambiados.items():
             query = f"UPDATE {tabla} set " 
@@ -411,10 +467,13 @@ class EditarRegistro(Form, Base):
                 subtabla = True
                 continue
             for i, (col, val) in enumerate(dicc.items()):
-                id_col = self.pri_key[tabla][0]
-                id_value = self.pri_key[tabla][1]
-                if i+1 == len(dicc): query+= f"{col}='{val}' WHERE  {id_col}='{id_value}'"
-                else: query+= f"{col}='{val}', "
+                try:
+                    id_col = self.pri_key[tabla][0]
+                    id_value = self.pri_key[tabla][1]
+                    if i+1 == len(dicc): query+= f"{col}='{val}' WHERE  {id_col}='{id_value}'"
+                    else: query+= f"{col}='{val}', "
+                except:
+                    return
             print(query)
             if execute and not subtabla: 
                 cur.execute(query)
@@ -428,6 +487,7 @@ class EditarRegistro(Form, Base):
                     query = f"UPDATE {tabla} set "
                     if not dicc: execute = False
                     for i, (col,val) in enumerate(dicc.items()):
+                        if tabla not in self.pri_key: break
                         id_col = self.pri_key[tabla][0]
                         id_value = self.pri_key[tabla][1]
                         if col == 'id': continue
@@ -443,12 +503,17 @@ class EditarRegistro(Form, Base):
         
         cur.close()
         conn.close()
-        registro = getRegistroBD('tabla_final','id',self.pri_key['tabla_final'][1])
+        registro = getRegistroBD('tabla_final','id',self.pri_key['tabla_final'][1])[0]
+        print(registro)
         from pages.Tablas import Tablas
         updateTable('tabla_final')
 
-        self.parent().findChild(Tablas).actualizarRegistro(registro)
+        self.parent().findChild(Tablas).tabla(self.parent().findChild(Tablas))
         self.changePage()
 
     def reject(self) -> None:
         return
+    
+    # def compararCambios(new_val,old_val):
+        
+        

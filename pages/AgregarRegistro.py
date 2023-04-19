@@ -18,6 +18,7 @@ Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','agregar-registros.ui'))
 class AgregarRegistro(Form, Base):
     id_registro = 0
     del_btns = []
+    previous = {}
     cols=[]
     layouts={}
     widgetLayout=[]

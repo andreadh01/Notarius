@@ -27,7 +27,7 @@ class Tablas(Base, Form):
 		#self.setupTableList(self)
 		self.tabla(self)
 		self.mensaje.hide()
-		self.tableView.setEditTriggers(QAbstractItemView.NoEditTriggers)
+		
 		self.pushButton_2.clicked.connect(self.escribirCSV)
 		self.tableView.doubleClicked.connect(self.changePage)
 
@@ -60,6 +60,7 @@ class Tablas(Base, Form):
 		Diccionario = tabla
 		header = select.split(',')
 		self.model = QStandardItemModel()
+		self.tableView.setEditTriggers(QAbstractItemView.NoEditTriggers)
 		#agregar los encabezados al modelo
 		for i, item in enumerate(header):
 			self.model.setHorizontalHeaderItem(i,QStandardItem(item))		
@@ -305,16 +306,20 @@ class Tablas(Base, Form):
 
 	def actualizarRegistro(self,new_values):
 		list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
-
+		#self.tableView.setEditTriggers(QAbstractItemView.AllEditTriggers)
 		for i, (col,val) in enumerate(new_values.items()):
 			index = self.proxy.index(new_values['id']-1, i)
 			if col in list_nested_tables:
 					val = self.generarSubtabla(col,val)
 			self.proxy.setData(index, val, Qt.EditRole)
-		#self.proxy.dataChanged.emit(self.proxy.index(0, 0), self.proxy.index(self.proxy.rowCount(), self.proxy.columnCount()))
-		self.tableView.resizeColumnsToContents()
-		self.tableView.resizeRowsToContents()
-		self.tableView.viewport().update()
+
+		#self.proxy.dataChanged.emit(self.proxy.index(0, 0), self.proxy.index(self.proxy.rowCount()-1, self.proxy.columnCount()-1))
+		
+		# self.tableView.repaint()
+		self.tableView.repaint()
+		# self.tableView.resizeColumnsToContents()
+		# self.tableView.resizeRowsToContents()
+		# self.tableView.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
 	def setfilterKeyColumn(self,headers:list):
 		#obtener el valor del combobox

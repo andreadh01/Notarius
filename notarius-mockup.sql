@@ -507,3 +507,13 @@ ADD CONSTRAINT tabla_final_ibfk_1
 FOREIGN KEY (fechas_rpp)
 REFERENCES rpp_fechas_rpp(id)
 ON DELETE CASCADE;
+
+ALTER TABLE `notarius`.`tabla_final` 
+DROP FOREIGN KEY `fk_fechas_catastro_td`;
+ALTER TABLE `notarius`.`tabla_final` 
+ADD CONSTRAINT `fk_fechas_catastro_td` 
+FOREIGN KEY (`fechas_catastro_td`) 
+REFERENCES `ctd_fechas_ctd` (`id`) 
+ON DELETE CASCADE ON UPDATE CASCADE;
+
+alter table tabla_final add CONSTRAINT `unique` UNIQUE ( no_escritura, bis );

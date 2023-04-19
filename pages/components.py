@@ -4,6 +4,7 @@ from PyQt5 import uic, QtWidgets,QtGui,QtCore
 from PyQt5.QtCore import Qt
 from bdConexion import obtener_conexion
 from usuarios import getPermisos, getSubtabla, getUsuarioLogueado, listaDescribe
+import secrets
 # en este archivo se generan los componentes de gui que se agregaran de forma dinamica
 
 # esta funcion devuelve un boton de dashboard
@@ -12,6 +13,7 @@ from usuarios import getPermisos, getSubtabla, getUsuarioLogueado, listaDescribe
 # esta funcion devuelve un input con su respectivo label, uno de los parametros es el tipo de input, 
 # segun su tipo regresa un widget diferente.
 def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=True): # <---- este sera el metodo input()
+    
     if registro is None: registro = ''
     #checar llaves foraneas y si el campo tiene llave foranea
     user, pwd = getUsuarioLogueado()
@@ -51,7 +53,6 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
         attr.currentTextChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla, col))
         attr.setCurrentIndex(0)
         attr.setEnabled(enable)    
-        return attr
     else:
         if 'int' in tipo_dato:   
             setattr(self, name_input, QtWidgets.QSpinBox(self.scrollAreaWidgetContents))
@@ -61,11 +62,9 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             attr.setObjectName(name_input)
             attr.setMaximum(2147483647)
             registro = 1 if registro == '' else registro
-            
             attr.valueChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla,col))
             attr.setValue(registro)
             attr.setEnabled(enable)    
-            return attr
         elif 'date' in tipo_dato:
             setattr(self, name_input, QtWidgets.QDateEdit(self.scrollAreaWidgetContents))
             attr = getattr(self,name_input)
@@ -76,7 +75,6 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             attr.dateChanged.connect(partial(self.actualizarDict,attr,name_input,nombre_tabla, col))
             attr.setDate(registro)
             attr.setEnabled(enable)    
-            return attr
         elif 'varchar' in tipo_dato:
             widget = QtWidgets.QTextEdit(self.scrollAreaWidgetContents) if 'varchar(500)' in tipo_dato else QtWidgets.QLineEdit(self.scrollAreaWidgetContents)
             setattr(self, name_input, widget)
@@ -91,7 +89,6 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
                 attr.textChanged.connect((partial(self.on_text_changed,attr,name_input,nombre_tabla, col)))
             attr.setText(registro)
             attr.setEnabled(enable)    
-            return attr
         elif 'decimal' in tipo_dato:
             setattr(self, name_input, QtWidgets.QDoubleSpinBox(self.scrollAreaWidgetContents))
             attr = getattr(self,name_input)
@@ -104,7 +101,6 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             attr.valueChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla,col))
             attr.setValue(registro)
             attr.setEnabled(enable)    
-            return attr            
         elif 'enum' in tipo_dato:
             setattr(self, name_input, QtWidgets.QComboBox(self.scrollAreaWidgetContents))
             attr = getattr(self,name_input)
@@ -122,7 +118,6 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             attr.currentTextChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla,col))
             attr.setCurrentText(registro)
             attr.setEnabled(enable)    
-            return attr
         elif 'timestamp' in tipo_dato:
             setattr(self, name_input, QtWidgets.QDateTimeEdit(self.scrollAreaWidgetContents))
             attr = getattr(self,name_input)
@@ -134,7 +129,10 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             attr.dateTimeChanged.connect(partial(self.actualizarDict,attr,name_input,nombre_tabla, col))
             attr.setDate(registro)
             attr.setEnabled(enable)    
-            return attr
+        self.previous[nombre_tabla] = {}
+        self.previous[nombre_tabla][col] = {}
+        self.previous[nombre_tabla][col][name_input] = registro
+        return attr
 
 def crearRadioButton(self,name_input, nombre_tabla,registro='',col='',enable=True):
         si_radiobutton = f"{name_input}_1"
@@ -365,22 +363,23 @@ def messageBox():
     result = custom_box.exec_()
     return result
 
-def agregarInputsSubtabla(self,column):
+def agregarInputsSubtabla(self,column,btn_eliminar=True):
         nombre_tabla,select = getSubtabla(column)
         gridLayout = self.layouts[f'grid_layout_{nombre_tabla}']
         lista_columnas = select.split(',')
         propiedades_columnas = listaDescribe(nombre_tabla,lista_columnas)
         lastVLayout = gridLayout['col_eliminar']
 
-
-        del_btn = crearBoton('-')
-        lastVLayout.addWidget(del_btn)
-        self.del_btns.append(del_btn)
-        index = self.del_btns.index(del_btn)
-        del_btn.clicked.connect(partial(eliminarInputsSubtabla,self,index,column))
+        if btn_eliminar:
+            del_btn = crearBoton('-')
+            lastVLayout.addWidget(del_btn)
+            self.del_btns.append(del_btn)
+            index = self.del_btns.index(del_btn)
+            del_btn.clicked.connect(partial(eliminarInputsSubtabla,self,index,column))
      
         for i, col in enumerate(lista_columnas):
-            name_input = f"input_{i}"
+            key = generate_unique_key(self)
+            name_input = f"input_{i}_{key}"
             tipo_dato = propiedades_columnas[i][1]
             auto_increment = propiedades_columnas[i][5]
             pri = propiedades_columnas[i][3]
@@ -436,3 +435,17 @@ def updateIndices(self,nombre_tabla):
     del self.camposCambiados[nombre_tabla]
     self.camposCambiados[nombre_tabla] = {}
     self.camposCambiados[nombre_tabla] = new_dict
+    
+def generate_unique_key(self,length=5):
+    while True:
+        key = secrets.token_hex(length)
+        # Check if the key is already in use
+        if not is_key_in_use(self,key):
+            return key
+
+def is_key_in_use(self,key):
+    if not self.previous: return False
+    for col in self.previous.values():
+        for used_key in col.keys():
+            if key == used_key: return True
+    return False  # Replace with your implementation

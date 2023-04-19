@@ -36,29 +36,29 @@ class LoginScreen(QtWidgets.QDialog):
         else:
             # SI APARECE UN ERROR SIMILAR A  Access denied for user 'j'@'localhost' (using password: YES),
             # COMENTAR EL TRY CATCH Y DESCOMENTAR ESTAS LINEAS
-            # conn = obtener_conexion(user, password)
-            # saveSession(user, password)
-            # tablaToDict(user, password)
-            # cur = conn.cursor()
-            # print("Successfully logged in.")
-            # self.error.setText("")
-            # cur.close()
-            # conn.close()
-            # self.accept()
-            try:
-                conn = obtener_conexion(user, password)
-                saveSession(user, password)
-                tablaToDict(user, password)
+            conn = obtener_conexion(user, password)
+            saveSession(user, password)
+            tablaToDict(user, password)
+            cur = conn.cursor()
+            print("Successfully logged in.")
+            self.error.setText("")
+            cur.close()
+            conn.close()
+            self.accept()
+            # try:
+            #     conn = obtener_conexion(user, password)
+            #     saveSession(user, password)
+            #     tablaToDict(user, password)
 
-                cur = conn.cursor()
-                print("Successfully logged in.")
-                self.error.setText("")
-                cur.close()
-                conn.close()
-                self.accept()
-            except:
-                self.error.setText("Usuario o contraseña incorrectos. Consulta al administrador.")
-                self.passwordfield.setText('')
-                self.user.setText('')
+            #     cur = conn.cursor()
+            #     print("Successfully logged in.")
+            #     self.error.setText("")
+            #     cur.close()
+            #     conn.close()
+            #     self.accept()
+            # except:
+            #     self.error.setText("Usuario o contraseña incorrectos. Consulta al administrador.")
+            #     self.passwordfield.setText('')
+            #     self.user.setText('')
     def reject(self) -> None:
         return
