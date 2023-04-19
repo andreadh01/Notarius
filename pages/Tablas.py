@@ -27,7 +27,7 @@ class Tablas(Base, Form):
 		#self.setupTableList(self)
 		self.tabla(self)
 		self.mensaje.hide()
-		
+		self.addScrollBar()
 		self.pushButton_2.clicked.connect(self.escribirCSV)
 		self.tableView.doubleClicked.connect(self.changePage)
 
@@ -91,64 +91,7 @@ class Tablas(Base, Form):
 		self.tableView.resizeColumnsToContents()
 		self.tableView.resizeRowsToContents()
 		#add horizontal scrollbar to table view widget 
-		# create a scroll bar object
-		scroll_bar = QScrollBar()
-        # setting style sheet
-		scroll_bar.setStyleSheet("QScrollBar:horizontal {\n"
-"    border: 2px grey;\n"
-"    background: white;\n"
-"    height: 15px;\n"
-"}\n"
-"QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {\n"
-"    background: none;\n"
-"height: 0px;\n"
-"width: 0px;\n"
-"}\n"
-"QScrollBar::add-line:horizontal {\n"
-"background: none;\n"
-"height: 0px;\n"
-"width: 0px;\n"
-"}\n"
-"QScrollBar::sub-line:horizontal {\n"
-"background: none;\n"
-"height: 0px;\n"
-"width: 0px;\n"
-"}\n"
-"QScrollBar::handle:horizontal {\n"
-"    background: rgb(204,204,204);\n"
-"    min-width: 25px;\n"
-"}\n"
-"QScrollBar::add-line:horizontal:hover, QScrollBar::add-line:horizontal:on {\n"
-"    border: 2px grey;\n"
-"    background: white;\n"
-"    height:15px;\n"
-"    subcontrol-position: right;\n"
-"    subcontrol-origin: margin;\n"
-"}\n"
-"QScrollBar::sub-line:horizontal:hover, QScrollBar::sub-line:horizontal:on {\n"
-"    border: 2px grey;\n"
-"    background: white;\n"
-"    height: 15px;\n"
-"    subcontrol-position: left;\n"
-"    subcontrol-origin: margin;\n"
-"}\n"
-"QScrollBar::left-arrow:horizontal, QScrollBar::right-arrow:horizontal {\n"
-"    border: 2px grey;\n"
-"    width: 3px;\n"
-"    height: 3px;\n"
-"    background: white;\n"
-"}\n"
-"QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {\n"
-"    background: none;\n"
-"}\n"
-"QScrollBar::handle:horizontal:hover, QScrollBar::handle:horizontal:on {\n"
-"    background: rgb(102,102,102);\n"
-"}")
-		scroll_bar.setOrientation(Qt.Horizontal)
-		scroll_bar.setRange(0, self.tableView.horizontalScrollBar().maximum())
-		scroll_bar.valueChanged.connect(self.tableView.horizontalScrollBar().setValue)
-        # setting horizontal scroll bar to it
-		self.tableLayout.addWidget(scroll_bar)
+		
 		self.tableView.horizontalHeader().setStretchLastSection(True)
 
 
@@ -355,3 +298,63 @@ class Tablas(Base, Form):
 	
 	def reject(self) -> None: 
 		return
+
+	def addScrollBar(self):
+    # create a scroll bar object
+		scroll_bar = QScrollBar()
+        # setting style sheet
+		scroll_bar.setStyleSheet("QScrollBar:horizontal {\n"
+"    border: 2px grey;\n"
+"    background: white;\n"
+"    height: 15px;\n"
+"}\n"
+"QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {\n"
+"    background: none;\n"
+"height: 0px;\n"
+"width: 0px;\n"
+"}\n"
+"QScrollBar::add-line:horizontal {\n"
+"background: none;\n"
+"height: 0px;\n"
+"width: 0px;\n"
+"}\n"
+"QScrollBar::sub-line:horizontal {\n"
+"background: none;\n"
+"height: 0px;\n"
+"width: 0px;\n"
+"}\n"
+"QScrollBar::handle:horizontal {\n"
+"    background: rgb(204,204,204);\n"
+"    min-width: 25px;\n"
+"}\n"
+"QScrollBar::add-line:horizontal:hover, QScrollBar::add-line:horizontal:on {\n"
+"    border: 2px grey;\n"
+"    background: white;\n"
+"    height:15px;\n"
+"    subcontrol-position: right;\n"
+"    subcontrol-origin: margin;\n"
+"}\n"
+"QScrollBar::sub-line:horizontal:hover, QScrollBar::sub-line:horizontal:on {\n"
+"    border: 2px grey;\n"
+"    background: white;\n"
+"    height: 15px;\n"
+"    subcontrol-position: left;\n"
+"    subcontrol-origin: margin;\n"
+"}\n"
+"QScrollBar::left-arrow:horizontal, QScrollBar::right-arrow:horizontal {\n"
+"    border: 2px grey;\n"
+"    width: 3px;\n"
+"    height: 3px;\n"
+"    background: white;\n"
+"}\n"
+"QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {\n"
+"    background: none;\n"
+"}\n"
+"QScrollBar::handle:horizontal:hover, QScrollBar::handle:horizontal:on {\n"
+"    background: rgb(102,102,102);\n"
+"}")
+		scroll_bar.setOrientation(Qt.Horizontal)
+		scroll_bar.setRange(0, self.tableView.horizontalScrollBar().maximum())
+		scroll_bar.valueChanged.connect(self.tableView.horizontalScrollBar().setValue)
+        # setting horizontal scroll bar to it
+		self.tableLayout.addWidget(scroll_bar)

@@ -50,7 +50,7 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
         
         attr.view().parentWidget().setStyleSheet('background-color: white;\outline:none;')
 
-        attr.currentTextChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla, col))
+        attr.currentTextChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla, col,enable))
         attr.setCurrentIndex(0)
         attr.setEnabled(enable)    
     else:
@@ -62,7 +62,7 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             attr.setObjectName(name_input)
             attr.setMaximum(2147483647)
             registro = 1 if registro == '' else registro
-            attr.valueChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla,col))
+            attr.valueChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla,col,enable))
             attr.setValue(registro)
             attr.setEnabled(enable)    
         elif 'date' in tipo_dato:
@@ -72,7 +72,7 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             attr.setStyleSheet(inputStylesheet(enable, True))
             attr.setObjectName(name_input)
             registro = QtCore.QDate() if registro == '' else registro
-            attr.dateChanged.connect(partial(self.actualizarDict,attr,name_input,nombre_tabla, col))
+            attr.dateChanged.connect(partial(self.actualizarDict,attr,name_input,nombre_tabla, col,enable))
             attr.setDate(registro)
             attr.setEnabled(enable)    
         elif 'varchar' in tipo_dato:
@@ -84,9 +84,9 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             max_value = self.limpiarString(tipo_dato)
             try:
                 attr.setMaxLength(int(max_value))
-                attr.textChanged.connect(partial(self.actualizarDict,attr,name_input,nombre_tabla, col))
+                attr.textChanged.connect(partial(self.actualizarDict,attr,name_input,nombre_tabla, col,enable))
             except:
-                attr.textChanged.connect((partial(self.on_text_changed,attr,name_input,nombre_tabla, col)))
+                attr.textChanged.connect((partial(self.on_text_changed,attr,name_input,nombre_tabla, col,enable)))
             attr.setText(registro)
             attr.setEnabled(enable)    
         elif 'decimal' in tipo_dato:
@@ -98,7 +98,7 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             attr.setMaximum(99999999.99)
             registro = 0 if registro == '' else registro
             
-            attr.valueChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla,col))
+            attr.valueChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla,col,enable))
             attr.setValue(registro)
             attr.setEnabled(enable)    
         elif 'enum' in tipo_dato:
@@ -115,7 +115,7 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             if registro == '': attr.setCurrentIndex(0)
             attr.view().parentWidget().setStyleSheet('background-color: white;\outline:none;')
 
-            attr.currentTextChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla,col))
+            attr.currentTextChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla,col,enable))
             attr.setCurrentText(registro)
             attr.setEnabled(enable)    
         elif 'timestamp' in tipo_dato:
@@ -126,7 +126,7 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             attr.setStyleSheet(inputStylesheet(enable, True))
             attr.setObjectName(name_input)
             registro = QtCore.QDate() if registro == '' else registro
-            attr.dateTimeChanged.connect(partial(self.actualizarDict,attr,name_input,nombre_tabla, col))
+            attr.dateTimeChanged.connect(partial(self.actualizarDict,attr,name_input,nombre_tabla, col,enable))
             attr.setDate(registro)
             attr.setEnabled(enable)    
         self.previous[nombre_tabla] = {}
@@ -149,8 +149,8 @@ def crearRadioButton(self,name_input, nombre_tabla,registro='',col='',enable=Tru
         r0.setStyleSheet("font: 100 11pt 'Segoe UI';\ncolor: #666666")
         r1.setEnabled(enable)
         r0.setEnabled(enable)
-        r1.toggled.connect(partial(self.actualizarDict, r1,name_input,nombre_tabla,col, True))
-        r0.toggled.connect(partial(self.actualizarDict, r0,name_input,nombre_tabla,col, False))
+        r1.toggled.connect(partial(self.actualizarDict, r1,name_input,nombre_tabla,col,enable))
+        r0.toggled.connect(partial(self.actualizarDict, r0,name_input,nombre_tabla,col, enable))
         if registro == 1:
             r1.setChecked(True)
         else: 

@@ -145,7 +145,7 @@ class AgregarRegistro(Form, Base):
         string_limpio = re.sub("[^0-9]","",cadena_sucia)
         return string_limpio
 
-    def on_text_changed(self,attr,name_input,tabla, col):
+    def on_text_changed(self,attr,name_input,tabla, col,enable):
         # Get the current text in the QTextEdit
         current_text = attr.toPlainText()
 
@@ -156,7 +156,7 @@ class AgregarRegistro(Form, Base):
 
             # Update the QTextEdit with the truncated text
             attr.setPlainText(truncated_text)
-        self.actualizarDict(attr,name_input,tabla,col,attr.toPlainText())
+        self.actualizarDict(attr,name_input,tabla,col,attr.toPlainText(),enable)
     def resetCombobox(self, Form):
 
         for dicc in self.layouts.values():
@@ -187,7 +187,7 @@ class AgregarRegistro(Form, Base):
         self.camposCambiados.clear()
 
     
-    def actualizarDict(self,widget,name_input,tabla,col, val):
+    def actualizarDict(self,widget,name_input,tabla,col, val,enable):
         tablas_no_validas = ['no_facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos','usuario']
         lista_subtablas_cols = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos']
         relacionadas = {'no_facturas':'facturas','fechas_catastro_calif':'cc_fechas_cc','fechas_catastro_td':'ctd_fechas_ctd','fechas_rpp':'rpp_fechas_rpp','desgloce_ppto':'desgloce_ppto_presupuesto','pagos':'pagos_presupuesto','depositos':'depositos_presupuesto'}

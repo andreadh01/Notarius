@@ -4,7 +4,7 @@ from PyQt5 import uic, QtWidgets
 import os
 from bdConexion import obtener_conexion
 from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla, messageBox
-from usuarios import getAllPermisos, getAutoIncrement, getPermisos, getRegistro, getRegistroBD, getRegistrosSubtabla, getSubtabla, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
+from usuarios import getAllPermisos, getAutoIncrement, getListaTablasWrite, getPermisos, getRegistro, getRegistroBD, getRegistrosSubtabla, getSubtabla, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
 from PyQt5.QtCore import Qt
 from deployment import getBaseDir
 #from reportlab.pdfgen import canvas, 
@@ -174,7 +174,7 @@ class EditarRegistro(Form, Base):
         string_limpio = re.sub("[^0-9]","",cadena_sucia)
         return string_limpio
 
-    def on_text_changed(self,attr,name_input,tabla, col):
+    def on_text_changed(self,attr,name_input,tabla, col,enable):
         # Get the current text in the QTextEdit
         current_text = attr.toPlainText()
 
@@ -185,7 +185,7 @@ class EditarRegistro(Form, Base):
 
             # Update the QTextEdit with the truncated text
             attr.setPlainText(truncated_text)
-        self.actualizarDict(attr,name_input,tabla,col,attr.toPlainText())
+        self.actualizarDict(attr,name_input,tabla,col,enable,attr.toPlainText())
    
     def setupInputsSubtabla(self,column,registros):
         nombre_tabla,select = getSubtabla(column)
@@ -293,14 +293,14 @@ class EditarRegistro(Form, Base):
         self.parent().setCurrentIndex(self.parent().indexOf(self.parent().findChild(Tablas)))
         
     
-    def actualizarDict(self,widget,name_input,tabla,col, val):
+    def actualizarDict(self,widget,name_input,tabla,col, enable, val):
         relacionadas = {'no_facturas':'facturas','fechas_catastro_calif':'cc_fechas_cc','fechas_catastro_td':'ctd_fechas_ctd','fechas_rpp':'rpp_fechas_rpp','desgloce_ppto':'desgloce_ppto_presupuesto','pagos':'pagos_presupuesto','depositos':'depositos_presupuesto'}
         #subtablas = {'facturas':['no_facturas','no_factura'],'fechas_catastro_calif':['fechas_catastro_calif','cat_envio_calif,cat_regreso_calif,observaciones'],'fechas_catastro_td':['fechas_catastro_td','cat_envio_td,cat_regreso_td,observaciones'],'fechas_rpp':['fechas_rpp','envio_rpp,regreso_rpp,observaciones'],'desgloce_ppto':['desgloce_ppto','concepto,cantidad'],'pagos':['pagos','concepto,cantidad,autorizado_por,fecha,observaciones'],'depositos':['depositos','concepto,cantidad,tipo,banco,fecha,observaciones']}
         #relacionadas={'facturas':'no_presupuesto,escritura_id','cc_fechas_cc':'catastro_calificacion,id_cc','ctd_fechas_ctd':'catastro_td,id_ctd','rpp':'rpp_fechas_rpp,id_rpp','desgloce_ppto_presupuesto':'no_presupuesto','pagos_presupuesto':'no_presupuesto','depositos_presupuesto':'no_presupuesto'}
         
         
         
-        
+        #if not enable: return
         if len(self.lista_columnas_write) <= 1: return
         
         tipo = str(type(val))
@@ -387,6 +387,7 @@ class EditarRegistro(Form, Base):
             self.camposCambiados[tabla][col] = val                    
         
         for subtabla, relacion in relacionadas.items():
+            if relacion not in getListaTablasWrite(): continue
             if relacion not in self.camposCambiados: 
                 self.camposCambiados[relacion] = {}
             cols_rel = getPermisos(relacion)['read'].split(',')
