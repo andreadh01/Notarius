@@ -21,6 +21,7 @@ base_dir = getBaseDir()
 Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','editar-registro.ui'))
 
 class EditarRegistro(Form, Base):
+    lista_columnas_write = []
     listaregistros_editarregistros = []
     previous = {}
     diccionarioregistros_editarregistros_subtablas = {}
@@ -108,11 +109,11 @@ class EditarRegistro(Form, Base):
         columnas_write = getPermisos('tabla_final')["write"]
         #print('registroooo tabla',registro)
         lista_columnas = columnas.split(',')
-        lista_columnas_write = columnas_write.split(',')
+        self.lista_columnas_write = columnas_write.split(',')
         propiedades_columnas = listaDescribe('tabla_final',lista_columnas)
         registros_id = {'id_cc':'cc_fechas_cc','id_ctd':'ctd_fechas_ctd','id_rpp':'rpp_fechas_rpp'}
         
-
+        if len(self.lista_columnas_write) <= 1: self.pushButton_confirmar.hide()
         list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
 
         layout = self.verticalLayout
@@ -145,7 +146,7 @@ class EditarRegistro(Form, Base):
                     else: self.pri_key['tabla_final'] = (col,registro[col])
                     widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col, enable=False)
                     layout.addWidget(widget)
-            elif col in lista_columnas_write:
+            elif col in self.lista_columnas_write:
                 widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col)
                 layout.addWidget(widget)
                 if 'tinyint' in tipo_dato:
@@ -300,7 +301,7 @@ class EditarRegistro(Form, Base):
         
         
         
-        
+        if len(self.lista_columnas_write) <= 1: return
         
         tipo = str(type(val))
         if 'QDate' in tipo: val = val.toString("yyyy-MM-dd")
