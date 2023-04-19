@@ -167,7 +167,7 @@ font: 11pt &quot;Segoe UI&quot;;</string>
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QVBoxLayout" name="tableLayout">
      <item>
       <widget class="QTableView" name="tableView">
        <property name="font">

@@ -196,9 +196,9 @@ class EditarRegistro(Form, Base):
             tablename = 'fechas_rpp'
         if nombre_tabla == "no_desgloce_ppto":
             tablename = 'desgloce_ppto'
-        if nombre_tabla == "bitacora_pagos":
+        if nombre_tabla == "pagos":
             tablename = 'pagos'
-        if nombre_tabla == "bitacora_depositos":
+        if nombre_tabla == "depositos":
             tablename = 'depositos'
         columnas_write = getPermisos(nombre_tabla)["write"]
         lista_columnas_write = columnas_write.split(',')

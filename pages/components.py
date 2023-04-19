@@ -11,7 +11,7 @@ from usuarios import getPermisos, getSubtabla, getUsuarioLogueado, listaDescribe
 
 # esta funcion devuelve un input con su respectivo label, uno de los parametros es el tipo de input, 
 # segun su tipo regresa un widget diferente.
-def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=True): # <---- este sera el metodo input()
+def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=True,modificar=True): # <---- este sera el metodo input()
     if registro is None: registro = ''
     #checar llaves foraneas y si el campo tiene llave foranea
     user, pwd = getUsuarioLogueado()
@@ -48,10 +48,11 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
         
         attr.view().parentWidget().setStyleSheet('background-color: white;\outline:none;')
 
-        attr.currentTextChanged.connect(partial(self.actualizarDict, col))
+        attr.currentTextChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla, col))
         attr.setCurrentIndex(1)
         attr.removeItem(0)
         attr.setEnabled(enable)    
+        if not modificar: attr.setEditable(True)
         return attr
     else:
         if 'int' in tipo_dato:   
@@ -63,7 +64,7 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             attr.setMaximum(2147483647)
             registro = 1 if registro == '' else registro
             
-            attr.valueChanged.connect(partial(self.actualizarDict, col))
+            attr.valueChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla,col))
             attr.setValue(registro)
             attr.setEnabled(enable)    
             return attr
@@ -74,7 +75,7 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             attr.setStyleSheet(inputStylesheet(enable, True))
             attr.setObjectName(name_input)
             registro = QtCore.QDate() if registro == '' else registro
-            attr.dateChanged.connect(partial(self.actualizarDict, col))
+            attr.dateChanged.connect(partial(self.actualizarDict,attr,name_input,nombre_tabla, col))
             attr.setDate(registro)
             attr.setEnabled(enable)    
             return attr
@@ -87,9 +88,9 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             max_value = self.limpiarString(tipo_dato)
             try:
                 attr.setMaxLength(int(max_value))
-                attr.textChanged.connect(partial(self.actualizarDict, col))
+                attr.textChanged.connect(partial(self.actualizarDict,attr,name_input,nombre_tabla, col))
             except:
-                attr.textChanged.connect((partial(self.on_text_changed,attr)))
+                attr.textChanged.connect((partial(self.on_text_changed,attr,name_input,nombre_tabla, col)))
             attr.setText(registro)
             attr.setEnabled(enable)    
             return attr
@@ -102,7 +103,7 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             attr.setMaximum(99999999.99)
             registro = 0 if registro == '' else registro
             
-            attr.valueChanged.connect(partial(self.actualizarDict, col))
+            attr.valueChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla,col))
             attr.setValue(registro)
             attr.setEnabled(enable)    
             return attr            
@@ -119,7 +120,7 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             
             attr.view().parentWidget().setStyleSheet('background-color: white;\outline:none;')
 
-            attr.currentTextChanged.connect(partial(self.actualizarDict, col))
+            attr.currentTextChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla,col))
             attr.setCurrentText(registro)
             attr.setEnabled(enable)    
             return attr
@@ -131,12 +132,12 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             attr.setStyleSheet(inputStylesheet(enable, True))
             attr.setObjectName(name_input)
             registro = QtCore.QDate() if registro == '' else registro
-            attr.dateTimeChanged.connect(partial(self.actualizarDict, col))
+            attr.dateTimeChanged.connect(partial(self.actualizarDict,attr,name_input,nombre_tabla, col))
             attr.setDate(registro)
             attr.setEnabled(enable)    
             return attr
 
-def crearRadioButton(self,name_input, registro='',col='',enable=True):
+def crearRadioButton(self,name_input, nombre_tabla,registro='',col='',enable=True):
         si_radiobutton = f"{name_input}_1"
         no_radiobutton = f"{name_input}_0"
         setattr(self, si_radiobutton, QtWidgets.QRadioButton("Si"))
@@ -151,8 +152,8 @@ def crearRadioButton(self,name_input, registro='',col='',enable=True):
         r0.setStyleSheet("font: 100 11pt 'Segoe UI';\ncolor: #666666")
         r1.setEnabled(enable)
         r0.setEnabled(enable)
-        r1.toggled.connect(partial(self.actualizarDict, col, True))
-        r0.toggled.connect(partial(self.actualizarDict, col, False))
+        r1.toggled.connect(partial(self.actualizarDict, r1,name_input,nombre_tabla,col, True))
+        r0.toggled.connect(partial(self.actualizarDict, r0,name_input,nombre_tabla,col, False))
         if registro == 1:
             r1.setChecked(True)
         else: 
@@ -367,49 +368,38 @@ def messageBox():
 
 def agregarInputsSubtabla(self,column):
         nombre_tabla,select = getSubtabla(column)
-        gridLayout = self.findChild(QtWidgets.QGridLayout,f'grid_layout_{nombre_tabla}')
+        gridLayout = self.layouts[0]
         lista_columnas = select.split(',')
         propiedades_columnas = listaDescribe(nombre_tabla,lista_columnas)
-        lastVLayout = gridLayout.findChild(QtWidgets.QVBoxLayout,'col_eliminar')
-        
+        lastVLayout = self.verticalLayouts[0]
 
-        columnas_write = getPermisos(nombre_tabla)["write"]
-        lista_columnas_write = columnas_write.split(',')
-        lista_write = []
-        columnas_con_write = []
 
-        if len(lista_columnas_write)>0:
-            del_btn = crearBoton('-')
-            lastVLayout.addWidget(del_btn)
-            self.del_btns.append(del_btn)
-            index = self.del_btns.index(del_btn)
-            del_btn.clicked.connect(partial(eliminarInputsSubtabla,self,index,column))
-        for i, col in enumerate(lista_columnas_write):
-            name_input = f"input_{i}"
-            columnas_con_write.append(col)
-            lista_write.append(name_input)
-
+        del_btn = crearBoton('-')
+        lastVLayout.addWidget(del_btn)
+        self.del_btns.append(del_btn)
+        index = self.del_btns.index(del_btn)
+        del_btn.clicked.connect(partial(eliminarInputsSubtabla,self,index,column))
+     
         for i, col in enumerate(lista_columnas):
             name_input = f"input_{i}"
             tipo_dato = propiedades_columnas[i][1]
             auto_increment = propiedades_columnas[i][5]
             pri = propiedades_columnas[i][3]
             
-            vLayout = self.findChild(QtWidgets.QVBoxLayout, f'layout_{col}_{i}_{nombre_tabla}')
+            vLayout = self.verticalLayouts[i+1]
+            
             if isinstance(tipo_dato, bytes):
                 tipo_dato = tipo_dato.decode('utf-8')
             elif pri == 'PRI':
-                    widget = crearInput(self, tipo_dato, name_input,'tabla_final', '',col, enable=False)
+                    widget = crearInput(self, tipo_dato, name_input,nombre_tabla, '',col, enable=False)
                     vLayout.addWidget(widget)
             elif 'tinyint' in tipo_dato:
-                r0,r1 = crearRadioButton(self, name_input, '',col)
+                r0,r1 = crearRadioButton(self, name_input,nombre_tabla, '',col)
                 vLayout.addWidget(r0)
                 vLayout.addWidget(r1)
-            elif any(write == col for write in columnas_con_write):
-                widget = crearInput(self, tipo_dato, name_input,'tabla_final', '',col)
-                vLayout.addWidget(widget)
+
             else:
-                widget = crearInput(self, tipo_dato, name_input,'tabla_final', '',col, enable=False)
+                widget = crearInput(self, tipo_dato, name_input,nombre_tabla, '',col)
                 vLayout.addWidget(widget)
 
 def eliminarInputsSubtabla(self,index,column):
@@ -425,10 +415,22 @@ def eliminarInputsSubtabla(self,index,column):
             lastVLayout.removeWidget(widget_to_remove)
             widget_to_remove.deleteLater()
             for i, col in enumerate(lista_columnas):
+                del self.camposCambiados[nombre_tabla][index][col]
                 layout = self.findChild(QtWidgets.QVBoxLayout, f'layout_{col}_{i}_{nombre_tabla}')
                 widget_to_remove = layout.itemAt(index).widget()
                 layout.removeWidget(widget_to_remove)
                 widget_to_remove.deleteLater()
+            updateIndices(self,nombre_tabla)
             print("Confirmed")
         else:
             print("Not confirmed")
+            
+def updateIndices(self,nombre_tabla):
+    new_dict = {}
+    for i, (key, dicc) in enumerate(self.camposCambiados[nombre_tabla].items()):
+        if len(dicc) > 0: 
+            if i-1 == -1: new_dict[i]=dicc
+            else: new_dict[i-1]=dicc
+    del self.camposCambiados[nombre_tabla]
+    self.camposCambiados[nombre_tabla] = {}
+    self.camposCambiados[nombre_tabla] = new_dict

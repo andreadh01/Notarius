@@ -3,7 +3,7 @@ from functools import partial
 from PyQt5 import uic
 import pandas as pd
 #python(suversion) -m pip install pandas
-from PyQt5.QtWidgets import QHeaderView, QTableView, QAbstractItemView,QPushButton,QMessageBox,QScrollBar,QItemDelegate,QLabel
+from PyQt5.QtWidgets import QHeaderView, QSizePolicy,QTableView, QAbstractItemView,QPushButton,QMessageBox,QScrollBar,QItemDelegate,QLabel
 from PyQt5.QtCore import Qt,QSortFilterProxyModel, QTimer
 from PyQt5.QtGui import QStandardItemModel,QStandardItem
 from bdConexion import obtener_conexion
@@ -91,13 +91,12 @@ class Tablas(Base, Form):
 		self.tableView.resizeRowsToContents()
 		#add horizontal scrollbar to table view widget 
 		# create a scroll bar object
-		scroll_bar = QScrollBar(self.tableView)
+		scroll_bar = QScrollBar()
         # setting style sheet
 		scroll_bar.setStyleSheet("QScrollBar:horizontal {\n"
 "    border: 2px grey;\n"
 "    background: white;\n"
 "    height: 15px;\n"
-"    margin: 0px 21px 0 21px;\n"
 "}\n"
 "QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {\n"
 "    background: none;\n"
@@ -121,7 +120,7 @@ class Tablas(Base, Form):
 "QScrollBar::add-line:horizontal:hover, QScrollBar::add-line:horizontal:on {\n"
 "    border: 2px grey;\n"
 "    background: white;\n"
-"    height: 15px;\n"
+"    height:15px;\n"
 "    subcontrol-position: right;\n"
 "    subcontrol-origin: margin;\n"
 "}\n"
@@ -144,9 +143,11 @@ class Tablas(Base, Form):
 "QScrollBar::handle:horizontal:hover, QScrollBar::handle:horizontal:on {\n"
 "    background: rgb(102,102,102);\n"
 "}")
-
+		scroll_bar.setOrientation(Qt.Horizontal)
+		scroll_bar.setRange(0, self.tableView.horizontalScrollBar().maximum())
+		scroll_bar.valueChanged.connect(self.tableView.horizontalScrollBar().setValue)
         # setting horizontal scroll bar to it
-		self.tableView.setHorizontalScrollBar(scroll_bar)
+		self.tableLayout.addWidget(scroll_bar)
 		self.tableView.horizontalHeader().setStretchLastSection(True)
 
 
@@ -283,16 +284,14 @@ class Tablas(Base, Form):
 				else:
 					model.setItem(i,j,QStandardItem(str(val)))
 	
-	def agregarRegistro(self,index):
+	def agregarRegistro(self,registro):
 		list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
-
-		registro = getRegistro('tabla_final','id',index)
 		for j, (col, val) in enumerate(registro.items()):
 				if val is None: val =''
 				if col in list_nested_tables:
 					#si el campo es de una de las tablas en la lista, entonces se guarda su index
 					#para poder acceder a ella mas facilmente
-					index = self.tableView.model().index(registro['id'],j)
+					index = self.tableView.model().index(registro[col],j)
 					name = f"subtable_{registro['id']}_{j}"
 					#subtable = self.setupSubTable(i,j,col,name)
 					#subtable.setParent(self.tableView)

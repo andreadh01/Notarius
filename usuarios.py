@@ -13,7 +13,8 @@ def saveSession(user,pwd):
     usuario["pwd"] = pwd
     listaTablas(user,pwd)
     showGrants(user, pwd)
-    permisosRead(user,pwd)
+    permisosRead()
+
 
 def clearSession():
     usuario.clear()
@@ -66,12 +67,17 @@ def permisosAdmin():
         query=f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME= '{tabla}' AND TABLE_SCHEMA='notarius'"
         cur.execute(query)
         columnas = cur.fetchall()
+        print(columnas)
         lista_columnas = [col[0] for col in columnas]
+        print(lista_columnas)
         lista_columnas = ','.join(lista_columnas)
+        print(lista_columnas)
         permisos["read"] = lista_columnas 
+        
         permisos["write"] = lista_columnas
         #permisos["UPDATE"] = lista_columnas
         dict_permisos[tabla] = permisos
+        print('permisossss',dict_permisos[tabla])
         lista_tablas_write.append(tabla)
 
     cur.close()
@@ -89,14 +95,11 @@ def showGrants(user, pwd):
 	limpiar_lista_permisos(lista_permisos)
 
 def limpiar_lista_permisos(lista_permisos):
-	print('AQUI!!!!!!',lista_permisos)
 	for texto in lista_permisos:
-		print('dentro de forloop')
 		subcadena_select = ''
 		subcadena_insert = ''
 		subcadena_update = ''
 		if 'GRANT ALL PRIVILEGES' in texto: 
-			print('permisos admin?',texto)
 			permisosAdmin()
 			break
 		permisos = {}
@@ -130,13 +133,13 @@ def limpiar_lista_permisos(lista_permisos):
 		#permisos["INSERT"] = permiso_insert[1] if len(permiso_insert) > 1 else ''
 		permisos["read"] = permiso_select[1] if len(permiso_select) > 1 else ''
 		permisos["write"] = permiso_update[1] if len(permiso_update) > 1 else ''
-		print("PERMISOS DE GRANT")
 		if permisos["write"] != '':
 			if 'id' not in permisos["write"]: permisos["write"]=f"id,{permisos['write']}"
 			lista_tablas_write.append(nombre_tabla)
 			#print("el usuario puede escribir en",lista_tablas_write)
 		#permisos["write"] = f"id,{str(permisos["write"])}"
 		dict_permisos[nombre_tabla] = permisos
+		
 
 def getAllPermisos():
 	return dict_permisos
@@ -163,6 +166,7 @@ def updateTable(tabla):
     cur.execute(query)
     valores = cur.fetchall()
     all_tablas[tabla] = valores
+    print('tabla actualizada',all_tablas[tabla])
     cur.close()
     conn.close()
 
@@ -175,9 +179,22 @@ def getRegistro(tabla, col, value):
     for registro in all_tablas[tabla]:
         if registro[col] == value: 
             return registro
+        
+def getLastElement(tabla):
+    user, pwd = getUsuarioLogueado()
+    conn = obtener_conexion(user,pwd)
+    cur = conn.cursor(dictionary=True)
+    select = dict_permisos[tabla]["read"]
+    cur.execute(f"SELECT {select} FROM {tabla} ORDER BY id DESC LIMIT 1")
+    registro = cur.fetchone()
+    cur.close()
+    conn.close()
+    return registro
+
+    return registro
 # este metodo va a regresar en orden las columnas de una tabla que el usuario va a visualizat
-def permisosRead(user,pwd):
-    global dict_permisos
+def permisosRead():
+    user, pwd = getUsuarioLogueado()
     tablas = getListaTablas()
     conn = obtener_conexion(user,pwd)
     cur = conn.cursor(dictionary=True)
@@ -193,18 +210,28 @@ def permisosRead(user,pwd):
     cur.close()
     conn.close()
 
+def getAutoIncrement(tabla):
+    user, pwd = getUsuarioLogueado()
+    conn = obtener_conexion(user,pwd)
+    cur = conn.cursor(dictionary=True)
+    select = dict_permisos[tabla]["read"]
+    cur.execute(f"SHOW TABLE STATUS LIKE '{tabla}'")
+    result = cur.fetchone()
+    next_auto_increment = result['Auto_increment']
+    cur.close()
+    conn.close()
+    return next_auto_increment
 def ordenarPermisosWrite(lista,tabla):
         values = []
         for i, dicc in enumerate(lista):
             for value in dicc.values():
-                print(dict_permisos[tabla]['write'],value)
                 if value in dict_permisos[tabla]['write']:
                     values.append(value)
                     
         return ','.join(values)        
 def generarString(lista):
         st = []
-        for dicc in lista[:-1]:
+        for dicc in lista:
             for value in dicc.values():
                 st.append(value)
         return ','.join(st)
@@ -214,7 +241,7 @@ def getSubtabla(col):
     conn = obtener_conexion(user,pwd)
     cur = conn.cursor(dictionary=True)
 
-    subtablas = {'facturas':['no_facturas','no_factura'],'fechas_catastro_calif':['fechas_catastro_calif','cat_envio_calif,cat_regreso_calif,observaciones'],'fechas_catastro_td':['fechas_catastro_td','cat_envio_td,cat_regreso_td,observaciones'],'fechas_rpp':['fechas_rpp','envio_rpp,regreso_rpp,observaciones'],'desgloce_ppto':['desgloce_ppto','concepto,cantidad'],'pagos':['bitacora_pagos','concepto,cantidad,autorizado_por,fecha,observaciones'],'depositos':['bitacora_depositos','concepto,cantidad,tipo,banco,fecha,observaciones']}
+    subtablas = {'facturas':['no_facturas','no_factura'],'fechas_catastro_calif':['fechas_catastro_calif','cat_envio_calif,cat_regreso_calif,observaciones'],'fechas_catastro_td':['fechas_catastro_td','cat_envio_td,cat_regreso_td,observaciones'],'fechas_rpp':['fechas_rpp','envio_rpp,regreso_rpp,observaciones'],'desgloce_ppto':['desgloce_ppto','concepto,cantidad'],'pagos':['pagos','concepto,cantidad,autorizado_por,fecha,observaciones'],'depositos':['depositos','concepto,cantidad,tipo,banco,fecha,observaciones']}
     nombre_tabla = subtablas[col][0]
     select = subtablas[col][1].split(',')
     select_permisos = []
