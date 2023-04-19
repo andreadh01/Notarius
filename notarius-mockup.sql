@@ -364,7 +364,7 @@ ALTER TABLE ctd_fechas_ctd DROP FOREIGN KEY fk_ctd_fechas_ctd_catastro_td;
 alter table tabla_final CHANGE id_cat_td id_ctd int unsigned unique null;
 ALTER TABLE ctd_fechas_ctd ADD FOREIGN KEY(id_ctd) REFERENCES tabla_final(id_ctd);
 
-ALTER TABLE ctd_fechas_ctd DROP FOREIGN KEY ctd_fechas_ctd_ibfk_1
+ALTER TABLE ctd_fechas_ctd DROP FOREIGN KEY ctd_fechas_ctd_ibfk_1;
 ALTER TABLE ctd_fechas_ctd ADD FOREIGN KEY(id_ctd) REFERENCES tabla_final(id_ctd) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE desgloce_ppto DROP FOREIGN KEY fk_desgloce_ppto_relacion_desgloce_presupuesto;
