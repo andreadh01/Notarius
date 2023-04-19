@@ -415,7 +415,9 @@ def eliminarInputsSubtabla(self,index,column):
             widget_to_remove.deleteLater()
             for i, col in enumerate(lista_columnas):
                 if nombre_tabla in self.camposCambiados: 
-                    if index in self.camposCambiados[nombre_tabla]: del self.camposCambiados[nombre_tabla][index][col]
+                    if index in self.camposCambiados[nombre_tabla]: 
+                        if col in self.camposCambiados[nombre_tabla][index]: 
+                            del self.camposCambiados[nombre_tabla][index][col]
                 layout = gridLayout[f'layout_{col}_{i}_{nombre_tabla}']
                 widget_to_remove = layout.itemAt(index).widget()
                 layout.removeWidget(widget_to_remove)

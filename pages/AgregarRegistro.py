@@ -41,7 +41,6 @@ class AgregarRegistro(Form, Base):
         columnas = getPermisos(tabla)["write"]
         lista_columnas = columnas.split(',')
         propiedades_columnas = listaDescribe(tabla,lista_columnas)
-        print(propiedades_columnas)
         layout = self.verticalLayout
         index = getValoresTabla(tabla)[-1]['id']
         # aqui se crea los widgets del label con sus input y se agrega al gui
@@ -68,9 +67,8 @@ class AgregarRegistro(Form, Base):
             if isinstance(tipo_dato, bytes):
                 tipo_dato = tipo_dato.decode('utf-8')
             if pri == 'PRI' or col in registros_id.keys():
-                    index = index+1
                     if col in registros_id.keys(): index = getAutoIncrement(registros_id[col])
-                    
+                    else: index = getAutoIncrement('tabla_final')
                     widget = crearInput(self, tipo_dato, name_input,tabla,registro=index,col=col, enable=False)
                     layout.addWidget(widget)
                     self.cols.append(widget)
@@ -196,7 +194,6 @@ class AgregarRegistro(Form, Base):
 
         if 'QDate' in tipo: val = val.toString("yyyy-MM-dd")
         if type(val) == bool: val = 1 if val else 0
-        print('name_input',name_input,'col',col,'val',val)
 
         # tabla_relacionada = getTablaRelacionada(col)
         # for registro in tabla_relacionada:
@@ -257,7 +254,6 @@ class AgregarRegistro(Form, Base):
             vLayout = self.layouts[f'grid_layout_{tabla}'][f'layout_{col}_{i}_{tabla}']
             index = 'id_fechas' if 'fecha' in tabla else 'id_relacion'
             col_name = tabla if tabla != 'no_facturas' else 'facturas'
-            print(col_name,'colnameee')
             if vLayout.indexOf(widget) != -1: key = vLayout.indexOf(widget) 
             else: return
             if tabla not in self.camposCambiados:
@@ -266,7 +262,6 @@ class AgregarRegistro(Form, Base):
                 self.camposCambiados[tabla][key] = {}
             if index not in self.camposCambiados[tabla][key]: self.camposCambiados[tabla][key][index] = getAutoIncrement(relacionadas[tabla])
             self.camposCambiados[tabla][key][col] = val
-            print('in subtabla',self.camposCambiados)
         else:
             if tabla not in self.camposCambiados:
                 self.camposCambiados[tabla] = {}
@@ -277,7 +272,6 @@ class AgregarRegistro(Form, Base):
                 self.camposCambiados[relacion] = {}
             cols_rel = getPermisos(relacion)['read'].split(',')
             col_name = tabla if tabla != 'no_facturas' else 'facturas'
-            print(cols_rel)
             for col_rel in cols_rel:
                 value = getAutoIncrement(relacion)
                 if col_rel == 'id': continue
@@ -289,7 +283,6 @@ class AgregarRegistro(Form, Base):
                     self.camposCambiados[relacion][col_rel] = value
                     self.camposCambiados['tabla_final'][col_rel] = value
                     self.camposCambiados['tabla_final'][col_name] = value
-        print(self.camposCambiados)
                         
     def guardarRegistro(self):
         tabla = 'tabla_final'
@@ -301,7 +294,6 @@ class AgregarRegistro(Form, Base):
         tablas_con_fk = []
         cur.execute("SET FOREIGN_KEY_CHECKS = 0")
         
-        print(self.camposCambiados)
         for tabla, dicc in self.camposCambiados.items():
             
             query = f"INSERT INTO {tabla} (" 
@@ -317,7 +309,6 @@ class AgregarRegistro(Form, Base):
                 else: 
                     query+=f"{col},"
                     vals+= f"'{val}', "
-            print(query+vals)
             if not subtabla: 
                     cur.execute(query+vals)
                     conn.commit()
@@ -335,7 +326,6 @@ class AgregarRegistro(Form, Base):
                         else: 
                             query+=f"{col},"
                             vals+= f"'{val}', "
-                    print(query+vals)
                     cur.execute(query+vals)
                     conn.commit()
                                 
@@ -344,6 +334,7 @@ class AgregarRegistro(Form, Base):
         cur.close()
         conn.close()
         registro = getLastElement('tabla_final')
+        updateTable('tabla_final')
         self.label_exito.setText("Registro guardado exitosamente")
         self.checkThreadTimer = QtCore.QTimer(self)
         self.checkThreadTimer.setInterval(10000)

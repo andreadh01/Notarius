@@ -67,17 +67,13 @@ def permisosAdmin():
         query=f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME= '{tabla}' AND TABLE_SCHEMA='notarius'"
         cur.execute(query)
         columnas = cur.fetchall()
-        print(columnas)
         lista_columnas = [col[0] for col in columnas]
-        print(lista_columnas)
         lista_columnas = ','.join(lista_columnas)
-        print(lista_columnas)
         permisos["read"] = lista_columnas 
         
         permisos["write"] = lista_columnas
         #permisos["UPDATE"] = lista_columnas
         dict_permisos[tabla] = permisos
-        print('permisossss',dict_permisos[tabla])
         lista_tablas_write.append(tabla)
 
     cur.close()
@@ -166,7 +162,6 @@ def updateTable(tabla):
     cur.execute(query)
     valores = cur.fetchall()
     all_tablas[tabla] = valores
-    print('tabla actualizada',all_tablas[tabla])
     cur.close()
     conn.close()
 
@@ -179,7 +174,17 @@ def getRegistro(tabla, col, value):
     for registro in all_tablas[tabla]:
         if registro[col] == value: 
             return registro
-        
+
+def getRegistroBD(tabla,col,value):
+    user, pwd = getUsuarioLogueado()
+    conn = obtener_conexion(user,pwd)
+    cur = conn.cursor(dictionary=True)
+    select = dict_permisos[tabla]["read"]
+    cur.execute(f'SELECT {select} FROM {tabla} WHERE {col}="{value}"')
+    registro = cur.fetchone()
+    cur.close()
+    conn.close()
+    return registro
 def getLastElement(tabla):
     user, pwd = getUsuarioLogueado()
     conn = obtener_conexion(user,pwd)
@@ -191,7 +196,6 @@ def getLastElement(tabla):
     conn.close()
     return registro
 
-    return registro
 # este metodo va a regresar en orden las columnas de una tabla que el usuario va a visualizat
 def permisosRead():
     user, pwd = getUsuarioLogueado()

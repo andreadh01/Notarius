@@ -363,3 +363,147 @@ ALTER TABLE rpp_fechas_rpp ADD FOREIGN KEY(id_rpp) REFERENCES tabla_final(id_rpp
 ALTER TABLE ctd_fechas_ctd DROP FOREIGN KEY fk_ctd_fechas_ctd_catastro_td;
 alter table tabla_final CHANGE id_cat_td id_ctd int unsigned unique null;
 ALTER TABLE ctd_fechas_ctd ADD FOREIGN KEY(id_ctd) REFERENCES tabla_final(id_ctd);
+
+ALTER TABLE ctd_fechas_ctd DROP FOREIGN KEY ctd_fechas_ctd_ibfk_1
+ALTER TABLE ctd_fechas_ctd ADD FOREIGN KEY(id_ctd) REFERENCES tabla_final(id_ctd) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE desgloce_ppto DROP FOREIGN KEY fk_desgloce_ppto_relacion_desgloce_presupuesto;
+ALTER TABLE desgloce_ppto ADD CONSTRAINT fk_desgloce_ppto_relacion_desgloce_presupuesto FOREIGN KEY (id_relacion) REFERENCES desgloce_ppto_presupuesto (id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE depositos_presupuesto
+DROP FOREIGN KEY depositos_presupuesto_ibfk_1;
+ALTER TABLE depositos_presupuesto
+ADD CONSTRAINT depositos_presupuesto_ibfk_1
+FOREIGN KEY (no_presupuesto)
+REFERENCES tabla_final (no_presupuesto)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+ALTER TABLE tabla_final
+DROP FOREIGN KEY fk_depositos;
+ALTER TABLE tabla_final
+ADD CONSTRAINT fk_depositos
+FOREIGN KEY (depositos)
+REFERENCES depositos_presupuesto (id)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+ALTER TABLE pagos
+DROP FOREIGN KEY fk_pagos_depositos_presupuesto;
+ALTER TABLE pagos
+ADD CONSTRAINT fk_pagos_depositos_presupuesto
+FOREIGN KEY (id_relacion)
+REFERENCES depositos_presupuesto (id)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+ALTER TABLE tabla_final
+DROP FOREIGN KEY fk_desgloce_ppto;
+ALTER TABLE tabla_final
+ADD CONSTRAINT fk_desgloce_ppto
+FOREIGN KEY (desgloce_ppto)
+REFERENCES desgloce_ppto_presupuesto (id)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+ALTER TABLE facturas
+DROP FOREIGN KEY facturas_ibfk_1;
+ALTER TABLE facturas
+ADD CONSTRAINT facturas_ibfk_1
+FOREIGN KEY (no_presupuesto)
+REFERENCES tabla_final (no_presupuesto)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+ALTER TABLE tabla_final
+DROP FOREIGN KEY fk_facturas;
+ALTER TABLE tabla_final
+ADD CONSTRAINT fk_facturas
+FOREIGN KEY (facturas)
+REFERENCES facturas (id)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+ALTER TABLE no_facturas
+DROP FOREIGN KEY fk_facturas_facturas_escritura;
+ALTER TABLE no_facturas
+ADD CONSTRAINT fk_facturas_facturas_escritura
+FOREIGN KEY (id_relacion)
+REFERENCES facturas (id)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+ALTER TABLE pagos_presupuesto
+DROP FOREIGN KEY pagos_presupuesto_ibfk_1;
+ALTER TABLE pagos_presupuesto
+ADD CONSTRAINT pagos_presupuesto_ibfk_1
+FOREIGN KEY (no_presupuesto)
+REFERENCES tabla_final (no_presupuesto)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+ALTER TABLE depositos
+DROP FOREIGN KEY fk_depositos_pagos_presupuesto;
+ALTER TABLE depositos
+ADD CONSTRAINT fk_depositos_pagos_presupuesto
+FOREIGN KEY (id_relacion)
+REFERENCES pagos_presupuesto (id)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+ALTER TABLE tabla_final
+DROP FOREIGN KEY fk_pagos;
+ALTER TABLE tabla_final
+ADD CONSTRAINT fk_pagos
+FOREIGN KEY (pagos)
+REFERENCES pagos_presupuesto (id)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+ALTER TABLE cc_fechas_cc
+DROP FOREIGN KEY cc_fechas_cc_ibfk_1;
+ALTER TABLE cc_fechas_cc
+ADD CONSTRAINT cc_fechas_cc_ibfk_1
+FOREIGN KEY (id_cc)
+REFERENCES tabla_final (id_cc)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+ALTER TABLE tabla_final
+DROP FOREIGN KEY fk_fechas_catastro_calif;
+ALTER TABLE tabla_final
+ADD CONSTRAINT fk_fechas_catastro_calif
+FOREIGN KEY (fechas_catastro_calif)
+REFERENCES cc_fechas_cc (id)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+ALTER TABLE fechas_catastro_calif
+DROP FOREIGN KEY fk_fechas_catastro_calif_cc_fechas_cc;
+ALTER TABLE fechas_catastro_calif
+ADD CONSTRAINT fk_fechas_catastro_calif_cc_fechas_cc
+FOREIGN KEY (id_fechas)
+REFERENCES cc_fechas_cc(id)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+ALTER TABLE rpp_fechas_rpp
+DROP FOREIGN KEY `rpp_fechas_rpp_ibfk_1`;
+ALTER TABLE rpp_fechas_rpp ADD CONSTRAINT `rpp_fechas_rpp_ibfk_1`
+FOREIGN KEY (`id_rpp`) REFERENCES `tabla_final` (`id_rpp`) 
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+ALTER TABLE `fechas_rpp`
+DROP FOREIGN KEY `fk_fechas_rpp_rpp_fechas_rpp`;
+ALTER TABLE `fechas_rpp` ADD CONSTRAINT `fk_fechas_rpp_rpp_fechas_rpp`
+FOREIGN KEY (`id_fechas`) REFERENCES `rpp_fechas_rpp` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE tabla_final
+DROP FOREIGN KEY tabla_final_ibfk_1;
+
+ALTER TABLE tabla_final
+ADD CONSTRAINT tabla_final_ibfk_1
+FOREIGN KEY (fechas_rpp)
+REFERENCES rpp_fechas_rpp(id)
+ON DELETE CASCADE;

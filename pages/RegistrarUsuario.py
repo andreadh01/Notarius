@@ -95,7 +95,6 @@ class RegistrarUsuario(Form, Base):
         self.checkBoxAllEscribir.setChecked(False)
         tabla_seleccionada = self.tablaslist.currentText()
         columnas = getPermisos(tabla_seleccionada)["read"]
-        print('tabla',tabla_seleccionada,'columnasss',columnas)
         lista_columnas = columnas.split(',')
         
         # aqui se crea el widget del checkbox y se agrega al gui

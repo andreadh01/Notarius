@@ -303,10 +303,9 @@ class Tablas(Base, Form):
 		self.tableView.resizeColumnsToContents()
 		self.tableView.resizeRowsToContents()
 
-	def actualizarRegistro(self,index):
+	def actualizarRegistro(self,new_values):
 		list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
 
-		new_values = getRegistro('tabla_final','id',index)
 		for i, (col,val) in enumerate(new_values.items()):
 			index = self.proxy.index(new_values['id']-1, i)
 			if col in list_nested_tables:
