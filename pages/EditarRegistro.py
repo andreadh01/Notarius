@@ -138,7 +138,7 @@ class EditarRegistro(Form, Base):
             # Label
             attr_label = getattr(self,name_label)
             attr_label.setStyleSheet("\n"
-			"font: 75 16pt;\n"
+			"font: 75 18pt;\n"
 			"color: #666666;\n" 
             "font-weight: 700;")
             attr_label.setObjectName(name_label)
@@ -213,7 +213,7 @@ class EditarRegistro(Form, Base):
             # Label
         attr_label = getattr(self,name_label)
         attr_label.setStyleSheet("\n"
-		"font: 75 16pt;\n"
+		"font: 75 18pt;\n"
 		"color: #957F5F;\n" 
         "font-weight: 700;")
         attr_label.setObjectName(name_label)
@@ -249,7 +249,7 @@ class EditarRegistro(Form, Base):
             # Label
             attr_label = getattr(self,name_label)
             attr_label.setStyleSheet("\n"
-			"font: 75 14pt;\n"
+			"font: 75 16pt;\n"
 			"color: #957F5F;\n")
             attr_label.setObjectName(name_label)
             attr_label.setText(col)
