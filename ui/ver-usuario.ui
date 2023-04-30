@@ -57,6 +57,7 @@ font: 11pt &quot;Segoe UI&quot;;</string>
       <widget class="QPushButton" name="botonEliminar">
        <property name="styleSheet">
         <string notr="true">QPushButton {
+font-size: 16pt;
 border-radius: 11px;
 border: 2px solid #957F5F;
 background-color: white;
@@ -89,15 +90,16 @@ QPushButton:pressed {
       <widget class="QTableView" name="tableView">
        <property name="font">
         <font>
-         <pointsize>12</pointsize>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="styleSheet">
         <string notr="true">QTableView {
+font-size: 16pt;
 border:none;
 color:#666666;
 }
-QHeaderView::section { background-color:#957F5F; color:white; font: 11pt &quot;Segoe UI&quot;;  padding-left:5px; border: 1px solid white;}
+QHeaderView::section { background-color:#957F5F; color:white; font: 16pt &quot;Segoe UI&quot;;  padding-left:5px; border: 1px solid white;}
 QScrollBar:vertical {
 	border: none;
     background: white;
