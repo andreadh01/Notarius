@@ -375,7 +375,6 @@ class RegistrarUsuario(Form, Base):
         cur.execute(query)
         rol = cur.fetchall()
         rol = rol[0][0]
-        print("DICT!!!",self.diccionario_permisos)
         for llave,accion in self.diccionario_permisos.items():
             
             for nombre_tabla,columnas in accion.items():

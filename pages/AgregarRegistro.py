@@ -249,7 +249,6 @@ class AgregarRegistro(Form, Base):
                 
                 for index,dicc in self.camposCambiados['pagos'].items():
                     self.saldo = self.saldo - dicc['cantidad']
-                    print(dicc['cantidad'])
             if 'depositos' in self.camposCambiados:
                 for index,dicc in self.camposCambiados['depositos'].items():
                     self.saldo = self.saldo + dicc['cantidad']
@@ -257,7 +256,6 @@ class AgregarRegistro(Form, Base):
             self.cols_auto['saldo'].setValue(self.saldo)
             self.cols_auto['saldo'].setEnabled(False)
         
-        print(self.camposCambiados)
     def guardarRegistro(self):
         lista_pagos = []
         
@@ -285,7 +283,6 @@ class AgregarRegistro(Form, Base):
                 else: 
                     query+=f"{col},"
                     vals+= f"'{val}', "
-            #print(query+vals)
             if not subtabla: 
                 try:
                     cur.execute(query+vals)
@@ -314,7 +311,6 @@ class AgregarRegistro(Form, Base):
                             query+=f"{col},"
                             vals+= f"'{val}', "
                     
-                    #print(query+vals)
                     cur.execute(query+vals)
                     conn.commit()
                                 
@@ -325,7 +321,6 @@ class AgregarRegistro(Form, Base):
         conn.close()
         
         registro = getRegistroBD('tabla_final','id',self.camposCambiados['tabla_final']['id'])[0]
-        print(registro)
         updateTable('tabla_final')
         self.label_exito.setStyleSheet("color:green")
         self.label_exito.setText("Registro guardado exitosamente")

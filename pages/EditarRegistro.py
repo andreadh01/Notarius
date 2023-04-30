@@ -111,7 +111,6 @@ class EditarRegistro(Form, Base):
         self.registro_viejo = registro
         columnas = getPermisos('tabla_final')["read"]
         columnas_write = getPermisos('tabla_final')["write"]
-        #print('registroooo tabla',registro)
         lista_columnas = columnas.split(',')
         self.lista_columnas_write = columnas_write.split(',')
         propiedades_columnas = listaDescribe('tabla_final',lista_columnas)
@@ -322,7 +321,6 @@ class EditarRegistro(Form, Base):
             index = 'id_fechas' if 'fecha' in tabla else 'id_relacion'
             col_name = tabla if tabla != 'no_facturas' else 'facturas'
             key = vLayout.indexOf(widget)
-            print('keyyy',key)
             if key == -1: return 
             id_col = self.pri_key['tabla_final'][0]
             id_val = self.pri_key['tabla_final'][1]
@@ -370,7 +368,6 @@ class EditarRegistro(Form, Base):
                     registro_viejo = registro_viejo[key]
                     if col_name not in self.pri_key:
                         self.pri_key[col_name] = {}
-                    print('col',col,'valor',val,'id',registro_viejo['id'])
                     self.pri_key[col_name][key] = ('id',registro_viejo['id'])
                     self.pri_key[relacionadas[tabla]] = ('id',registro_id)
                     if tabla not in self.camposCambiados:
@@ -408,7 +405,6 @@ class EditarRegistro(Form, Base):
                 self.camposCambiados[relacion] = {}
             cols_rel = getPermisos(relacion)['write'].split(',')
             
-            print(cols_rel)
             for col_rel in cols_rel:
                 
                 
@@ -426,16 +422,11 @@ class EditarRegistro(Form, Base):
                         self.tablas_agregar[relacion] = {}
                     self.tablas_agregar[relacion][col_rel] = value
                     
-        
-       
-        print("TABLAS DE INSERT",self.tablas_agregar)
-        print("CAMPOS CAMBIADOS",self.camposCambiados)
-        print("LLAVES PRIMARIAS",self.pri_key)
+
         if col == 'cantidad':
             self.saldo = 0            
             if 'pagos' in self.camposCambiados:
                 for index,dicc in self.camposCambiados['pagos'].items():
-                    print('aqui!!!!!',dicc)
                     self.saldo = self.saldo - float(dicc['cantidad'])
             if 'pagos' in self.tablas_agregar:
                 for index,dicc in self.tablas_agregar['pagos'].items():
@@ -478,7 +469,6 @@ class EditarRegistro(Form, Base):
                             query+=f"{col},"
                             vals+= f"'{val}', "
                     if execute:
-                        print(query+vals)
                         cur.execute(query+vals)
                         conn.commit()
             else:
@@ -490,7 +480,6 @@ class EditarRegistro(Form, Base):
                         query+=f"{col},"
                         vals+= f"'{val}', "
                 if execute:
-                    print(query+vals)
                     cur.execute(query+vals)
                     conn.commit()
                     
@@ -510,7 +499,6 @@ class EditarRegistro(Form, Base):
                     else: query+= f"{col}='{val}', "
                 except:
                     execute =False
-            print(query)
             if execute and not subtabla: 
                 cur.execute(query)
                 conn.commit()
@@ -526,14 +514,12 @@ class EditarRegistro(Form, Base):
                     if tabla not in self.pri_key or key not in self.pri_key[tabla]: 
                             execute = False
                             continue
-                    print(dicc)
                     for i, (col,val) in enumerate(dicc.items()):
                         id_col = self.pri_key[tabla][key][0]
                         id_value = self.pri_key[tabla][key][1]
                         if col == 'id': continue
                         if i+1 == len(dicc): query+= f"{col}='{val}' WHERE  {id_col}='{id_value}'"
                         else: query+= f"{col}='{val}', "
-                    print(query)
                     if execute:
                         cur.execute(query)
                         conn.commit()
@@ -544,7 +530,6 @@ class EditarRegistro(Form, Base):
         cur.close()
         conn.close()
         registro = getRegistroBD('tabla_final','id',self.pri_key['tabla_final'][1])[0]
-        print(registro)
         from pages.Tablas import Tablas
         updateTable('tabla_final')
 

@@ -31,7 +31,6 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
         query = f"SELECT {foreign_key[1]} FROM {foreign_key[0]};"
         cur.execute(query)
         lista_opciones = cur.fetchall()
-        # print(lista_opciones)
         if len(lista_opciones) > 0:
             opciones = ['Selecciona una opcion']
             for indice,tupla in enumerate(lista_opciones):
