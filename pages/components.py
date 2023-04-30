@@ -146,8 +146,8 @@ def crearRadioButton(self,name_input, nombre_tabla,registro='',col='',enable=Tru
         attr.addButton(r0)
         r1 = getattr(self,si_radiobutton)
         attr.addButton(r1)
-        r1.setStyleSheet("font: 100 11pt 'Segoe UI';\ncolor: #666666")
-        r0.setStyleSheet("font: 100 11pt 'Segoe UI';\ncolor: #666666")
+        r1.setStyleSheet("font: 100 14pt 'Segoe UI';\ncolor: #666666")
+        r0.setStyleSheet("font: 100 14pt 'Segoe UI';\ncolor: #666666")
         r1.setEnabled(enable)
         r0.setEnabled(enable)
         r1.toggled.connect(partial(self.actualizarDict, r1,name_input,nombre_tabla,col,enable, True))
@@ -165,7 +165,7 @@ def inputStylesheet(enable, date=False, combobox=False):
     if date: 
         stylesheet = """
         QDateTimeEdit {
-            font: 12pt "Arial";\ncolor: #666666;\nbackground-color: """+bg+""";\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\nheight: 50px; padding:0 10px;
+            font: 15pt "Arial";\ncolor: #666666;\nbackground-color: """+bg+""";\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\nheight: 50px; padding:0 10px;
         }
         QDateEdit::drop-down{
             background-color:#957F5F;
@@ -177,7 +177,7 @@ border-bottom-right-radius:8px;
     image:url(:/resources/resources/icons/calendario.png);
         }
         QDateEdit {
-            font: 12pt "Arial";\ncolor: #666666;\nbackground-color: """+bg+""";\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\nheight: 50px; padding:0 10px;
+            font: 15pt "Arial";\ncolor: #666666;\nbackground-color: """+bg+""";\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\nheight: 50px; padding:0 10px;
         }
         QDateTimeEdit::drop-down{
             background-color:#957F5F;
@@ -192,19 +192,19 @@ border-bottom-right-radius:8px;
 height: 30px;
 width: 90px;
 color: white;
-font-size: 14px;
+font-size: 16px;
 icon-size: 20px, 20px;
 background-color: #957F5F;
 }
 QCalendarWidget QMenu {
 width: 90px;
 color: #957F5F;
-font-size: 14px;
+font-size: 16px;
 background-color: """+bg+""";
 }
 QCalendarWidget QSpinBox {
 width: 70px;
-font-size:14px;
+font-size:16px;
 color: #957F5F;
 background-color: """+bg+""";
 selection-background-color: #957F5F;
@@ -225,7 +225,7 @@ QCalendarWidget QToolButton#qt_calendar_nextmonth
 /* normal days */
 QCalendarWidget QAbstractItemView:enabled
 {
-font-size:14;
+font-size:16;
 color: #957F5F;
 background-color: """+bg+""";
 selection-background-color: #957F5F;
@@ -251,7 +251,7 @@ QCalendarWidget {
     elif combobox:
         stylesheet = """
         QComboBox {
-            font: 12pt "Arial";\ncolor: #666666;\nbackground-color: """+bg+""";\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;
+            font: 15pt "Arial";\ncolor: #666666;\nbackground-color: """+bg+""";\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;
         }
 
 /* style for drop down area */
@@ -271,7 +271,7 @@ border: 4px solid #c2dbfe;
 }
 /* style for list menu */
 QComboBox QListView {
-font-size: 12px;
+font-size: 16px;
 border: 1px solid rgba(0, 0, 0, 10%);
 padding: 5px;
 background-color:"""+bg+""";
@@ -294,7 +294,7 @@ background-color: #d3c393;
 
         """
     else:
-        stylesheet = f"font: 100 12pt 'Arial';\ncolor: #666666;\nbackground-color: {bg};\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;"
+        stylesheet = f"font: 100 15pt 'Arial';\ncolor: #666666;\nbackground-color: {bg};\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;"
     return  stylesheet
 # esta funcion devuelve un checkbox
 #
@@ -307,7 +307,7 @@ QPushButton {
     border-radius: 20px;
     background-color: #957F5F;
     color: white;
-    font-size: 16px;
+    font-size: 18px;
     padding: 10px 10px;
 }
 
@@ -338,7 +338,7 @@ def messageBox():
         QMessageBox {
             background-color: white;
             color: #666666;
-            font-size: 16px;
+            font-size: 18px;
         }
         QMessageBox QLabel {
             color: #666666;
@@ -347,7 +347,7 @@ def messageBox():
             border-radius: 8px;
             background-color: #957F5F;
             color: white;
-            font-size: 16px;
+            font-size: 18px;
             padding: 10px 30px;
         }
         QMessageBox QPushButton:hover {
