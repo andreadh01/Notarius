@@ -62,7 +62,7 @@ border-radius: 11px;
 border: 2px solid #957F5F;
 background-color: white;
 color: #957F5F;
-height: 25px;
+height: 35px;
 padding: 0 20px;
 }
 
