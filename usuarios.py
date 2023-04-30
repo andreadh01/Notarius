@@ -242,7 +242,7 @@ def generarString(lista):
                 st.append(value)
         return ','.join(st)
 
-def getSubtabla(col):
+def getSubtabla(col,select_id=False):
     user, pwd = getUsuarioLogueado()
     conn = obtener_conexion(user,pwd)
     cur = conn.cursor(dictionary=True)
@@ -262,11 +262,11 @@ def getSubtabla(col):
             if value in select: select_permisos.append(value)
     
     
-    
+    if select_id: select_permisos.append('id')
     return nombre_tabla, ','.join(select_permisos)
-def getRegistrosSubtabla(col,id_registro):
+def getRegistrosSubtabla(col,id_registro,select_id=False):
     index = 'id_fechas' if "fecha" in col else 'id_relacion'
-    nombre_tabla, select = getSubtabla(col)
+    nombre_tabla, select = getSubtabla(col,select_id)
     user, pwd = getUsuarioLogueado()
     conn = obtener_conexion(user,pwd)
     cur = conn.cursor(dictionary=True)

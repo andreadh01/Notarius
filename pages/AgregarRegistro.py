@@ -18,13 +18,14 @@ Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','agregar-registros.ui'))
 
 
 class AgregarRegistro(Form, Base):
-    id_registro = 0
     del_btns = []
     previous = {}
     cols=[]
     layouts={}
     widgetLayout=[]
     camposCambiados = {}
+    saldo = 0
+    cols_auto = {}
     def __init__(self, parent=None):
         super(self.__class__,self).__init__(parent)
         self.setupUi(self)
@@ -37,6 +38,7 @@ class AgregarRegistro(Form, Base):
  	# en esta funcion se van a actualizar los labels y se agregaran los inputs segun los labels de las columnas
     def setupColumns(self, Form):
         registros_id = {'id_cc':'cc_fechas_cc','id_ctd':'ctd_fechas_ctd','id_rpp':'rpp_fechas_rpp'}
+        columnas_val_automatico = ['saldo']
         list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
         # se eliminan los combobox anteriores
         self.camposCambiados.clear()
@@ -47,8 +49,11 @@ class AgregarRegistro(Form, Base):
         propiedades_columnas = listaDescribe(tabla,lista_columnas)
         layout = self.verticalLayout
         index = getValoresTabla(tabla)[-1]['id']
+       
+        
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
+            enable = True
             name_input = f"input_{i}"
             name_label = f'label_{i}'
             tipo_dato = propiedades_columnas[i][1]
@@ -57,6 +62,7 @@ class AgregarRegistro(Form, Base):
             if col in list_nested_tables:
                 self.setupInputsSubtabla(col)
                 continue
+            if col in columnas_val_automatico: enable=False
             setattr(self, name_label, QtWidgets.QLabel(self.scrollAreaWidgetContents))
             # Label
             attr_label = getattr(self,name_label)
@@ -70,22 +76,23 @@ class AgregarRegistro(Form, Base):
             self.cols.append(attr_label)
             if isinstance(tipo_dato, bytes):
                 tipo_dato = tipo_dato.decode('utf-8')
-            if pri == 'PRI' or col in registros_id.keys():
-                    if col in registros_id.keys(): index = getAutoIncrement(registros_id[col])
-                    else: index = getAutoIncrement('tabla_final')
-                    if pri == 'PRI':
-                        self.id_registro = index
+            if pri == 'PRI': # or col in registros_id.keys()
+                    # if col in registros_id.keys(): index = getAutoIncrement(registros_id[col])
+                    # else: 
+                    
+                    index = getAutoIncrement('tabla_final')
                     widget = crearInput(self, tipo_dato, name_input,tabla,registro=index,col=col, enable=False)
                     layout.addWidget(widget)
                     self.cols.append(widget)
             elif 'tinyint' in tipo_dato:
-                r0,r1 = crearRadioButton(self, name_input,tabla, col=col)
+                r0,r1 = crearRadioButton(self, name_input,tabla, col=col,enable=enable)
                 layout.addWidget(r0)
                 layout.addWidget(r1)
                 self.cols.append(r0)
                 self.cols.append(r1)
             else:
-                widget = crearInput(self, tipo_dato, name_input,tabla, col=col)
+                widget = crearInput(self, tipo_dato, name_input,tabla, col=col, enable=enable)
+                if col in columnas_val_automatico: self.cols_auto[col] = widget
                 layout.addWidget(widget)
                 self.cols.append(widget)
 
@@ -139,7 +146,6 @@ class AgregarRegistro(Form, Base):
             self.layouts[f'grid_layout_{nombre_tabla}'][f'layout_{col}_{i}_{nombre_tabla}'] = vLayout
             gridLayout.addLayout(vLayout,1,i)
             
-        agregarInputsSubtabla(self,column)
             
         
         
@@ -190,72 +196,16 @@ class AgregarRegistro(Form, Base):
 
     
     def actualizarDict(self,widget,name_input,tabla,col, enable,val):
-        tablas_no_validas = ['no_facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos','usuario']
-        lista_subtablas_cols = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos']
         relacionadas = {'no_facturas':'facturas','fechas_catastro_calif':'cc_fechas_cc','fechas_catastro_td':'ctd_fechas_ctd','fechas_rpp':'rpp_fechas_rpp','desgloce_ppto':'desgloce_ppto_presupuesto','pagos':'pagos_presupuesto','depositos':'depositos_presupuesto'}
         columnas_write = getPermisos(tabla)['write'].split(',')
         columnas_write_tf = getPermisos('tabla_final')['write'].split(',')
         #subtablas = {'facturas':['no_facturas','no_factura'],'fechas_catastro_calif':['fechas_catastro_calif','cat_envio_calif,cat_regreso_calif,observaciones'],'fechas_catastro_td':['fechas_catastro_td','cat_envio_td,cat_regreso_td,observaciones'],'fechas_rpp':['fechas_rpp','envio_rpp,regreso_rpp,observaciones'],'desgloce_ppto':['desgloce_ppto','concepto,cantidad'],'pagos':['pagos','concepto,cantidad,autorizado_por,fecha,observaciones'],'depositos':['depositos','concepto,cantidad,tipo,banco,fecha,observaciones']}
         #relacionadas={'facturas':'no_presupuesto,escritura_id','cc_fechas_cc':'catastro_calificacion,id_cc','ctd_fechas_ctd':'catastro_td,id_ctd','rpp':'rpp_fechas_rpp,id_rpp','desgloce_ppto_presupuesto':'no_presupuesto','pagos_presupuesto':'no_presupuesto','depositos_presupuesto':'no_presupuesto'}
         tipo = str(type(val))
-        foreign_keys = self.llavesForaneas()
 
         if 'QDate' in tipo: val = val.toString("yyyy-MM-dd")
         if type(val) == bool: val = 1 if val else 0
 
-        # tabla_relacionada = getTablaRelacionada(col)
-        # for registro in tabla_relacionada:
-        #     for tabla_val in registro.values():
-        #         if  tabla_val in tablas_no_validas: continue
-        #         if 'tabla_final' not in self.camposCambiados:
-        #             self.camposCambiados['tabla_final'] = {}
-        #         self.camposCambiados['tabla_final'][col] = val
-        #         if tabla_val not in self.camposCambiados:
-        #             self.camposCambiados[tabla_val] = {}
-        #         if col != 'id': self.camposCambiados[tabla_val][col] = val
-        #         try:
-        #             # aqui se agregan los permisos de las llaves foraneas
-        #             lista_foreignkey = foreign_keys[tabla_val]
-        #             for lista_tabla_col in lista_foreignkey:
-        #                 print('tabla',tabla_val,lista_foreignkey)
-        #                 columna_p = lista_tabla_col[0]
-        #                 tabla_secundaria = lista_tabla_col[1]
-        #                 columna_secundaria = lista_tabla_col[2]
-        #                 if tabla_val not in self.camposCambiados:
-        #                     self.camposCambiados[tabla_val] = {}
-        #                 if columna_p == 'escritura_id':
-        #                         self.camposCambiados[tabla_val]['escritura_id'] = getLastElement('escritura')['id']+1
-        #                 if 'id_' in columna_p:
-        #                         self.camposCambiados[tabla_val][columna_p] = getLastElement(tabla_val)['id']+1
-        #                 if columna_p in self.camposCambiados['tabla_final']:
-        #                     self.camposCambiados[tabla_val][columna_p] =  self.camposCambiados['tabla_final'][columna_p]
-
-        #                 if col == columna_p:
-        #                     if tabla_secundaria not in self.camposCambiados:
-        #                         self.camposCambiados[tabla_secundaria] = {}
-        #                     if columna_p in self.camposCambiados['tabla_final']:
-        #                         self.camposCambiados[tabla_secundaria][columna_secundaria] = self.camposCambiados['tabla_final'][columna_secundaria]
-        #         except KeyError as error:
-        #             #print("La tabla no tiene llaves foraneas")
-        #             continue
-        
-        # if tabla in relacionadas.keys():
-        #     cols = relacionadas[tabla]
-        #     if tabla not in self.camposCambiados:
-        #             self.camposCambiados[tabla] = {}
-        #     if 'fechas' not in tabla:   
-        #         if 'no_presupuesto'  in  self.camposCambiados['tabla_final']:
-        #             self.camposCambiados[tabla]['no_presupuesto'] = self.camposCambiados['tabla_final']['no_presupuesto']
-        #         if 'escritura' in cols: self.camposCambiados[tabla]['escritura_id'] = getLastElement('escritura')['id']+1
-        #     else:
-        #         cols = cols.split(',')
-        #         tabla_main = cols[0]
-        #         col = cols[1]
-        #         if tabla_main not in self.camposCambiados:
-        #             self.camposCambiados[tabla_main] = {}
-        #         print('resultado obtenidoo',getLastElement(tabla_main)['id'])
-        #         self.camposCambiados[tabla][col] = getLastElement(tabla_main)['id']+1
-                
         
         if tabla in relacionadas.keys():
             i = name_input.split('_')[1]
@@ -292,10 +242,25 @@ class AgregarRegistro(Form, Base):
                     self.camposCambiados[relacion][col_rel] = value
                     if col_rel in columnas_write_tf: self.camposCambiados['tabla_final'][col_rel] = value
                     if col_name in columnas_write_tf: self.camposCambiados['tabla_final'][col_name] = value
+        
+        if col == 'cantidad':
+            self.saldo = 0
+            if 'pagos' in self.camposCambiados:
+                
+                for index,dicc in self.camposCambiados['pagos'].items():
+                    self.saldo = self.saldo - dicc['cantidad']
+                    print(dicc['cantidad'])
+            if 'depositos' in self.camposCambiados:
+                for index,dicc in self.camposCambiados['depositos'].items():
+                    self.saldo = self.saldo + dicc['cantidad']
+            self.cols_auto['saldo'].setEnabled(True)
+            self.cols_auto['saldo'].setValue(self.saldo)
+            self.cols_auto['saldo'].setEnabled(False)
+        
         print(self.camposCambiados)
     def guardarRegistro(self):
         lista_pagos = []
-        saldo = 0
+        
         tabla = 'tabla_final'
         subtablas = ['no_facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos']
 
@@ -320,8 +285,6 @@ class AgregarRegistro(Form, Base):
                 else: 
                     query+=f"{col},"
                     vals+= f"'{val}', "
-                if col == 'saldo':
-                    saldo = val
             #print(query+vals)
             if not subtabla: 
                 try:
@@ -350,18 +313,12 @@ class AgregarRegistro(Form, Base):
                         else: 
                             query+=f"{col},"
                             vals+= f"'{val}', "
-                  
-                        if tabla == 'pagos' and col == 'cantidad':
-                            saldo = saldo - val
-                        if tabla == 'depositos' and col == 'cantidad':
-                            saldo = saldo + val
                     
                     #print(query+vals)
                     cur.execute(query+vals)
                     conn.commit()
                                 
         cur.execute("SET FOREIGN_KEY_CHECKS = 1")
-        query=f"UPDATE tabla_final SET saldo = {saldo} WHERE id = {self.id_registro};"
         cur.execute(query)
         conn.commit()
         cur.close()

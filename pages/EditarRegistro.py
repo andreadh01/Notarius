@@ -31,6 +31,9 @@ class EditarRegistro(Form, Base):
     tabla = ''
     layouts={}
     tablas_agregar = {}
+    saldo = 0
+    cols_auto = {}
+    
     def __init__(self, parent=None):
         super(self.__class__,self).__init__(parent)
         self.setupUi(self)
@@ -102,6 +105,7 @@ class EditarRegistro(Form, Base):
 
 
     def setupInputs(self, Form, registro, subtabla=False):
+        columnas_val_automatico = ['saldo']
         # se eliminan los inputs anteriores
         self.listaregistros_editarregistros = []
         self.registro_viejo = registro
@@ -119,6 +123,8 @@ class EditarRegistro(Form, Base):
         layout = self.verticalLayout
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
+            enable = True
+            if col in columnas_val_automatico: enable=False
             name_input = f"input_{i}"
             name_label = f'label_{i}'
             tipo_dato = propiedades_columnas[i][1]
@@ -147,10 +153,11 @@ class EditarRegistro(Form, Base):
                     widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col, enable=False)
                     layout.addWidget(widget)
             elif col in self.lista_columnas_write:
-                widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col)
+                widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col,enable=enable)
+                if col in columnas_val_automatico: self.cols_auto[col] = widget
                 layout.addWidget(widget)
                 if 'tinyint' in tipo_dato:
-                    r0,r1 = crearRadioButton(self, name_input, 'tabla_final',registro[col],col)
+                    r0,r1 = crearRadioButton(self, name_input, 'tabla_final',registro[col],col,enable=enable)
                     layout.addWidget(r0)
                     layout.addWidget(r1)
             elif 'tinyint' in tipo_dato:
@@ -160,6 +167,7 @@ class EditarRegistro(Form, Base):
 
             else:
                 widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col, enable=False)
+                if col in columnas_val_automatico: self.cols_auto[col] = widget
                 layout.addWidget(widget)
                 
             if registro[col] is not None:
@@ -297,7 +305,7 @@ class EditarRegistro(Form, Base):
         relacionadas = {'no_facturas':'facturas','fechas_catastro_calif':'cc_fechas_cc','fechas_catastro_td':'ctd_fechas_ctd','fechas_rpp':'rpp_fechas_rpp','desgloce_ppto':'desgloce_ppto_presupuesto','pagos':'pagos_presupuesto','depositos':'depositos_presupuesto'}
         #subtablas = {'facturas':['no_facturas','no_factura'],'fechas_catastro_calif':['fechas_catastro_calif','cat_envio_calif,cat_regreso_calif,observaciones'],'fechas_catastro_td':['fechas_catastro_td','cat_envio_td,cat_regreso_td,observaciones'],'fechas_rpp':['fechas_rpp','envio_rpp,regreso_rpp,observaciones'],'desgloce_ppto':['desgloce_ppto','concepto,cantidad'],'pagos':['pagos','concepto,cantidad,autorizado_por,fecha,observaciones'],'depositos':['depositos','concepto,cantidad,tipo,banco,fecha,observaciones']}
         #relacionadas={'facturas':'no_presupuesto,escritura_id','cc_fechas_cc':'catastro_calificacion,id_cc','ctd_fechas_ctd':'catastro_td,id_ctd','rpp':'rpp_fechas_rpp,id_rpp','desgloce_ppto_presupuesto':'no_presupuesto','pagos_presupuesto':'no_presupuesto','depositos_presupuesto':'no_presupuesto'}
-        
+        columnas_write = getPermisos(tabla)['write'].split(',')
         
         
         #if not enable: return
@@ -341,29 +349,6 @@ class EditarRegistro(Form, Base):
                         self.tablas_agregar[relacion][col_rel] = value
             else:
                 registro_viejo = getRegistroBD(tabla,index,registro_id)
-                print(registro_viejo)
-                for registro in registro_viejo:
-                    print(registro,col)
-                    if tabla in self.previous:
-                        print('primer if')
-                        if col in self.previous[tabla]:
-                            print('segundo if')
-                            if name_input in self.previous[tabla][col]:
-                                print('tercer if')
-                                if self.previous[tabla][col][name_input] == registro[col]:
-                                    print('same')
-                                    self.pri_key[tabla] = ('id',registro['id'])
-                                    self.pri_key[relacionadas[tabla]] = ('id',registro_id)
-                                    if tabla not in self.camposCambiados:
-                                        self.camposCambiados[tabla] = {}
-                                    if key not in self.camposCambiados[tabla]:
-                                        self.camposCambiados[tabla][key] = {}
-                                    if index not in self.camposCambiados[tabla][key]: 
-                                        self.camposCambiados[tabla][key][index] = registro_id
-                                    self.camposCambiados[tabla][key][col] = val
-                if tabla in self.camposCambiados:
-                    if key in self.camposCambiados[tabla]:
-                        if col in self.camposCambiados[tabla][key]:  self.camposCambiados[tabla][key][col] = val
                 if key > len(registro_viejo)-1:
                     if tabla not in self.tablas_agregar:
                         self.tablas_agregar[tabla] = {}
@@ -381,39 +366,90 @@ class EditarRegistro(Form, Base):
                             self.tablas_agregar[relacion][col_rel] =  self.camposCambiados['tabla_final']['no_presupuesto']
                         else: 
                             self.tablas_agregar[relacion][col_rel] = value
+                else:
+                    registro_viejo = registro_viejo[key]
+                    if col_name not in self.pri_key:
+                        self.pri_key[col_name] = {}
+                    print('col',col,'valor',val,'id',registro_viejo['id'])
+                    self.pri_key[col_name][key] = ('id',registro_viejo['id'])
+                    self.pri_key[relacionadas[tabla]] = ('id',registro_id)
+                    if tabla not in self.camposCambiados:
+                        self.camposCambiados[tabla] = {}
+                    if key not in self.camposCambiados[tabla]:
+                        self.camposCambiados[tabla][key] = {}
+                    if index not in self.camposCambiados[tabla][key]: 
+                        self.camposCambiados[tabla][key][index] = registro_id
+                    if col in columnas_write: self.camposCambiados[tabla][key][col] = val
+                
         else:
             if tabla not in self.camposCambiados:
                 self.camposCambiados[tabla] = {}
-            self.camposCambiados[tabla][col] = val                    
+            if col in columnas_write: self.camposCambiados[tabla][col] = val
         
+        # aqui se agrega el indice que relaciona la tabla final con la subtabla
         for subtabla, relacion in relacionadas.items():
+            col_name = subtabla if subtabla != 'no_facturas' else 'facturas'
+            id_col = self.pri_key['tabla_final'][0]
+            id_val = self.pri_key['tabla_final'][1]
             if relacion not in getListaTablasWrite(): continue
+            value = getRegistro('tabla_final',id_col,id_val)[col_name]
+            if value is None: value = getAutoIncrement(relacion)
+            
+             # aqui se agrega los campos de cantidad de pagos y deposito al diccionario
+            if col_name not in self.camposCambiados:
+                self.camposCambiados[col_name] = {}
+                registros_sub = getRegistrosSubtabla(col_name,value,True)
+                for i,registro in enumerate(registros_sub):
+                    for col,val in registro.items():
+                        val = str(val)
+                        if i not in self.camposCambiados[col_name]: self.camposCambiados[col_name][i] = {}
+                        self.camposCambiados[col_name][i][col] = val
             if relacion not in self.camposCambiados: 
                 self.camposCambiados[relacion] = {}
-            cols_rel = getPermisos(relacion)['read'].split(',')
-            col_name = subtabla if subtabla != 'no_facturas' else 'facturas'
+            cols_rel = getPermisos(relacion)['write'].split(',')
+            
             print(cols_rel)
             for col_rel in cols_rel:
-                id_col = self.pri_key['tabla_final'][0]
-                id_val = self.pri_key['tabla_final'][1]
-                value = getRegistro('tabla_final',id_col,id_val)[col_name]
-                if value is None: value = getAutoIncrement(relacion)
+                
+                
                 if col_rel == 'id': continue
                 if col_rel == 'no_presupuesto':  
                     if 'no_presupuesto' in  self.camposCambiados['tabla_final']:
-                        self.camposCambiados['tabla_final'][col_name] = value
+                        if col_name in columnas_write: self.camposCambiados['tabla_final'][col_name] = value
                         if relacion not in self.tablas_agregar:
                             self.tablas_agregar[relacion] = {}
                         self.tablas_agregar[relacion][col_rel] = self.camposCambiados['tabla_final']['no_presupuesto']
                 else: 
                     self.camposCambiados['tabla_final'][col_rel] = value
-                    self.camposCambiados['tabla_final'][col_name] = value
+                    if col_name in columnas_write: self.camposCambiados['tabla_final'][col_name] = value
                     if relacion not in self.tablas_agregar:
                         self.tablas_agregar[relacion] = {}
                     self.tablas_agregar[relacion][col_rel] = value
+                    
+        
+       
         print("TABLAS DE INSERT",self.tablas_agregar)
-        print("LLAVES PRIMARIAS",self.pri_key)                    
-        print('CAMPOS CAMBIADOS',self.camposCambiados)
+        print("CAMPOS CAMBIADOS",self.camposCambiados)
+        print("LLAVES PRIMARIAS",self.pri_key)
+        if col == 'cantidad':
+            self.saldo = 0            
+            if 'pagos' in self.camposCambiados:
+                for index,dicc in self.camposCambiados['pagos'].items():
+                    print('aqui!!!!!',dicc)
+                    self.saldo = self.saldo - float(dicc['cantidad'])
+            if 'pagos' in self.tablas_agregar:
+                for index,dicc in self.tablas_agregar['pagos'].items():
+                    self.saldo = self.saldo - float(dicc['cantidad'])
+                    
+            if 'depositos' in self.camposCambiados:
+                for index,dicc in self.camposCambiados['depositos'].items():
+                    self.saldo = self.saldo + float(dicc['cantidad'])
+            if 'depositos' in self.tablas_agregar:
+                for index,dicc in self.tablas_agregar['depositos'].items():
+                    self.saldo = self.saldo + float(dicc['cantidad'])
+            self.cols_auto['saldo'].setEnabled(True)
+            self.cols_auto['saldo'].setValue(self.saldo)
+            self.cols_auto['saldo'].setEnabled(False)
         
     def actualizarRegistro(self):
         subtablas = ['no_facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos']
@@ -423,9 +459,7 @@ class EditarRegistro(Form, Base):
         cur = conn.cursor()
         cur.execute("SET FOREIGN_KEY_CHECKS = 0")
 
-        print("TABLAS DE INSERT",self.tablas_agregar)
-        print("CAMPOS CAMBIADOS",self.camposCambiados)
-        print("LLAVES PRIMARIAS",self.pri_key)
+
         
         for tabla, registro in self.tablas_agregar.items():
             execute = True
@@ -475,7 +509,7 @@ class EditarRegistro(Form, Base):
                     if i+1 == len(dicc): query+= f"{col}='{val}' WHERE  {id_col}='{id_value}'"
                     else: query+= f"{col}='{val}', "
                 except:
-                    return
+                    execute =False
             print(query)
             if execute and not subtabla: 
                 cur.execute(query)
@@ -484,14 +518,18 @@ class EditarRegistro(Form, Base):
 
         for tabla in subtablas:
             if tabla in self.camposCambiados:
-                for dicc in self.camposCambiados[tabla].values():
+                for key,dicc in self.camposCambiados[tabla].items():
                     execute = True
                     query = f"UPDATE {tabla} set "
-                    if not dicc: execute = False
+                    if not dicc: 
+                        execute = False
+                    if tabla not in self.pri_key or key not in self.pri_key[tabla]: 
+                            execute = False
+                            continue
+                    print(dicc)
                     for i, (col,val) in enumerate(dicc.items()):
-                        if tabla not in self.pri_key: break
-                        id_col = self.pri_key[tabla][0]
-                        id_value = self.pri_key[tabla][1]
+                        id_col = self.pri_key[tabla][key][0]
+                        id_value = self.pri_key[tabla][key][1]
                         if col == 'id': continue
                         if i+1 == len(dicc): query+= f"{col}='{val}' WHERE  {id_col}='{id_value}'"
                         else: query+= f"{col}='{val}', "

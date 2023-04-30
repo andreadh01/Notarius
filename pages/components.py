@@ -92,6 +92,7 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
         elif 'decimal' in tipo_dato:
             setattr(self, name_input, QtWidgets.QDoubleSpinBox(self.scrollAreaWidgetContents))
             attr = getattr(self,name_input)
+            if col == 'saldo': attr.setMinimum(-99999999.99)
             attr.setStyleSheet(inputStylesheet(enable))
             attr.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
             attr.setObjectName(name_input)
