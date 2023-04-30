@@ -131,8 +131,8 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>881</width>
-        <height>24</height>
+        <width>1081</width>
+        <height>18</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -168,7 +168,7 @@ border-radius: 8px;
 border: 1px solid #957F5F;
 background-color: white;
 color: #957F5F;
-font-size: 18px;
+font-size: 16pt;
 padding: 10px 30px;
 }
 
