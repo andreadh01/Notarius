@@ -182,7 +182,7 @@ class EditarPrivilegios(Base, Form):
 			setattr(self, name_escritura, QtWidgets.QCheckBox(Form))
 			checkbox_ver = getattr(self,name_ver)
 			checkbox_ver.setStyleSheet("\n"
-			"font: 75 11pt;\n"
+			"font: 75 14pt;\n"
 			"color: white;")
 			checkbox_ver.setObjectName(name_ver)
 			
@@ -190,7 +190,7 @@ class EditarPrivilegios(Base, Form):
 			checkbox_escritura.setText(col)
 			checkbox_escritura = getattr(self,name_escritura)
 			checkbox_escritura.setStyleSheet("\n"
-			"font: 75 11pt;\n"
+			"font: 75 14pt;\n"
 			"color: white;")
 			checkbox_escritura.setObjectName(name_escritura)
 			checkbox_escritura.setText(col)
