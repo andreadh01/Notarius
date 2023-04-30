@@ -25,7 +25,7 @@ border-radius: 11px;
 border: 2px solid #957F5F;
 background-color: white;
 color: #957F5F;
-height: 25px;
+height: 35px;
 }
 
 QPushButton:hover {
@@ -79,7 +79,7 @@ border-radius: 11px;
 border: 1px solid #957F5F;
 background-color: white;
 color: #957F5F;
-height: 25px;
+height: 35px;
 }
 </string>
        </property>
@@ -95,7 +95,7 @@ border-radius: 11px;
 border: 2px solid #957F5F;
 background-color: #957F5F;
 color: white;
-height: 25px;
+height: 35px;
 min-width:120px;
 padding: 0 15px;
 
