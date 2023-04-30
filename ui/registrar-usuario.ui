@@ -45,7 +45,7 @@ border: none;
           <x>0</x>
           <y>0</y>
           <width>412</width>
-          <height>68</height>
+          <height>83</height>
          </rect>
         </property>
         <property name="sizePolicy">
@@ -72,14 +72,14 @@ background:rgba(149,127,95,1);
            <property name="font">
             <font>
              <family>Segoe UI</family>
-             <pointsize>11</pointsize>
+             <pointsize>16</pointsize>
              <weight>50</weight>
              <italic>false</italic>
              <bold>false</bold>
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">font: 11pt &quot;Segoe UI&quot;;
+            <string notr="true">font: 16pt &quot;Segoe UI&quot;;
     color: white;</string>
            </property>
            <property name="text">
@@ -93,7 +93,7 @@ background:rgba(149,127,95,1);
          <item>
           <widget class="QCheckBox" name="checkBoxAllVer">
            <property name="styleSheet">
-            <string notr="true">font: 11pt &quot;Segoe UI&quot;;
+            <string notr="true">font: 14pt &quot;Segoe UI&quot;;
 color: white;</string>
            </property>
            <property name="text">
@@ -121,8 +121,8 @@ border: none;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>304</width>
-          <height>68</height>
+          <width>423</width>
+          <height>83</height>
          </rect>
         </property>
         <property name="sizePolicy">
@@ -149,14 +149,14 @@ background:rgba(149,127,95,1);
            <property name="font">
             <font>
              <family>Segoe UI</family>
-             <pointsize>11</pointsize>
+             <pointsize>16</pointsize>
              <weight>50</weight>
              <italic>false</italic>
              <bold>false</bold>
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">font: 11pt &quot;Segoe UI&quot;;
+            <string notr="true">font: 16pt &quot;Segoe UI&quot;;
     color: white;</string>
            </property>
            <property name="text">
@@ -170,7 +170,7 @@ background:rgba(149,127,95,1);
          <item>
           <widget class="QCheckBox" name="checkBoxAllEscribir">
            <property name="styleSheet">
-            <string notr="true">font: 11pt &quot;Segoe UI&quot;;
+            <string notr="true">font: 14pt &quot;Segoe UI&quot;;
 color: white;</string>
            </property>
            <property name="text">
@@ -195,7 +195,7 @@ color: white;</string>
      <item row="7" column="0">
       <widget class="QLabel" name="label_6">
        <property name="styleSheet">
-        <string notr="true">font: 11pt &quot;Segoe UI&quot;;
+        <string notr="true">font: 18pt &quot;Segoe UI&quot;;
 color: #666666;</string>
        </property>
        <property name="text">
@@ -219,14 +219,14 @@ color:#de574e;</string>
        <property name="font">
         <font>
          <family>Segoe UI</family>
-         <pointsize>11</pointsize>
+         <pointsize>18</pointsize>
          <weight>50</weight>
          <italic>false</italic>
          <bold>false</bold>
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">font: 11pt &quot;Segoe UI&quot;;
+        <string notr="true">font: 18pt &quot;Segoe UI&quot;;
 color: #666666;</string>
        </property>
        <property name="text">
@@ -239,14 +239,14 @@ color: #666666;</string>
        <property name="font">
         <font>
          <family>Segoe UI</family>
-         <pointsize>11</pointsize>
+         <pointsize>18</pointsize>
          <weight>50</weight>
          <italic>false</italic>
          <bold>false</bold>
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">font: 11pt &quot;Segoe UI&quot;;
+        <string notr="true">font: 18pt &quot;Segoe UI&quot;;
 color: #666666;</string>
        </property>
        <property name="text">
@@ -257,7 +257,7 @@ color: #666666;</string>
      <item row="4" column="0">
       <widget class="QLineEdit" name="lineEdit_nombreusuario">
        <property name="styleSheet">
-        <string notr="true">font: 11pt &quot;Segoe UI&quot;;
+        <string notr="true">font: 14pt &quot;Segoe UI&quot;;
 color: #666666;
 background-color: white;
 border-radius: 8px;
@@ -277,6 +277,7 @@ padding: 5px 10px;</string>
        <property name="styleSheet">
         <string notr="true">/* style for the QComboBox */
 QComboBox {
+font-size: 14pt;
 border-radius: 11px;
 border: 1px solid #ccc;
 background-color: white;
@@ -303,7 +304,7 @@ border: 1px solid #c2dbfe;
 }
 /* style for list menu */
 QComboBox QListView {
-font-size: 12px;
+font-size: 16pt;
 border: 1px solid rgba(0, 0, 0, 10%);
 padding: 5px;
 background-color: #fff;
@@ -378,7 +379,7 @@ color: #8fc26b;</string>
      <item row="6" column="0">
       <widget class="QLineEdit" name="lineEdit_contrasenausuario">
        <property name="styleSheet">
-        <string notr="true">font: 11pt &quot;Segoe UI&quot;;
+        <string notr="true">font: 14pt &quot;Segoe UI&quot;;
 color: #666666;
 background-color: white;
 border-radius: 8px;
@@ -396,7 +397,7 @@ padding: 5px 10px;</string>
      <item row="1" column="0">
       <widget class="QLabel" name="titulo">
        <property name="styleSheet">
-        <string notr="true">font: 24pt &quot;Arial Rounded MT Bold&quot;;
+        <string notr="true">font: 30pt &quot;Arial Rounded MT Bold&quot;;
 color: #957F5F;
 </string>
        </property>
@@ -444,7 +445,7 @@ color: #957F5F;
 border-radius: 8px;
 background-color: #957F5F;
 color: white;
-font: 11pt &quot;Segoe UI&quot;;
+font: 16pt &quot;Segoe UI&quot;;
 padding: 10px 30px;
 }
 
@@ -472,7 +473,7 @@ border-radius: 8px;
 border: 1px solid #957F5F;
 background-color: white;
 color: #957F5F;
-font: 11pt &quot;Segoe UI&quot;;
+font: 16pt &quot;Segoe UI&quot;;
 padding: 10px 30px;
 }
 
@@ -505,7 +506,7 @@ QPushButton:pressed {
      <item row="2" column="0">
       <widget class="QLabel" name="label_tabla_3">
        <property name="styleSheet">
-        <string notr="true">font: 11pt &quot;Segoe UI&quot;;
+        <string notr="true">font: 16pt &quot;Segoe UI&quot;;
 color: #666666;</string>
        </property>
        <property name="text">
@@ -518,6 +519,7 @@ color: #666666;</string>
        <property name="styleSheet">
         <string notr="true">/* style for the QComboBox */
 QComboBox {
+font-size: 16pt;
 border-radius: 11px;
 border: 1px solid #ccc;
 background-color: white;
@@ -568,7 +570,7 @@ background-color: #d3c393;
      <item row="1" column="0">
       <widget class="QLabel" name="label">
        <property name="styleSheet">
-        <string notr="true">font: 13pt &quot;Segoe UI&quot;;
+        <string notr="true">font: 18pt &quot;Segoe UI&quot;;
 color: #957F5F;</string>
        </property>
        <property name="text">

@@ -29,7 +29,7 @@
    <item>
     <widget class="QLabel" name="titulo">
      <property name="styleSheet">
-      <string notr="true">font: 24pt &quot;Arial Rounded MT Bold&quot;;
+      <string notr="true">font: 28pt &quot;Arial Rounded MT Bold&quot;;
 color: #957F5F;
 </string>
      </property>
@@ -44,7 +44,7 @@ color: #957F5F;
    <item>
     <widget class="QLabel" name="label_exito">
      <property name="styleSheet">
-      <string notr="true">font: 12pt &quot;Arial&quot;;
+      <string notr="true">font: 20pt &quot;Arial&quot;;
 color: #8fc26b;</string>
      </property>
      <property name="text">
@@ -168,7 +168,7 @@ border-radius: 8px;
 border: 1px solid #957F5F;
 background-color: white;
 color: #957F5F;
-font-size: 12px;
+font-size: 18px;
 padding: 10px 30px;
 }
 
@@ -195,7 +195,7 @@ QPushButton:pressed {
 border-radius: 8px;
 background-color: #957F5F;
 color: white;
-font-size: 12px;
+font-size: 18px;
 padding: 10px 30px;
 }
 
