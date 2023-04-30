@@ -54,7 +54,6 @@ def listaDescribe(tabla, columnas):
         cur.execute(query)
         description = cur.fetchone()
         lista.append(description)
-    cur.fetchall()
     cur.close()
     conn.close()
     return lista
