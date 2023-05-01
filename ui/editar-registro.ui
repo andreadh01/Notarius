@@ -215,6 +215,21 @@ QPushButton:pressed {
     </layout>
    </item>
    <item>
+    <widget class="QLabel" name="label_aviso_vencimiento">
+     <property name="styleSheet">
+      <string notr="true">font: 75 18pt;
+color: #666666;
+font-weight: 700;</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QScrollArea" name="scrollArea">
      <property name="minimumSize">
       <size>

@@ -4,7 +4,7 @@ from PyQt5 import uic, QtWidgets,QtGui,QtCore
 from PyQt5.QtCore import Qt
 from bdConexion import obtener_conexion
 from usuarios import getPermisos, getSubtabla, getUsuarioLogueado, listaDescribe
-import secrets
+import secrets, numpy as np, datetime, workdays
 # en este archivo se generan los componentes de gui que se agregaran de forma dinamica
 
 # esta funcion devuelve un boton de dashboard
@@ -73,7 +73,17 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             registro = QtCore.QDate() if registro == '' else registro
             attr.dateChanged.connect(partial(self.actualizarDict,attr,name_input,nombre_tabla, col,enable))
             attr.setDate(registro)
-            attr.setEnabled(enable)    
+            #si la columna es fecha vencimiento esto no pasa
+            if col == 'fecha_vence_td':
+                attr.setEnabled(False)
+            else:
+                attr.setEnabled(enable)
+                # if col == 'fecha_escritura':
+                #     #input_23 = self.input_23
+                #     print(self.findChild(QtWidgets.QWidget,'scrollAreaWidgetContents').objectName())
+                #     print(self.findChild(QtWidgets.QWidget,'scrollAreaWidgetContents'))
+                #     attr.dateChanged.connect(partial(actualizarFechaVencimiento, attr.date(),self.findChild(QtWidgets.QWidget,'scrollAreaWidgetContents')))
+                    
         elif 'varchar' in tipo_dato:
             widget = QtWidgets.QTextEdit(self.scrollAreaWidgetContents) if 'varchar(500)' in tipo_dato else QtWidgets.QLineEdit(self.scrollAreaWidgetContents)
             setattr(self, name_input, widget)
@@ -117,7 +127,7 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
 
             attr.currentTextChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla,col,enable))
             attr.setCurrentText(registro)
-            attr.setEnabled(enable)    
+            attr.setEnabled(enable)
         elif 'timestamp' in tipo_dato:
             setattr(self, name_input, QtWidgets.QDateTimeEdit(self.scrollAreaWidgetContents))
             attr = getattr(self,name_input)
@@ -128,11 +138,16 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             registro = QtCore.QDate() if registro == '' else registro
             attr.dateTimeChanged.connect(partial(self.actualizarDict,attr,name_input,nombre_tabla, col,enable))
             attr.setDate(registro)
-            attr.setEnabled(enable)    
+            attr.setEnabled(enable)
         self.previous[nombre_tabla] = {}
         self.previous[nombre_tabla][col] = {}
         self.previous[nombre_tabla][col][name_input] = registro
         return attr
+
+# def actualizarFechaVencimiento(self,fecha, papi):
+#     print(papi)
+#     papi.findChild(QtWidgets.QDateEdit,'input_23').setDate(fecha)
+
 
 def crearRadioButton(self,name_input, nombre_tabla,registro='',col='',enable=True):
         si_radiobutton = f"{name_input}_1"
@@ -325,6 +340,33 @@ QPushButton:pressed {
     button.setStyleSheet(styleSheet)
     return button
 
+def calcularDia(dia):
+    start_date = datetime.datetime.strptime(dia, '%Y-%m-%d')
+    anio = dia[:4]
+    dias_festivos = [datetime.datetime.strptime(f'{anio}-01-01', '%Y-%m-%d'), datetime.datetime.strptime(f'{anio}-05-01', '%Y-%m-%d'), datetime.datetime.strptime(f'{anio}-09-16', '%Y-%m-%d'), datetime.datetime.strptime(f'{anio}-12-25', '%Y-%m-%d')]
+    dias_festivos = agregarDiasFestivos(dias_festivos, anio)
+    working_days = 60
+    end_date = workdays.workday(start_date,working_days,dias_festivos).date()
+    return end_date,dias_festivos
+
+def agregarDiasFestivos(lista:list, anio:str) -> list:
+
+    #agregar el primer lunes de febrero en conmemoracion del dia de la constitucion
+    holiday = np.busday_offset(anio+'-02', 0, roll='forward', weekmask='Mon')
+    holiday = np.datetime_as_string(holiday, unit='D')
+    lista.append(datetime.datetime.strptime(holiday,'%Y-%m-%d'))
+
+    #agregar el tercer lunes de marzo en conmemoracion del natalicio de benito juarez
+    holiday = np.busday_offset(anio+'-03', 2, roll='forward', weekmask='Mon')
+    holiday = np.datetime_as_string(holiday, unit='D')
+    lista.append(datetime.datetime.strptime(holiday,'%Y-%m-%d'))
+
+    #agregar el tercer lunes de noviembre en conmemoracion de la revolucion mexicana
+    holiday=np.busday_offset(anio+'-11', 2, roll='forward', weekmask='Mon')
+    holiday = np.datetime_as_string(holiday, unit='D')
+    lista.append(datetime.datetime.strptime(holiday,'%Y-%m-%d'))
+    
+    return lista
 def messageBox():
     custom_box = QtWidgets.QMessageBox()
     custom_box.setWindowTitle("Confirmation")
