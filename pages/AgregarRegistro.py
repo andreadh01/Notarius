@@ -3,15 +3,15 @@ from functools import partial
 from PyQt5 import uic,QtWidgets,QtCore
 import os
 import mysql.connector
-
+import workdays,datetime
 import re
 
 from bdConexion import obtener_conexion
 from pages.Tablas import Tablas
-from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla
+from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla, calcularDia
 from usuarios import getLastElement, getAutoIncrement, getListaTablas, getListaTablasWrite, getPermisos, getRegistroBD, getRegistrosSubtabla, getSubtabla, getTablaRelacionada, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
 from deployment import getBaseDir
-
+import numpy as np
 
 base_dir = getBaseDir()
 Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','agregar-registros.ui'))
@@ -277,6 +277,11 @@ class AgregarRegistro(Form, Base):
                 subtabla = True
                 continue
             for i, (col, val) in enumerate(dicc.items()):
+                if col == 'fecha_escritura':
+                    fecha_vencimiento,algoinservible = calcularDia(val)
+                    print(fecha_vencimiento)
+                    query+="fecha_vence_td,"
+                    vals+=f"'{fecha_vencimiento}',"
                 if i+1 == len(dicc): 
                     query+= f"{col}) "
                     vals+= f"'{val}');"
@@ -315,7 +320,7 @@ class AgregarRegistro(Form, Base):
                     conn.commit()
                                 
         cur.execute("SET FOREIGN_KEY_CHECKS = 1")
-        cur.execute(query)
+        #cur.execute(query)
         conn.commit()
         cur.close()
         conn.close()
