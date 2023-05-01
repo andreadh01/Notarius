@@ -128,7 +128,7 @@ color: #957F5F;
 	width: 30px;
 	height: 30px;
 	border-radius: 15px;
-	border: none;
+	border: 1px solid;
 	background-color: rgb(185, 185, 185);
 	font: 75 12pt &quot;MS Sans Serif&quot;;
 
@@ -144,6 +144,7 @@ QComboBox::drop-down {
             }
 QComboBox QAbstractItemView {
     min-width: 250px;
+	color: rgb(47, 47, 47);
 	border-radius: 6px;
 	background-color: rgb(255, 255, 255);
     padding: 10px; /* Relleno interno de 5px */

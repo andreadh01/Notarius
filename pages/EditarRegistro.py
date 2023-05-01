@@ -52,35 +52,41 @@ class EditarRegistro(Form, Base):
         option = self.combobox_colores.currentText()
         color = ''
         agregar_color = ''
+        self.dicc_colores[id] = []
         if option == 'Trámites y pagos finalizados':
             color = '#09E513'
-            self.dicc_colores[id] = color
+            self.dicc_colores[id].insert(0, color)
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color:#09E513;\n" 
             "}")
+            self.dicc_colores[id].insert(1, (propiedades + agregar_color))
         elif option == 'Tramites pendientes':
             color = '#FFFF00'
-            self.dicc_colores[id] = color
+            self.dicc_colores[id].insert(0, color)
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color: #FFFF00;\n" 
             "}")
+            self.dicc_colores[id].insert(1, (propiedades + agregar_color))
         elif option == 'Pagos pendientes':
             color = '#FF0000'
-            self.dicc_colores[id] = color
+            self.dicc_colores[id].insert(0, color)
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color: #FF0000;\n" 
             "}")
+            self.dicc_colores[id].insert(1, (propiedades + agregar_color))
         else:
             color = '#B9B9B9'
-            self.dicc_colores[id] = color
+            self.dicc_colores[id].insert(0, color)
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color: #B9B9B9;\n" 
             "}")
+            self.dicc_colores[id].insert(1, (propiedades + agregar_color))
         self.combobox_colores.setStyleSheet(propiedades + agregar_color)
+        print("DICT COLORES: ",self.dicc_colores)
 
     def propiedadesComboBox(self):
         css_code = ("\n"
