@@ -110,6 +110,7 @@ class AgregarRegistro(Form, Base):
                 self.setupInputsSubtabla(col)
                 continue
             if col in columnas_val_automatico: enable=False
+            if col == 'fecha_vence_td': enable=False
             setattr(self, name_label, QtWidgets.QLabel(self.scrollAreaWidgetContents))
             # Label
             attr_label = getattr(self,name_label)

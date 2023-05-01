@@ -39,7 +39,6 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
         else:
             opciones = ['No existen datos para esta columna']
 
-
         #prepara combobox
         setattr(self, name_input, QtWidgets.QComboBox(self.scrollAreaWidgetContents))
         attr = getattr(self,name_input)
@@ -72,17 +71,18 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             attr.setObjectName(name_input)
             registro = QtCore.QDate() if registro == '' else registro
             attr.dateChanged.connect(partial(self.actualizarDict,attr,name_input,nombre_tabla, col,enable))
-            attr.setDate(registro)
-            #si la columna es fecha vencimiento esto no pasa
-            if col == 'fecha_vence_td':
-                attr.setEnabled(False)
-            else:
-                attr.setEnabled(enable)
-                # if col == 'fecha_escritura':
-                #     #input_23 = self.input_23
-                #     print(self.findChild(QtWidgets.QWidget,'scrollAreaWidgetContents').objectName())
-                #     print(self.findChild(QtWidgets.QWidget,'scrollAreaWidgetContents'))
-                #     attr.dateChanged.connect(partial(actualizarFechaVencimiento, attr.date(),self.findChild(QtWidgets.QWidget,'scrollAreaWidgetContents')))
+            attr.setDate(registro)            
+            if col == 'fecha_escritura':
+                fecha_escritura_date = attr.date()
+                variable = attr
+            if 'fecha_escritura_date' in locals():
+                print('aqui estoyyyyy')
+            if col == 'fecha_vence_td' and 'fecha_escritura_date' in locals():
+                print(variable.date(), fecha_escritura_date)
+                variable.dateChanged.connect(partial(actualizarFechaVencimiento, fecha_escritura_date,registro))
+            
+            attr.setEnabled(enable)
+            
                     
         elif 'varchar' in tipo_dato:
             widget = QtWidgets.QTextEdit(self.scrollAreaWidgetContents) if 'varchar(500)' in tipo_dato else QtWidgets.QLineEdit(self.scrollAreaWidgetContents)
@@ -144,10 +144,10 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
         self.previous[nombre_tabla][col][name_input] = registro
         return attr
 
-# def actualizarFechaVencimiento(self,fecha, papi):
-#     print(papi)
-#     papi.findChild(QtWidgets.QDateEdit,'input_23').setDate(fecha)
-
+def actualizarFechaVencimiento(self,fecha, pene):
+    print(pene)
+    print(pene.objectName())
+    print(self.objectName())
 
 def crearRadioButton(self,name_input, nombre_tabla,registro='',col='',enable=True):
         si_radiobutton = f"{name_input}_1"
