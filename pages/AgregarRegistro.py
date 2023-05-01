@@ -34,7 +34,76 @@ class AgregarRegistro(Form, Base):
         # cada que se actualice el combobox de tablas, se actualizan los labels de las columnas y se agregan sus debidos inputs
         self.pushButton_confirmar.clicked.connect(self.guardarRegistro)
         self.pushButton_cancelar.clicked.connect(self.restartRegistro)
+        self.combobox_colores.currentTextChanged.connect(self.cargarColores)
 			
+    def cargarColores(self):
+        propiedades = self.propiedadesComboBox()
+        #id = self.pri_key['tabla_final'][1]
+        option = self.combobox_colores.currentText()
+        color = ''
+        agregar_color = ''
+        if option == 'Trámites y pagos finalizados':
+            color = '#09E513'
+            #self.dicc_colores[id] = color
+            agregar_color = ("\n"
+			"QComboBox {\n"
+			"background-color:#09E513;\n" 
+            "}")
+        elif option == 'Tramites pendientes':
+            color = '#FFFF00'
+            #self.dicc_colores[id] = color
+            agregar_color = ("\n"
+			"QComboBox {\n"
+			"background-color: #FFFF00;\n" 
+            "}")
+        elif option == 'Pagos pendientes':
+            color = '#FF0000'
+            #self.dicc_colores[id] = color
+            agregar_color = ("\n"
+			"QComboBox {\n"
+			"background-color: #FF0000;\n" 
+            "}")
+        else:
+            color = '#B9B9B9'
+            #self.dicc_colores[id] = color
+            agregar_color = ("\n"
+			"QComboBox {\n"
+			"background-color: #B9B9B9;\n" 
+            "}")
+        self.combobox_colores.setStyleSheet(propiedades + agregar_color)
+    
+    def propiedadesComboBox(self):
+        css_code = ("\n"
+            "QComboBox {\n"
+            "    width: 30px;\n"
+            "    height: 30px;\n"
+            "    border-radius: 15px;\n"
+            "    border: 1px solid;\n"
+            "    font: 75 12pt \"MS Sans Serif\";\n"
+            "}\n"
+            "\n"
+            "QComboBox::drop-down {\n"
+            "    subcontrol-origin: padding;\n"
+            "    subcontrol-position: top right;\n"
+            "    width: 0px;\n"
+            "    height: 0px;\n"
+            "    border-left-width: 0px;\n"
+            "    border-top-right-radius: 15px;\n"
+            "    border-bottom-right-radius: 15px;\n"
+            "}\n"
+            "\n"
+            "QComboBox QAbstractItemView {\n"
+            "    min-width: 250px;\n"
+            "    border-radius: 6px;\n"
+            "    background-color: rgb(255, 255, 255);\n"
+            "    padding: 10px;\n"
+            "    outline: none;\n"
+            "}\n"
+            "\n"
+            "QComboBox QAbstractItemView::item:hover {\n"
+            "    background-color: #f0f0f0;\n"
+            "}\n")
+        return css_code
  	# en esta funcion se van a actualizar los labels y se agregaran los inputs segun los labels de las columnas
     def setupColumns(self, Form):
         registros_id = {'id_cc':'cc_fechas_cc','id_ctd':'ctd_fechas_ctd','id_rpp':'rpp_fechas_rpp'}
