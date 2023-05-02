@@ -5,7 +5,7 @@ import os
 import mysql.connector
 import workdays,datetime
 import re
-
+from datetime import timedelta
 from bdConexion import obtener_conexion
 from pages.Tablas import Tablas
 from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla, calcularDia
@@ -366,6 +366,11 @@ class AgregarRegistro(Form, Base):
                     print(fecha_vencimiento)
                     query+="fecha_vence_td,"
                     vals+=f"'{fecha_vencimiento}',"
+                if col == 'fecha_presentado':
+                    fecha_vencimiento2=val+datetime.timedelta(days=90)
+                    print(fecha_vencimiento2)
+                    query+="fecha_vence"
+                    vals+=f"'{fecha_vencimiento2}',"
                 if i+1 == len(dicc): 
                     query+= f"{col}) "
                     vals+= f"'{val}');"
