@@ -10,7 +10,7 @@ from bdConexion import obtener_conexion
 import os
 
 from pages.EditarRegistro import EditarRegistro
-from usuarios import getListaTablas, getPermisos, getRegistro, getRegistrosSubtabla, getValoresTabla
+from usuarios import getListaTablas, getNombreCompleto, getPermisos, getRegistro, getRegistrosSubtabla, getValoresTabla
 from deployment import getBaseDir
 
 base_dir = getBaseDir()
@@ -63,6 +63,8 @@ class Tablas(Base, Form):
 		self.tableView.setEditTriggers(QAbstractItemView.NoEditTriggers)
 		#agregar los encabezados al modelo
 		for i, item in enumerate(header):
+			if item == 'id': item = 'ID'
+			else: item = getNombreCompleto(item)
 			self.model.setHorizontalHeaderItem(i,QStandardItem(item))		
 		#agregar el modelo al widget QTableView
 		self.tableView.setModel(self.model)
@@ -168,7 +170,7 @@ class Tablas(Base, Form):
 		headercount = self.tableView.model().columnCount()
 		for x in range(headercount):
 			headertext = self.tableView.model().headerData(x, Qt.Horizontal)
-			if 'id' == headertext:
+			if 'ID' == headertext:
 				cell = self.tableView.model().index(row, x).data()  # get cell at row, col
 				return cell
 	

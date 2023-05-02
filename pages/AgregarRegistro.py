@@ -9,7 +9,7 @@ import re
 from bdConexion import obtener_conexion
 from pages.Tablas import Tablas
 from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla
-from usuarios import getLastElement, getAutoIncrement, getListaTablas, getListaTablasWrite, getPermisos, getRegistroBD, getRegistrosSubtabla, getSubtabla, getTablaRelacionada, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
+from usuarios import getLastElement, getAutoIncrement, getListaTablas, getListaTablasWrite, getNombreColumna, getNombreCompleto, getNombreCompletoSubtabla, getPermisos, getRegistroBD, getRegistrosSubtabla, getSubtabla, getTablaRelacionada, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
 from deployment import getBaseDir
 
 
@@ -53,16 +53,25 @@ class AgregarRegistro(Form, Base):
         
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
+            
             enable = True
             name_input = f"input_{i}"
             name_label = f'label_{i}'
             tipo_dato = propiedades_columnas[i][1]
             auto_increment = propiedades_columnas[i][5]
             pri = propiedades_columnas[i][3]
+            if pri == 'PRI' or col in registros_id.keys():
+                    # if col in registros_id.keys(): index = getAutoIncrement(registros_id[col])
+                    # else: index = getAutoIncrement('tabla_final')
+                    # widget = crearInput(self, tipo_dato, name_input,tabla,registro=index,col=col, enable=False)
+                    # layout.addWidget(widget)
+                    # self.cols.append(widget)
+                    continue
             if col in list_nested_tables:
                 self.setupInputsSubtabla(col)
                 continue
             if col in columnas_val_automatico: enable=False
+
             setattr(self, name_label, QtWidgets.QLabel(self.scrollAreaWidgetContents))
             # Label
             attr_label = getattr(self,name_label)
@@ -71,19 +80,12 @@ class AgregarRegistro(Form, Base):
 			"color: #666666;\n" 
             "font-weight: 700;")
             attr_label.setObjectName(name_label)
-            attr_label.setText(col+': ')
+            attr_label.setText(getNombreCompleto(col)+': ')
             layout.addWidget(attr_label)
             self.cols.append(attr_label)
             if isinstance(tipo_dato, bytes):
                 tipo_dato = tipo_dato.decode('utf-8')
-            if pri == 'PRI': # or col in registros_id.keys()
-                    # if col in registros_id.keys(): index = getAutoIncrement(registros_id[col])
-                    # else: 
-                    
-                    index = getAutoIncrement('tabla_final')
-                    widget = crearInput(self, tipo_dato, name_input,tabla,registro=index,col=col, enable=False)
-                    layout.addWidget(widget)
-                    self.cols.append(widget)
+            
             elif 'tinyint' in tipo_dato:
                 r0,r1 = crearRadioButton(self, name_input,tabla, col=col,enable=enable)
                 layout.addWidget(r0)
@@ -114,7 +116,7 @@ class AgregarRegistro(Form, Base):
 		"color: #957F5F;\n" 
         "font-weight: 700;")
         attr_label.setObjectName(name_label)
-        attr_label.setText(column)
+        attr_label.setText(getNombreCompleto(column))
         self.cols.append(attr_label)
         #horizontal = QtWidgets.QHBoxLayout()
         layout.addWidget(attr_label)
@@ -138,7 +140,7 @@ class AgregarRegistro(Form, Base):
 			"font: 75 14pt;\n"
 			"color: #957F5F;\n")
             attr_label.setObjectName(name_label)
-            attr_label.setText(col)
+            attr_label.setText(getNombreCompletoSubtabla(nombre_tabla,col))
             #attr_label.setAlignment(Qt.AlignCenter)
             
             gridLayout.addWidget(attr_label,0,i)
