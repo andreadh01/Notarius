@@ -414,7 +414,7 @@ class AgregarRegistro(Form, Base):
         cur.close()
         conn.close()
 
-        registro = getRegistroBD('tabla_final','id',self.camposCambiados['tabla_final']['id'])[0]
+        #registro = getRegistroBD('tabla_final','id',self.camposCambiados['tabla_final']['id'])[0]
         updateTable('tabla_final')
         self.label_exito.setStyleSheet("color:green")
         self.label_exito.setText("Registro guardado exitosamente")
@@ -436,7 +436,7 @@ class AgregarRegistro(Form, Base):
         cur.close()
         conn.close()
         
-        registro = getRegistroBD('tabla_final','id',self.camposCambiados['tabla_final']['id'])[0]
+        #registro = getRegistroBD('tabla_final','id',self.camposCambiados['tabla_final']['id'])[0]
         updateTable('tabla_final')
         self.label_exito.setStyleSheet("color:green")
         self.label_exito.setText("Registro guardado exitosamente")
