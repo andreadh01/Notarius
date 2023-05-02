@@ -17,7 +17,7 @@ from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
 from PyQt5.QtWidgets import QFileDialog
 from numpy import busday_count
-from datetime import date
+from datetime import date , timedelta
 import workdays
 
 
@@ -149,23 +149,26 @@ class EditarRegistro(Form, Base):
 
         colorActual="Grey"
         texto="por pagar en"
-        dato=registro.get('fecha_vence')
-        if not dato:
-            texto="Este registro no tiene datos en fecha vence "
-            colorActual="#666666"
-        else:
-            tiempoactual=date.today()
-            diferencia = dato-tiempoactual
-            diferencia = diferencia.days
-            if(diferencia<7 and diferencia>0):
-                colorActual='Yellow'
-                texto="apunto de vencerse en "+ str(diferencia)+"dias  aviso definitivo"
-            elif(diferencia<=0):
-                colorActual="Red"
-                texto="aviso definitibo vencido"
+        dato1=registro.get('fecha_presentado')
+        dato2=registro.get('fecha_vence')
+        if not dato1:
+            texto="Este registro no tiene datos en fecha presentado"
+        else:    
+            if not dato2:
+                texto="Este registro no tiene datos en fecha vencido"
             else:
-                colorActual="Grey"
-                texto="se vence en "+str(diferencia)+" aviso definitivo"
+                tiempoactual=date.today()
+                diferencia = dato2-tiempoactual
+                diferencia = diferencia.days
+                if(diferencia<7 and diferencia>0):
+                    colorActual='Yellow'
+                    texto="apunto de vencerse en "+ str(diferencia)+"dias  aviso definitivo"
+                elif(diferencia<=0):
+                    colorActual="Red"
+                    texto="aviso definitivo vencido"
+                else:
+                    colorActual="Grey"
+                    texto="se vence en "+str(diferencia)+" aviso definitivo"
         attr_label=getattr(self,name_Fecha_V)
         attr_label.setStyleSheet("\n"
                                     "font: 75 18pt;\n"
@@ -554,6 +557,11 @@ class EditarRegistro(Form, Base):
                         fecha_vencimiento,lista = calcularDia(val)
                         query+=f" fecha_vence_td = '{fecha_vencimiento}',"
                     if col == 'fecha_vence_td':
+                        continue
+                    if col == 'fecha_presentado':
+                        fecha_vencimiento2=val+timedelta(days=10)
+                        query+=f"fecha_vence = '{fecha_vencimiento2}',"
+                    if col == 'fecha_vence':
                         continue
                     id_col = self.pri_key[tabla][0]
                     id_value = self.pri_key[tabla][1]
