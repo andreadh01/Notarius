@@ -220,7 +220,16 @@ class Tablas(Base, Form):
 			for j, (col, val) in enumerate(registro.items()):
 				if col == 'color':
 					model.setItem(i,j,QStandardItem(''))
-					model.item(i, j).setBackground(QColor(val))
+					index = model.index(i, j)
+					if val == 'green':
+						#model.setData(index, "Trámites y pagos finalizados", Qt.DisplayRole)
+						model.setData(index, QColor("#5AE964"), Qt.BackgroundRole)
+					elif val == 'yellow':
+						#model.setData(index, "Trámites pendientes", Qt.DisplayRole)
+						model.setData(index, QColor("#DAF544"), Qt.BackgroundRole)
+					elif val == 'red':
+						#model.setData(index, "Pagos pendientes", Qt.DisplayRole)
+						model.setData(index, QColor("#F53E3E"), Qt.BackgroundRole)
 					continue
 				if val is None: val =''
 				if col in list_nested_tables:
@@ -234,22 +243,7 @@ class Tablas(Base, Form):
 					model.setItem(i,j,QStandardItem(str(val)))
 				else:
 					model.setItem(i,j,QStandardItem(str(val)))
-					if col == 'ID' or col == 'id':
-						index = model.index(i, j)
-						valor = int(val)
-						conn = obtener_conexion()
-						cur = conn.cursor()
-						query = f"SELECT color FROM tabla_final WHERE id = {valor}"
-						cur.execute(query)
-						vals = cur.fetchall()[0][0]
-						cur.close()
-						conn.close()
-						if vals == 'green':
-							model.setData(index, QColor("#5AE964"), Qt.BackgroundRole)
-						elif vals == 'yellow':
-							model.setData(index, QColor("#DAF544"), Qt.BackgroundRole)
-						elif vals == 'red':
-							model.setData(index, QColor("#F53E3E"), Qt.BackgroundRole)
+					
 	
 	def agregarRegistro(self,registro):
 		list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
