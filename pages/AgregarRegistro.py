@@ -8,8 +8,8 @@ import re
 
 from bdConexion import obtener_conexion
 from pages.Tablas import Tablas
-from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla, calcularDia
-from usuarios import getLastElement, getAutoIncrement, getListaTablas, getListaTablasWrite, getPermisos, getRegistroBD, getRegistrosSubtabla, getSubtabla, getTablaRelacionada, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
+from pages.components import agregarInputsSubtabla, calcularDia, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla,actualizarFechaVencimiento
+from usuarios import getLastElement, getAutoIncrement, getListaTablas, getListaTablasWrite, getNombreColumna, getNombreCompleto, getNombreCompletoSubtabla, getPermisos, getRegistroBD, getRegistrosSubtabla, getSubtabla, getTablaRelacionada, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
 from deployment import getBaseDir
 import numpy as np
 
@@ -37,6 +37,9 @@ class AgregarRegistro(Form, Base):
         self.pushButton_confirmar.clicked.connect(self.guardarRegistro)
         self.combobox_colores.currentTextChanged.connect(self.cargarColores)
         self.pushButton_cancelar.clicked.connect(self.restartRegistro)
+        if self.findChild(QtWidgets.QDateEdit, 'input_16') != None:
+            print('agregar',self.findChild(QtWidgets.QDateEdit, 'input_16'))
+            self.findChild(QtWidgets.QDateEdit, 'input_16').dateChanged.connect(partial(actualizarFechaVencimiento,self))
 			
     def cargarColores(self):
         propiedades = self.propiedadesComboBox()
@@ -83,7 +86,7 @@ class AgregarRegistro(Form, Base):
  	# en esta funcion se van a actualizar los labels y se agregaran los inputs segun los labels de las columnas
     def setupColumns(self, Form):
         registros_id = {'id_cc':'cc_fechas_cc','id_ctd':'ctd_fechas_ctd','id_rpp':'rpp_fechas_rpp'}
-        columnas_val_automatico = ['saldo']
+        columnas_val_automatico = ['saldo','fecha_vence_td']
         list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
         # se eliminan los combobox anteriores
         self.camposCambiados.clear()
@@ -100,17 +103,24 @@ class AgregarRegistro(Form, Base):
         
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
+            
             enable = True
             name_input = f"input_{i}"
             name_label = f'label_{i}'
             tipo_dato = propiedades_columnas[i][1]
             auto_increment = propiedades_columnas[i][5]
             pri = propiedades_columnas[i][3]
+            if pri == 'PRI' or col in registros_id.keys():
+                    # if col in registros_id.keys(): index = getAutoIncrement(registros_id[col])
+                    # else: index = getAutoIncrement('tabla_final')
+                    # widget = crearInput(self, tipo_dato, name_input,tabla,registro=index,col=col, enable=False)
+                    # layout.addWidget(widget)
+                    # self.cols.append(widget)
+                    continue
             if col in list_nested_tables:
                 self.setupInputsSubtabla(col)
                 continue
             if col in columnas_val_automatico: enable=False
-            if col == 'fecha_vence_td': enable=False
             setattr(self, name_label, QtWidgets.QLabel(self.scrollAreaWidgetContents))
             # Label
             attr_label = getattr(self,name_label)
@@ -119,19 +129,12 @@ class AgregarRegistro(Form, Base):
 			"color: #666666;\n" 
             "font-weight: 700;")
             attr_label.setObjectName(name_label)
-            attr_label.setText(col+': ')
+            attr_label.setText(getNombreCompleto(col)+': ')
             layout.addWidget(attr_label)
             self.cols.append(attr_label)
             if isinstance(tipo_dato, bytes):
                 tipo_dato = tipo_dato.decode('utf-8')
-            if pri == 'PRI': # or col in registros_id.keys()
-                    # if col in registros_id.keys(): index = getAutoIncrement(registros_id[col])
-                    # else: 
-                    
-                    index = getAutoIncrement('tabla_final')
-                    widget = crearInput(self, tipo_dato, name_input,tabla,registro=index,col=col, enable=False)
-                    layout.addWidget(widget)
-                    self.cols.append(widget)
+            
             elif 'tinyint' in tipo_dato:
                 r0,r1 = crearRadioButton(self, name_input,tabla, col=col,enable=enable)
                 layout.addWidget(r0)
@@ -196,7 +199,7 @@ class AgregarRegistro(Form, Base):
 		"color: #957F5F;\n" 
         "font-weight: 700;")
         attr_label.setObjectName(name_label)
-        attr_label.setText(column)
+        attr_label.setText(getNombreCompleto(column))
         self.cols.append(attr_label)
         #horizontal = QtWidgets.QHBoxLayout()
         layout.addWidget(attr_label)
@@ -220,7 +223,7 @@ class AgregarRegistro(Form, Base):
 			"font: 75 16pt;\n"
 			"color: #957F5F;\n")
             attr_label.setObjectName(name_label)
-            attr_label.setText(col)
+            attr_label.setText(getNombreCompletoSubtabla(nombre_tabla,col))
             #attr_label.setAlignment(Qt.AlignCenter)
             
             gridLayout.addWidget(attr_label,0,i)

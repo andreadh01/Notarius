@@ -72,15 +72,6 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             registro = QtCore.QDate() if registro == '' else registro
             attr.dateChanged.connect(partial(self.actualizarDict,attr,name_input,nombre_tabla, col,enable))
             attr.setDate(registro)            
-            if col == 'fecha_escritura':
-                fecha_escritura_date = attr.date()
-                variable = attr
-            if 'fecha_escritura_date' in locals():
-                print('aqui estoyyyyy')
-            if col == 'fecha_vence_td' and 'fecha_escritura_date' in locals():
-                print(variable.date(), fecha_escritura_date)
-                variable.dateChanged.connect(partial(actualizarFechaVencimiento, fecha_escritura_date,registro))
-            
             attr.setEnabled(enable)
             
                     
@@ -144,10 +135,12 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
         self.previous[nombre_tabla][col][name_input] = registro
         return attr
 
-def actualizarFechaVencimiento(self,fecha, pene):
-    print(pene)
-    print(pene.objectName())
-    print(self.objectName())
+def actualizarFechaVencimiento(self):
+    #se calcula la nueva fecha de vencimiento
+    fecha = self.findChild(QtWidgets.QDateEdit, 'input_16').date().toPyDate()
+    end_date, cosa_inutil = calcularDia(str(fecha))
+    print(end_date)
+    self.findChild(QtWidgets.QDateEdit, "input_23").setDate(end_date)
 
 def crearRadioButton(self,name_input, nombre_tabla,registro='',col='',enable=True):
         si_radiobutton = f"{name_input}_1"
@@ -405,19 +398,19 @@ def messageBox():
     result = custom_box.exec_()
     return result
 
-def agregarInputsSubtabla(self,column,btn_eliminar=True):
+def agregarInputsSubtabla(self,column):
         nombre_tabla,select = getSubtabla(column)
         gridLayout = self.layouts[f'grid_layout_{nombre_tabla}']
         lista_columnas = select.split(',')
         propiedades_columnas = listaDescribe(nombre_tabla,lista_columnas)
         lastVLayout = gridLayout['col_eliminar']
 
-        if btn_eliminar:
-            del_btn = crearBoton('-')
-            lastVLayout.addWidget(del_btn)
-            self.del_btns.append(del_btn)
-            index = self.del_btns.index(del_btn)
-            del_btn.clicked.connect(partial(eliminarInputsSubtabla,self,index,column))
+        del_btn = crearBoton('-')
+        lastVLayout.addWidget(del_btn)
+        self.del_btns.append(del_btn)
+        index = self.del_btns.index(del_btn)
+        #index = len(lastVLayout)-1 if modificar else index
+        del_btn.clicked.connect(partial(eliminarInputsSubtabla,self,index,column))
      
         for i, col in enumerate(lista_columnas):
             key = generate_unique_key(self)
@@ -442,25 +435,34 @@ def agregarInputsSubtabla(self,column,btn_eliminar=True):
                 widget = crearInput(self, tipo_dato, name_input,nombre_tabla, '',col)
                 vLayout.addWidget(widget)
 
+            
 def eliminarInputsSubtabla(self,index,column):
         result = messageBox()
         
         if result == QtWidgets.QMessageBox.Yes:
             nombre_tabla,select = getSubtabla(column)
             lista_columnas = select.split(',')
-            widget_to_remove = self.del_btns[index]
+            
             gridLayout = self.layouts[f'grid_layout_{nombre_tabla}']
             lastVLayout = gridLayout['col_eliminar']
-            index = lastVLayout.indexOf(widget_to_remove)
+            widget_to_remove =  self.del_btns[index]
+            widget_index = lastVLayout.indexOf(widget_to_remove)
             lastVLayout.removeWidget(widget_to_remove)
             widget_to_remove.deleteLater()
             for i, col in enumerate(lista_columnas):
                 if nombre_tabla in self.camposCambiados: 
-                    if index in self.camposCambiados[nombre_tabla]: 
-                        if col in self.camposCambiados[nombre_tabla][index]: 
-                            del self.camposCambiados[nombre_tabla][index][col]
+                    if widget_index in self.camposCambiados[nombre_tabla]: 
+                        if col in self.camposCambiados[nombre_tabla][widget_index]: 
+                            del self.camposCambiados[nombre_tabla][widget_index][col]
+                print(self.diccionarioregistros_editarregistros_subtablas[nombre_tabla])
+                print('elemento a eliminar',widget_index,col)
+                if nombre_tabla in self.diccionarioregistros_editarregistros_subtablas:
+                    if widget_index in self.diccionarioregistros_editarregistros_subtablas[nombre_tabla]:
+                        if col in self.diccionarioregistros_editarregistros_subtablas[nombre_tabla][widget_index]:
+                            print('eliminado',self.diccionarioregistros_editarregistros_subtablas[nombre_tabla][widget_index][col])
+                            del self.diccionarioregistros_editarregistros_subtablas[nombre_tabla][widget_index][col]
                 layout = gridLayout[f'layout_{col}_{i}_{nombre_tabla}']
-                widget_to_remove = layout.itemAt(index).widget()
+                widget_to_remove = layout.itemAt(widget_index).widget()
                 layout.removeWidget(widget_to_remove)
                 widget_to_remove.deleteLater()
             if nombre_tabla in self.camposCambiados: updateIndices(self,nombre_tabla)

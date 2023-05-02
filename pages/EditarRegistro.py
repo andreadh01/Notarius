@@ -1,11 +1,13 @@
 import datetime
 from functools import partial
+from logging import makeLogRecord
 import re
 from PyQt5 import uic, QtWidgets
 import os
+from PDFGenerator import generarPDF
 from bdConexion import obtener_conexion
-from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla, messageBox, calcularDia
-from usuarios import getAllPermisos, getAutoIncrement, getListaTablasWrite, getPermisos, getRegistro, getRegistroBD, getRegistrosSubtabla, getSubtabla, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
+from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla, messageBox,calcularDia, actualizarFechaVencimiento
+from usuarios import getAllPermisos, getAutoIncrement, getListaTablasWrite, getNombreColumna, getNombreCompleto, getNombreCompletoSubtabla, getPermisos, getRegistro, getRegistroBD, getRegistrosSubtabla, getSubtabla, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
 from PyQt5.QtCore import Qt
 from deployment import getBaseDir
 #from reportlab.pdfgen import canvas, 
@@ -26,7 +28,7 @@ Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','editar-registro.ui'))
 
 class EditarRegistro(Form, Base):
     lista_columnas_write = []
-    listaregistros_editarregistros = []
+    listaregistros_editarregistros = {}
     previous = {}
     diccionarioregistros_editarregistros_subtablas = {}
     camposCambiados = {}
@@ -47,7 +49,67 @@ class EditarRegistro(Form, Base):
         self.pushButton_cancelar.clicked.connect(self.changePage)
         self.combobox_colores.currentTextChanged.connect(self.cargarColores)
         self.pushButton_confirmar.clicked.connect(self.actualizarRegistro)
-        self.pushButton_pdf.clicked.connect(self.crearPDF)
+        self.pushButton_pdf.clicked.connect(partial(generarPDF,self))
+	
+    # def crearPDF(self):
+    #     #se abre el filechooser o ajá
+    #     file_path, _ = QFileDialog.getSaveFileName(filter='PDF Files (*.pdf)')
+    #     bold_style = ParagraphStyle(
+    #     name='Bold',
+    #     fontName='Helvetica-Bold',
+    #     fontSize=12,
+    #     leading=16,
+    #     textColor=colors.black,
+    #     alignment=TA_LEFT,
+    #     )
+    #     # Create a new PDF
+    #     if file_path != '':
+    #         pdf = SimpleDocTemplate(file_path,pagesize=letter, topMargin=10)
+    #         styles = getSampleStyleSheet()
+    #         normal_style = styles["Normal"]
+    #         parrafos = []
+
+    #         logo = Image("logo.png")
+    #         logo.hAlign = 'LEFT'
+    #         logo.spaceBefore = 20
+    #         logo.drawHeight = 4*inch*logo.drawHeight/logo.drawWidth
+    #         logo.drawWidth = 4*inch
+    #         parrafos.append(logo)
+
+    #         #este for es para la informacion normal
+    #         for element in self.listaregistros_editarregistros:
+    #             parrafo = Paragraph(str(element[0])+': '+str(element[1]),normal_style)
+    #             parrafos.append(parrafo)
+    #             parrafos.append(Spacer(1,12))
+
+
+    #         #este for es para las subtablas     
+    #         for key, value in self.diccionarioregistros_editarregistros_subtablas.items():
+    #             diccionario = {}
+    #             parrafo = Paragraph(key,bold_style)
+    #             parrafos.append(parrafo)
+    #             parrafos.append(Spacer(1,12))
+    #             diccionario = self.organizardiccionario(value, diccionario)
+    #             lista = []
+    #             for key, value in diccionario.items():
+    #                     lista.append(value)
+    #             for j, element in enumerate(lista[0]):
+    #                 for k in range(0, len(diccionario)):
+    #                     parrafo = Paragraph(str(list(diccionario.keys())[k])+': '+str(diccionario[list(diccionario.keys())[k]][j]),normal_style)
+    #                     parrafos.append(parrafo)
+    #                     parrafos.append(Spacer(1,12))
+    #                 parrafos.append(Spacer(1,25))
+    #         pdf.build(parrafos)
+
+    # def organizardiccionario(self, value, diccionario):
+    #     for element in value:
+    #             if element[0] not in diccionario:
+    #                 diccionario[element[0]] = []
+    #                 diccionario[element[0]].append(element[1])
+    #             else:
+    #                 diccionario[element[0]].append(element[1])
+    #     return diccionario
+
 
     def cargarColores(self):
         propiedades = self.propiedadesComboBox()
@@ -123,75 +185,13 @@ class EditarRegistro(Form, Base):
             "    background-color: #f0f0f0;\n"
             "}\n")
         return css_code
-
-    def crearPDF(self):
-        #se abre el filechooser o ajá
-        file_path, _ = QFileDialog.getSaveFileName(filter='PDF Files (*.pdf)')
-        bold_style = ParagraphStyle(
-        name='Bold',
-        fontName='Helvetica-Bold',
-        fontSize=12,
-        leading=16,
-        textColor=colors.black,
-        alignment=TA_LEFT,
-        )
-        # Create a new PDF
-        if file_path != '':
-            pdf = SimpleDocTemplate(file_path,pagesize=letter, topMargin=10)
-            styles = getSampleStyleSheet()
-            normal_style = styles["Normal"]
-            parrafos = []
-
-            logo = Image("logo.png")
-            logo.hAlign = 'LEFT'
-            logo.spaceBefore = 20
-            logo.drawHeight = 4*inch*logo.drawHeight/logo.drawWidth
-            logo.drawWidth = 4*inch
-            parrafos.append(logo)
-
-            #este for es para la informacion normal
-            for element in self.listaregistros_editarregistros:
-                parrafo = Paragraph(str(element[0])+': '+str(element[1]),normal_style)
-                parrafos.append(parrafo)
-                parrafos.append(Spacer(1,12))
-
-
-            #este for es para las subtablas     
-            for key, value in self.diccionarioregistros_editarregistros_subtablas.items():
-                diccionario = {}
-                parrafo = Paragraph(key,bold_style)
-                parrafos.append(parrafo)
-                parrafos.append(Spacer(1,12))
-                diccionario = self.organizardiccionario(value, diccionario)
-                lista = []
-                for key, value in diccionario.items():
-                        lista.append(value)
-                for j, element in enumerate(lista[0]):
-                    for k in range(0, len(diccionario)):
-                        parrafo = Paragraph(str(list(diccionario.keys())[k])+': '+str(diccionario[list(diccionario.keys())[k]][j]),normal_style)
-                        parrafos.append(parrafo)
-                        parrafos.append(Spacer(1,12))
-                    parrafos.append(Spacer(1,25))
-            pdf.build(parrafos)
-
-    def organizardiccionario(self, value, diccionario):
-        for element in value:
-                if element[0] not in diccionario:
-                    diccionario[element[0]] = []
-                    diccionario[element[0]].append(element[1])
-                else:
-                    diccionario[element[0]].append(element[1])
-        return diccionario
-
-
-
     def setupInputs(self, Form, registro, subtabla=False):
         columnas_val_automatico = ['saldo']
         # se eliminan los inputs anteriores
-        self.listaregistros_editarregistros = []
+        self.listaregistros_editarregistros = {}
         self.registro_viejo = registro
         #esto es lo que crea el aviso de fecha vencida
-        if registro['fecha_vence_td'] != None:
+        if registro['fecha_vence_td'] != None:            
             fecha_actual = datetime.datetime.now()
             fecha_vencimiento = datetime.datetime.combine(registro['fecha_vence_td'], datetime.datetime.min.time())
             #se obtienen los dias festivos con la funcion de el modulo components.py
@@ -207,7 +207,6 @@ class EditarRegistro(Form, Base):
                 self.label_aviso_vencimiento.setText(f"¡La fecha de vencimiento de este registro es en {dias_sobrantes} días!")
             print(dias_sobrantes)
 
-
         columnas = getPermisos('tabla_final')["read"]
         columnas_write = getPermisos('tabla_final')["write"]
         lista_columnas = columnas.split(',')
@@ -221,6 +220,7 @@ class EditarRegistro(Form, Base):
         layout = self.verticalLayout
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
+            
             enable = True
             if col == 'fecha_vence_td': enable=False
             if col in columnas_val_automatico: enable=False
@@ -233,6 +233,12 @@ class EditarRegistro(Form, Base):
                 new_registro = getRegistrosSubtabla(col,registro[col])
                 self.setupInputsSubtabla(col,new_registro)
                 continue
+            if pri == 'PRI' or col in registros_id.keys(): 
+                    if col in registros_id.keys(): self.pri_key[registros_id[col]] = (col,registro[col])
+                    else: self.pri_key['tabla_final'] = (col,registro[col])
+                    # widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col, enable=False)
+                    # layout.addWidget(widget)
+                    continue
             setattr(self, name_label, QtWidgets.QLabel(self.scrollAreaWidgetContents))
             # Label
             attr_label = getattr(self,name_label)
@@ -241,24 +247,20 @@ class EditarRegistro(Form, Base):
 			"color: #666666;\n" 
             "font-weight: 700;")
             attr_label.setObjectName(name_label)
-            attr_label.setText(col)
+            attr_label.setText(getNombreCompleto(col))
             layout.addWidget(attr_label)
-            
             if isinstance(tipo_dato, bytes):
                 tipo_dato = tipo_dato.decode('utf-8')
-            elif pri == 'PRI': 
-                    if col in registros_id.keys(): self.pri_key[registros_id[col]] = (col,registro[col])
-                    else: self.pri_key['tabla_final'] = (col,registro[col])
-                    widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col, enable=False)
-                    layout.addWidget(widget)
             elif col in self.lista_columnas_write:
-                widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col,enable=enable)
-                if col in columnas_val_automatico: self.cols_auto[col] = widget
-                layout.addWidget(widget)
                 if 'tinyint' in tipo_dato:
                     r0,r1 = crearRadioButton(self, name_input, 'tabla_final',registro[col],col,enable=enable)
                     layout.addWidget(r0)
                     layout.addWidget(r1)
+                else:
+                    widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col,enable=enable)
+                    if col in columnas_val_automatico: self.cols_auto[col] = widget
+                    layout.addWidget(widget)
+                
             elif 'tinyint' in tipo_dato:
                 r0,r1 = crearRadioButton(self, name_input, 'tabla_final',registro[col],col, enable=False)
                 layout.addWidget(r0)
@@ -270,7 +272,10 @@ class EditarRegistro(Form, Base):
                 layout.addWidget(widget)
                 
             if registro[col] is not None:
-                self.listaregistros_editarregistros.append((col,registro[col]))
+                self.listaregistros_editarregistros[col]=registro[col]
+            if self.findChild(QtWidgets.QDateEdit, 'input_16') != None:
+                print('agregar',self.findChild(QtWidgets.QDateEdit, 'input_16'))
+                self.findChild(QtWidgets.QDateEdit, 'input_16').dateChanged.connect(partial(actualizarFechaVencimiento,self))
                 
     # este metodo carga el registro seleccionado
     def getRegistro(self, Form, index, tabla, col):
@@ -316,18 +321,18 @@ class EditarRegistro(Form, Base):
 		"color: #957F5F;\n" 
         "font-weight: 700;")
         attr_label.setObjectName(name_label)
-        attr_label.setText(column)
+        attr_label.setText(getNombreCompleto(column))
         #horizontal = QtWidgets.QHBoxLayout()
         layout.addWidget(attr_label)
         #horizontal.addWidget(attr_label)
         #horizontal.addWidget(add_btn)
-        
+        lastVLayout = QtWidgets.QVBoxLayout()
         if len(lista_columnas_write) > 1: 
-            lastVLayout = QtWidgets.QVBoxLayout()
+            
             self.layouts[f'grid_layout_{nombre_tabla}']['col_eliminar'] = lastVLayout
             gridLayout.addLayout(lastVLayout,1,len(lista_columnas)+1)
             add_btn = crearBoton('+')
-            add_btn.clicked.connect(partial(agregarInputsSubtabla,self,column,False))
+            add_btn.clicked.connect(partial(agregarInputsSubtabla,self,column))
             gridLayout.addWidget(add_btn,0,len(lista_columnas)+1)
 
             # for i in enumerate(registros): 
@@ -337,6 +342,17 @@ class EditarRegistro(Form, Base):
             #     index = self.del_btns.index(del_btn)
             #     del_btn.clicked.connect(partial(eliminarInputsSubtabla,self,index,column))
         # aqui se crea los widgets del label con sus input y se agrega al gui
+        self.diccionarioregistros_editarregistros_subtablas[nombre_tabla] = {}
+        for i, registro in enumerate(registros):
+            # self.diccionarioregistros_editarregistros_subtablas[nombre_tabla][i] = {}
+            lastVLayout.addWidget(QtWidgets.QWidget())
+            # print(registro)
+            # for col,val in registro.items():
+            #     self.diccionarioregistros_editarregistros_subtablas[nombre_tabla][i][col] = val
+            #     print("dict subtablassss",self.diccionarioregistros_editarregistros_subtablas)
+            
+            
+            
         for i, col in enumerate(lista_columnas):
             
             name_input = f"input_{i}"
@@ -351,7 +367,7 @@ class EditarRegistro(Form, Base):
 			"font: 75 16pt;\n"
 			"color: #957F5F;\n")
             attr_label.setObjectName(name_label)
-            attr_label.setText(col)
+            attr_label.setText(getNombreCompletoSubtabla(nombre_tabla,col))
             #attr_label.setAlignment(Qt.AlignCenter)
             
             gridLayout.addWidget(attr_label,0,i)
@@ -359,7 +375,11 @@ class EditarRegistro(Form, Base):
             self.layouts[f'grid_layout_{nombre_tabla}'][f'layout_{col}_{i}_{nombre_tabla}'] = vLayout
             gridLayout.addLayout(vLayout,1,i)
             
-            for registro in registros:
+            for id_reg,registro in enumerate(registros):
+                if id_reg not in self.diccionarioregistros_editarregistros_subtablas[nombre_tabla]:
+                    self.diccionarioregistros_editarregistros_subtablas[nombre_tabla][id_reg] = {}
+                self.diccionarioregistros_editarregistros_subtablas[nombre_tabla][id_reg][col] = registro[col]
+                print('subtablassss!',self.diccionarioregistros_editarregistros_subtablas)
                 if isinstance(tipo_dato, bytes):
                     tipo_dato = tipo_dato.decode('utf-8')
                 elif pri == 'PRI': 
@@ -380,14 +400,14 @@ class EditarRegistro(Form, Base):
                 else:
                     widget = crearInput(self, tipo_dato, name_input,nombre_tabla, registro[col],col,enable=False)
                     vLayout.addWidget(widget)
-                #guardar los registros que se van a editar en una lista
-                if registro[col] != '':
-                    self.diccionarioregistros_editarregistros_subtablas[nombre_tabla] = []
-                    listaderegistros.append((col,registro[col]))
+        #         #guardar los registros que se van a editar en una lista
+        #         if registro[col] != '':
+        #             self.diccionarioregistros_editarregistros_subtablas[nombre_tabla] = []
+        #             listaderegistros.append((col,registro[col]))
                
                        
-        if listaderegistros != []:
-            self.diccionarioregistros_editarregistros_subtablas[nombre_tabla] = listaderegistros
+        # if listaderegistros != []:
+        #     self.diccionarioregistros_editarregistros_subtablas[nombre_tabla] = listaderegistros
 
         layout.addLayout(gridLayout)
 
@@ -405,8 +425,6 @@ class EditarRegistro(Form, Base):
         #subtablas = {'facturas':['no_facturas','no_factura'],'fechas_catastro_calif':['fechas_catastro_calif','cat_envio_calif,cat_regreso_calif,observaciones'],'fechas_catastro_td':['fechas_catastro_td','cat_envio_td,cat_regreso_td,observaciones'],'fechas_rpp':['fechas_rpp','envio_rpp,regreso_rpp,observaciones'],'desgloce_ppto':['desgloce_ppto','concepto,cantidad'],'pagos':['pagos','concepto,cantidad,autorizado_por,fecha,observaciones'],'depositos':['depositos','concepto,cantidad,tipo,banco,fecha,observaciones']}
         #relacionadas={'facturas':'no_presupuesto,escritura_id','cc_fechas_cc':'catastro_calificacion,id_cc','ctd_fechas_ctd':'catastro_td,id_ctd','rpp':'rpp_fechas_rpp,id_rpp','desgloce_ppto_presupuesto':'no_presupuesto','pagos_presupuesto':'no_presupuesto','depositos_presupuesto':'no_presupuesto'}
         columnas_write = getPermisos(tabla)['write'].split(',')
-        
-        
         #if not enable: return
         if len(self.lista_columnas_write) <= 1: return
         
@@ -417,11 +435,15 @@ class EditarRegistro(Form, Base):
         
         if tabla in relacionadas:
             i = name_input.split('_')[1]
+           
             vLayout = self.layouts[f'grid_layout_{tabla}'][f'layout_{col}_{i}_{tabla}']
             index = 'id_fechas' if 'fecha' in tabla else 'id_relacion'
             col_name = tabla if tabla != 'no_facturas' else 'facturas'
             key = vLayout.indexOf(widget)
             if key == -1: return 
+            if key not in self.diccionarioregistros_editarregistros_subtablas[tabla]:
+                self.diccionarioregistros_editarregistros_subtablas[tabla][key] = {}
+            self.diccionarioregistros_editarregistros_subtablas[tabla][key][col] = val
             id_col = self.pri_key['tabla_final'][0]
             id_val = self.pri_key['tabla_final'][1]
             # al ser de las subtablas, todo registro que se agregue se va a insertar
@@ -465,26 +487,34 @@ class EditarRegistro(Form, Base):
                         else: 
                             self.tablas_agregar[relacion][col_rel] = value
                 else:
+                    if tabla == 'no_facturas': 
+                        self.pri_key[col_name] = ('id',registro_id)
+                        col_name = 'no_facturas'
+                    else: self.pri_key[relacionadas[tabla]] = ('id',registro_id)
                     registro_viejo = registro_viejo[key]
                     if col_name not in self.pri_key:
                         self.pri_key[col_name] = {}
                     self.pri_key[col_name][key] = ('id',registro_viejo['id'])
-                    self.pri_key[relacionadas[tabla]] = ('id',registro_id)
+                    print(self.pri_key)
+                    
                     if tabla not in self.camposCambiados:
                         self.camposCambiados[tabla] = {}
                     if key not in self.camposCambiados[tabla]:
                         self.camposCambiados[tabla][key] = {}
                     if index not in self.camposCambiados[tabla][key]: 
                         self.camposCambiados[tabla][key][index] = registro_id
-                    if col in columnas_write: self.camposCambiados[tabla][key][col] = val
+                    if col in columnas_write: 
+                        self.camposCambiados[tabla][key][col] = val
                 
         else:
+            self.listaregistros_editarregistros[col]=val
             if tabla not in self.camposCambiados:
                 self.camposCambiados[tabla] = {}
             if col in columnas_write: self.camposCambiados[tabla][col] = val
         
         # aqui se agrega el indice que relaciona la tabla final con la subtabla
         for subtabla, relacion in relacionadas.items():
+            
             col_name = subtabla if subtabla != 'no_facturas' else 'facturas'
             id_col = self.pri_key['tabla_final'][0]
             id_val = self.pri_key['tabla_final'][1]
@@ -493,34 +523,36 @@ class EditarRegistro(Form, Base):
             if value is None: value = getAutoIncrement(relacion)
             
              # aqui se agrega los campos de cantidad de pagos y deposito al diccionario
-            if col_name not in self.camposCambiados:
-                self.camposCambiados[col_name] = {}
+            if subtabla not in self.camposCambiados:
+                self.camposCambiados[subtabla] = {}
                 registros_sub = getRegistrosSubtabla(col_name,value,True)
                 for i,registro in enumerate(registros_sub):
                     for col,val in registro.items():
                         val = str(val)
-                        if i not in self.camposCambiados[col_name]: self.camposCambiados[col_name][i] = {}
-                        self.camposCambiados[col_name][i][col] = val
+                        if i not in self.camposCambiados[subtabla]: self.camposCambiados[subtabla][i] = {}
+                        self.camposCambiados[subtabla][i][col] = val
             if relacion not in self.camposCambiados: 
                 self.camposCambiados[relacion] = {}
             cols_rel = getPermisos(relacion)['write'].split(',')
             
             for col_rel in cols_rel:
-                
-                
-                if col_rel == 'id': continue
-                if col_rel == 'no_presupuesto':  
-                    if 'no_presupuesto' in  self.camposCambiados['tabla_final']:
+                if col_rel in self.camposCambiados['tabla_final']:
+                    registro = getRegistro(relacion,col_rel,self.camposCambiados['tabla_final'][col_rel])
+                    if col_rel == 'id': continue
+                    if col_rel == 'no_presupuesto':  
+                        if 'no_presupuesto' in  self.camposCambiados['tabla_final']:
+                            if col_name in columnas_write: self.camposCambiados['tabla_final'][col_name] = value
+                            if registro is None:
+                                if relacion not in self.tablas_agregar:
+                                    self.tablas_agregar[relacion] = {}
+                                self.tablas_agregar[relacion][col_rel] = self.camposCambiados['tabla_final']['no_presupuesto']
+                    else: 
+                        self.camposCambiados['tabla_final'][col_rel] = value
                         if col_name in columnas_write: self.camposCambiados['tabla_final'][col_name] = value
-                        if relacion not in self.tablas_agregar:
-                            self.tablas_agregar[relacion] = {}
-                        self.tablas_agregar[relacion][col_rel] = self.camposCambiados['tabla_final']['no_presupuesto']
-                else: 
-                    self.camposCambiados['tabla_final'][col_rel] = value
-                    if col_name in columnas_write: self.camposCambiados['tabla_final'][col_name] = value
-                    if relacion not in self.tablas_agregar:
-                        self.tablas_agregar[relacion] = {}
-                    self.tablas_agregar[relacion][col_rel] = value
+                        if registro is None:
+                            if relacion not in self.tablas_agregar:
+                                self.tablas_agregar[relacion] = {}
+                            self.tablas_agregar[relacion][col_rel] = value
                     
 
         if col == 'cantidad':
@@ -593,14 +625,18 @@ class EditarRegistro(Form, Base):
                 continue
             for i, (col, val) in enumerate(dicc.items()):
                 try:
+                    i += 1
                     if col == 'fecha_escritura':
+                        i +=1
                         fecha_vencimiento,lista = calcularDia(val)
                         query+=f" fecha_vence_td = '{fecha_vencimiento}',"
                     if col == 'fecha_vence_td':
                         continue
+                    print(tabla,self.pri_key)
                     id_col = self.pri_key[tabla][0]
                     id_value = self.pri_key[tabla][1]
-                    if i+1 == len(dicc): query+= f"{col}='{val}' WHERE  {id_col}='{id_value}';"
+                    print(i,len(dicc))
+                    if i == len(dicc): query+= f"{col}='{val}' WHERE  {id_col}='{id_value}';"
                     else: query+= f"{col}='{val}', "
                 except:
                     execute =False

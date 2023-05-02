@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Reporte de escritura</title>
+	<link rel="stylesheet" type="text/css" href="{{ file_path }}">
+</head>
+
+<body>
+	<!-- Header section -->
+	<table id="header">
+		<tr>
+			<td><img src="{{ img_path }}" /></td>
+			<td class="title">REPORTE DE ESCRITURA</td>
+			<td class="body-text">
+				<p>No. de presupuesto:</p>
+				<p>{{ no_presupuesto }}</p>
+				<p>No. de escritura: </p>
+				<p>{{ no_escritura }}-0{{ bis }}</p>
+			</td>
+		</tr>
+	</table>
+
+
+	{% if dicc_general %}
+	<!-- Seccion general -->
+	<section>
+		<h2 class="sub-header">
+			Datos Generales de Escritura
+		</h2>
+		<table>
+			{% for col, val in dicc_general.items() %}
+			<tr>
+				<th>{{ col }}</th>
+				<td>{{ val }}</td>
+			</tr>
+
+			{% endfor %}
+		</table>
+		{% if dicc_facturas %}
+		<div class="sub-section">
+			<div class="subtable-title">Facturas</div>
+			<table>
+				<thead>
+					<tr>
+						{% for col in facturas_nombres %}
+						<th>{{ col }}</th>
+						{% endfor %}
+					</tr>
+				</thead>
+				<tbody>
+					{% for key, registro in dicc_facturas.items() %}
+					<tr>
+						{% for col in facturas_nombres %}
+						<td>{{ registro.get(col, "") }}</td>
+						{% endfor %}
+					</tr>
+					{% endfor %}
+
+				</tbody>
+
+			</table>
+		</div>
+		{% endif %}
+	</section>
+
+
+	{% endif %}
+
+	{% if dicc_juridico %}
+	<!-- Seccion juridico -->
+	<section>
+		<h2 class="sub-header">
+			Datos de Jurídico
+		</h2>
+		<table>
+			{% for col, val in dicc_juridico.items() %}
+			<tr>
+				<th>{{ col }}</th>
+				<td>{{ val }}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</section>
+
+	{% endif %}
+
+	{% if dicc_tramites %}
+	<!-- Seccion tramites -->
+	<section>
+		<h2 class="sub-header">
+			Datos de Trámites
+		</h2>
+		<table>
+			{% for col, val in dicc_tramites.items() %}
+			<tr>
+				<th>{{ col }}</th>
+				<td>{{ val }}</td>
+			</tr>
+			{% endfor %}
+		</table>
+
+		{% if dicc_cc %}
+		<div class="sub-section">
+
+			<div class="table-title">TRÁMITE: Catastro Calificación</div>
+			<table>
+				{% for col, val in dicc_cc.items() %}
+				<tr>
+					<th>{{ col }}</th>
+					<td>{{ val }}</td>
+				</tr>
+				{% endfor %}
+			</table>
+			{% if dicc_fechascc %}
+			<div class="subtable-title">Fechas Catastro Calificación</div>
+			<table>
+				<thead>
+					<tr>
+						{% for col in fechas_nombres %}
+						<th>{{ col }}</th>
+						{% endfor %}
+					</tr>
+				</thead>
+				<tbody>
+					{% for key, registro in dicc_fechascc.items() %}
+					<tr>
+						{% for col in fechas_nombres %}
+						<td>{{ registro.get(col, "") }}</td>
+						{% endfor %}
+					</tr>
+					{% endfor %}
+
+				</tbody>
+
+			</table>
+			{% endif %}
+
+		</div>
+		{% endif %}
+
+		{% if dicc_ctd %}
+		<div class="sub-section">
+			<div class="table-title">TRÁMITE: Catastro Traslado de Dominio (TD)</div>
+			<table>
+				{% for col, val in dicc_ctd.items() %}
+				<tr>
+					<th>{{ col }}</th>
+					<td>{{ val }}</td>
+				</tr>
+				{% endfor %}
+			</table>
+			{% if dicc_fechasctd %}
+			<div class="subtable-title">Fechas Catastro Calificación</div>
+			<table>
+				<thead>
+					<tr>
+						{% for col in fechas_nombres %}
+						<th>{{ col }}</th>
+						{% endfor %}
+					</tr>
+				</thead>
+				<tbody>
+					{% for key, registro in dicc_fechasctd.items() %}
+					<tr>
+						{% for col in fechas_nombres %}
+						<td>{{ registro.get(col, "") }}</td>
+						{% endfor %}
+					</tr>
+					{% endfor %}
+
+				</tbody>
+
+			</table>
+			{% endif %}
+
+		</div>
+		{% endif %}
+
+		{% if dicc_rpp %}
+		<div class="sub-section">
+			<div class="table-title">TRÁMITE: Registro Público (RPP)</div>
+			<table>
+				{% for col, val in dicc_rpp.items() %}
+				<tr>
+					<th>{{ col }}</th>
+					<td>{{ val }}</td>
+				</tr>
+				{% endfor %}
+			</table>
+			{% if dicc_fechasrpp %}
+			<div class="subtable-title">Fechas Catastro Calificación</div>
+			<table>
+				<thead>
+					<tr>
+						{% for col in fechas_nombres %}
+						<th>{{ col }}</th>
+						{% endfor %}
+					</tr>
+				</thead>
+				<tbody>
+					{% for key, registro in dicc_fechasrpp.items() %}
+					<tr>
+						{% for col in fechas_nombres %}
+						<td>{{ registro.get(col, "") }}</td>
+						{% endfor %}
+					</tr>
+					{% endfor %}
+
+				</tbody>
+
+			</table>
+			{% endif %}
+		</div>
+		{% endif %}
+	</section>
+	{% endif %}
+
+	{% if dicc_presupuesto %}
+	<!-- Seccion presupuesto -->
+	<section>
+		<h2 class="sub-header">
+			Datos de Presupuesto
+		</h2>
+		<table>
+			{% for col, val in dicc_presupuesto.items() %}
+			<tr>
+				<th>{{ col }}</th>
+				<td>{{ val }}</td>
+			</tr>
+			{% endfor %}
+		</table>
+		{% if dicc_desglose %}
+		<div class="sub-section">
+			<div class="subtable-title">Desglose de Presupuesto</div>
+			<table>
+				<thead>
+					<tr>
+						{% for col in desglose_nombres %}
+						<th>{{ col }}</th>
+						{% endfor %}
+					</tr>
+				</thead>
+				<tbody>
+					{% for key, registro in dicc_desglose.items() %}
+					<tr>
+						{% for col in desglose_nombres %}
+						<td>{{ registro.get(col, "") }}</td>
+						{% endfor %}
+					</tr>
+					{% endfor %}
+
+				</tbody>
+
+			</table>
+			{% endif %}
+
+			{% if dicc_pagos %}
+			<div class="subtable-title">Pagos realizados</div>
+			<table>
+				<thead>
+					<tr>
+						{% for col in pagos_nombres %}
+						<th>{{ col }}</th>
+						{% endfor %}
+					</tr>
+				</thead>
+				<tbody>
+					{% for key, registro in dicc_pagos.items() %}
+					<tr>
+						{% for col in pagos_nombres %}
+						<td>{{ registro.get(col, "") }}</td>
+						{% endfor %}
+					</tr>
+					{% endfor %}
+
+				</tbody>
+
+			</table>
+			{% endif %}
+
+			{% if dicc_depositos %}
+			<div class="subtable-title">Depósitos realizados</div>
+			<table>
+				<thead>
+					<tr>
+						{% for col in depositos_nombres %}
+						<th>{{ col }}</th>
+						{% endfor %}
+					</tr>
+				</thead>
+				<tbody>
+					{% for key, registro in dicc_depositos.items() %}
+					<tr>
+						{% for col in depositos_nombres %}
+						<td>{{ registro.get(col, "") }}</td>
+						{% endfor %}
+					</tr>
+					{% endfor %}
+
+				</tbody>
+
+			</table>
+			{% endif %}
+		</div>
+	</section>
+	{% endif %}
+</body>
+
+</html>

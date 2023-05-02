@@ -6,6 +6,87 @@ usuario = {'user':'','pwd':''}
 lista_tablas = []
 lista_tablas_write = []
 all_tablas = {}
+dict_nombres_completos_columnas_subtablas = {
+    "no_facturas": {"no_factura":"Número de factura"},
+    "pagos":{"fecha":"Fecha","concepto":"Concepto","cantidad":"Cantidad","autorizado_por":"Autorizado por",	"observaciones":"Observaciones"},
+ "depositos":{"fecha":"Fecha","concepto":"Concepto","cantidad":"Cantidad","banco":"Banco","tipo":"Tipo",	"observaciones":"Observaciones"},
+ "desgloce":{"concepto":"Concepto","cantidad":"Cantidad"},
+  "fechas":{"envio":"Fecha de envío","regreso":"Fecha de regreso",	"observaciones":"Observaciones"},
+}
+dict_nombres_completos_columnas = {
+	"No de presupuesto":"no_presupuesto",
+	"No de escritura":"no_escritura",
+	"Bis":"bis",
+ "Facturas":"facturas",
+ "Pagos realizados":"pagos",
+ "Depósitos realizados":"depositos",
+ "Desgloce de Presupuesto":"desgloce_ppto",
+  "Fechas Catastro Calificación":"fechas_catastro_calif",
+   "Fechas Catastro Traslado de Dominio":"fechas_catastro_td",
+    "Fechas Registro Público":"fechas_rpp",
+	"Proyectista"	:"proyectista",
+	"Proyecto"		:"proyecto",
+	"Gestor"		:"gestor",
+	"Enajenante"	:"enajentante",
+	"Adquiriente"	:"adquiriente",
+	"Volumen"					:"volumen",
+	"Número de expediente"			:"no_expediente",
+	"Fecha de escritura"		:"fecha_escritura",
+	"Fecha vence TD"			:"fecha_vence_td",
+	"SR"						:"sr",
+	"Clave catastral"			:"clave_catastral",
+	"Número de Infonavit"			:"infonavit",
+	"Entrega de testimonio"		:"entrega_testimonio",
+	"Observaciones escritura"	:"observaciones_escritura",
+	"Acto jurídico o contrato en extracto"	:"contrato_en_extracto",
+	"Firmas de las partes en extracto"		:"firmas_en_extracto",
+	"Pendientes"							:"pendientes",
+	"No paso"								:"no_paso",
+	"Otorgamiento"							:"otorgamiento",
+	"Firma"									:"firma",
+	"Autorización"							:"autorizacion",
+	"Fecha de aviso al RENAP"				:"fecha_aviso_renap",
+	"Fecha envío a la DIRCC"				:"fecha_envio_dircc",
+	"UIF poder irrevocable"					:"uif_poder_irrevocable",
+	"Fecha de aviso al RELOAT"				:"fecha_aviso_reloat",
+	"Fecha aviso DIR NOT TPA"				:"fecha_aviso_dir_not_tpa",
+	"Folios"								:"folios",
+	"Numeración de folios"					:"numeracion_folios",
+	"Folio cancelado"						:"folio_cancelado",
+	"Minuta"								:"minuta",
+	"Fecha recibido minuta"					:"fecha_minuta",
+	"Apéndice"								:"apendice",
+	"Fecha recibido apéndice"				:"fecha_apendice",
+	"Fecha entrega por jurídico"			:"fecha_entrega_juridico",
+	"Fecha de aviso al portal"				:"fecha_aviso_portal",
+	"Fecha de cierre de antilavado"			:"fecha_cierre_antilavado",
+	"ISR de enajenación"					:"isr_enajenacion",
+	"ISR de adquisición"					:"isr_adquisicion",
+	"IVA"									:"iva",
+	"Número de oficio":"no_oficio_escritura",
+	"Fecha de envío a Dirección de Notarias":"fecha_envio_escritura",
+	"Fecha de solicitud de búsqueda de testamento en Dirección de Notaria"	:"fecha_solicitud_busqueda_testa_rpp",
+	"Fecha de solicitud de búsqueda de testamento en RPP"						:"fecha_solicitud_busqueda_testa_dircc",
+	"Fecha de Publicación en Boletín Oficial"			:"fecha_publicacion_boletin",
+	"Fecha de Publicación en Periódico de los Avisos"	:"fecha_publicacion_periodico",
+	"Catastro calificación terminado"		:"cat_rev",
+	"Observaciones catastro calificación"	:"observaciones_cat_calif",
+	"Catastro TD terminado"					:"cat_terminado",
+	"Observaciones catastro TD"				:"observaciones_cat_td",
+	"Folio RPP"								:"folio_rpp",
+	"Registrada"							:"registrada",
+	"Observaciones RPP"						:"observaciones_rpp",
+	"Fecha de presentado de Aviso Definitivo (ingreso a RPP)"	:"fecha_presentado",
+	"Fecha salida de Aviso Definitivo (entregado por RPP)"		:"fecha_salida",
+	"Fecha vence de Aviso Definitivo"							:"fecha_vence",
+	"Valor de operación"	:"valor_operacion",
+	"Fecha de honorarios"	:"fecha_honorarios",
+	"Monto de honorarios"	:"monto_honorarios",
+	"Monto de impuestos"	:"monto_impuestos",
+	"Pago de comisión"		:"pago_de_comision",
+	"Saldo"					:"saldo"
+
+}
 
 def saveSession(user,pwd):
     global usuario
@@ -287,3 +368,20 @@ def getTablaRelacionada(col):
     cur.close()
     conn.close()
     return valores
+
+def getNombreCompleto(col):
+    global dict_nombres_completos_columnas
+    for key, val in dict_nombres_completos_columnas.items():
+        if val == col:
+            return key
+
+def getNombreCompletoSubtabla(subtabla, col):
+    global dict_nombres_completos_columnas_subtablas
+    for key, cols in dict_nombres_completos_columnas_subtablas.items():
+        if key in subtabla:
+            for col_short, col_full in cols.items():
+                if col_short in col:
+                    return col_full
+        
+def getNombreColumna(col):
+    return dict_nombres_completos_columnas[col]
