@@ -14,6 +14,7 @@ dict_nombres_completos_columnas_subtablas = {
   "fechas":{"envio":"Fecha de envío","regreso":"Fecha de regreso",	"observaciones":"Observaciones"},
 }
 dict_nombres_completos_columnas = {
+    "Estado del registro":"color",
 	"No de presupuesto":"no_presupuesto",
 	"No de escritura":"no_escritura",
 	"Bis":"bis",

@@ -51,7 +51,8 @@ class VerUsuarios(Base, Form):
 		self.proxy.setSourceModel(model)
 		#agregar el filtro al widget QTableView
 		self.tableView.setModel(self.proxy)		
-		self.tableView.horizontalHeader().setStretchLastSection(True)
+		self.tableView.resizeColumnsToContents()
+		self.tableView.resizeRowsToContents()
 	
 	def buttonClick(self):
 		if self.tableView.selectedIndexes() == []:

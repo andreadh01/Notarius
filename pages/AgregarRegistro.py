@@ -87,7 +87,7 @@ class AgregarRegistro(Form, Base):
  	# en esta funcion se van a actualizar los labels y se agregaran los inputs segun los labels de las columnas
     def setupColumns(self, Form):
         registros_id = {'id_cc':'cc_fechas_cc','id_ctd':'ctd_fechas_ctd','id_rpp':'rpp_fechas_rpp'}
-        columnas_val_automatico = ['saldo','fecha_vence_td']
+        columnas_val_automatico = ['saldo','fecha_vence_td','fecha_vence']
         list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
         # se eliminan los combobox anteriores
         self.camposCambiados.clear()
@@ -111,7 +111,7 @@ class AgregarRegistro(Form, Base):
             tipo_dato = propiedades_columnas[i][1]
             auto_increment = propiedades_columnas[i][5]
             pri = propiedades_columnas[i][3]
-            if pri == 'PRI' or col in registros_id.keys():
+            if pri == 'PRI' or col in registros_id.keys() or col == 'color':
                     # if col in registros_id.keys(): index = getAutoIncrement(registros_id[col])
                     # else: index = getAutoIncrement('tabla_final')
                     # widget = crearInput(self, tipo_dato, name_input,tabla,registro=index,col=col, enable=False)
@@ -341,6 +341,21 @@ class AgregarRegistro(Form, Base):
             self.cols_auto['saldo'].setEnabled(True)
             self.cols_auto['saldo'].setValue(self.saldo)
             self.cols_auto['saldo'].setEnabled(False)
+        if col == 'fecha_escritura':
+            fecha_vencimiento,algoinservible = calcularDia(val)
+            self.camposCambiados['tabla_final']['fecha_vence_td'] = fecha_vencimiento
+            print(fecha_vencimiento)
+            self.cols_auto['fecha_vence_td'].setEnabled(True)
+            self.cols_auto['fecha_vence_td'].setValue(fecha_vencimiento)
+            self.cols_auto['fecha_vence_td'].setEnabled(False)
+        if col == 'fecha_presentado':
+            date_obj = datetime.datetime.strptime(val, '%Y-%m-%d')
+            fecha_vencimiento2=date_obj+datetime.timedelta(days=90)
+            new_date_str = fecha_vencimiento2.strftime('%Y-%m-%d')
+            self.camposCambiados['tabla_final']['fecha_vence'] = new_date_str
+            self.cols_auto['fecha_vence'].setEnabled(True)
+            self.cols_auto['fecha_vence'].setValue(new_date_str)
+            self.cols_auto['fecha_vence'].setEnabled(False)
         
     def guardarRegistro(self):
         key_id = list(self.temp_dicc_colores.keys())[0]
@@ -364,11 +379,6 @@ class AgregarRegistro(Form, Base):
                 subtabla = True
                 continue
             for i, (col, val) in enumerate(dicc.items()):
-                if col == 'fecha_escritura':
-                    fecha_vencimiento,algoinservible = calcularDia(val)
-                    print(fecha_vencimiento)
-                    query+="fecha_vence_td,"
-                    vals+=f"'{fecha_vencimiento}',"
                 if i+1 == len(dicc): 
                     query+= f"{col}) "
                     vals+= f"'{val}');"
@@ -380,14 +390,18 @@ class AgregarRegistro(Form, Base):
                     cur.execute(query+vals)
                     conn.commit()
                 except mysql.connector.errors.IntegrityError as error:
-                    print(error)
                     self.label_exito.setStyleSheet("color:red")
-                    self.label_exito.setText("Registro ese registro ya existe, busquelo en la tabla y haga doble clic para modificarlo")
+                    if error.errno == mysql.connector.errorcode.ER_DUP_ENTRY:
+                        self.label_exito.setText("Ese registro ya existe, búsquelo en la tabla y haga doble clic para modificarlo")
+                    else:
+                        self.label_exito.setText("Ha ocurrido un error, consulte al administrador")
+                        print("MySQL Error: {}".format(error))
+                    
                     self.checkThreadTimer = QtCore.QTimer(self)
                     self.checkThreadTimer.setInterval(10000)
                     self.checkThreadTimer.start()
                     self.checkThreadTimer.timeout.connect(partial(self.label_exito.setText,''))
-                    self.restartRegistro()
+                    #self.restartRegistro()
                     return
 
         for tabla in subtablas:

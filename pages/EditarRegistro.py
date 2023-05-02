@@ -2,8 +2,10 @@ import datetime
 from functools import partial
 from logging import makeLogRecord
 import re
-from PyQt5 import uic, QtWidgets
+from PyQt5 import uic, QtWidgets,QtCore
 import os
+
+import mysql.connector
 from PDFGenerator import generarPDF
 from bdConexion import obtener_conexion
 from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla, messageBox,calcularDia, actualizarFechaVencimiento
@@ -20,6 +22,8 @@ from reportlab.lib.enums import TA_LEFT
 from PyQt5.QtWidgets import QFileDialog
 from numpy import busday_count
 import workdays
+from datetime import date , timedelta
+
 
 
 
@@ -251,7 +255,7 @@ class EditarRegistro(Form, Base):
     
     
     def setupInputs(self, Form, registro, subtabla=False):
-        columnas_val_automatico = ['saldo']
+        columnas_val_automatico = ['saldo','fecha_vence_td','fecha_vence']
         # se eliminan los inputs anteriores
         self.listaregistros_editarregistros = {}
         self.registro_viejo = registro
@@ -281,11 +285,47 @@ class EditarRegistro(Form, Base):
         list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
 
         layout = self.verticalLayout
+
+          ## este es mi codigo atte gracida
+        name_Fecha_V="fecha_Vencimiento_warning"
+        setattr(self,name_Fecha_V,QtWidgets.QLabel(self.scrollAreaWidgetContents))  
+
+        colorActual="Grey"
+        texto="por pagar en"
+        dato1=registro.get('fecha_presentado')
+        dato2=registro.get('fecha_vence')
+        if not dato1:
+            texto="Este registro no tiene datos en fecha presentado"
+        else:    
+            if not dato2:
+                texto="Este registro no tiene datos en fecha vencido"
+            else:
+                tiempoactual=date.today()
+                diferencia = dato2-tiempoactual
+                diferencia = diferencia.days
+                if(diferencia<7 and diferencia>0):
+                    colorActual='#fcef00'
+                    texto="El aviso definitivo está a punto de vencerse.  Vence en "+ str(diferencia)+" día(s)."
+                elif(diferencia<=0):
+                    colorActual="Red"
+                    texto="El aviso definitivo está vencido.  Lleva vencido "+ str(abs(diferencia))+" día(s)."
+                else:
+                    colorActual="Grey"
+                    texto="El aviso definitivo vencerá dentro de "+str(diferencia)+" día(s)."
+        attr_label=getattr(self,name_Fecha_V)
+        attr_label.setStyleSheet("\n"
+                                    "font: 75 18pt;\n"
+                                    "text-align: center;\n"
+                                    "color: "+str(colorActual)+";\n"
+                                    "font-weight:1000")
+        attr_label.setObjectName(name_Fecha_V)
+        attr_label.setText(texto)
+        attr_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(attr_label)    
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
             
             enable = True
-            if col == 'fecha_vence_td': enable=False
             if col in columnas_val_automatico: enable=False
             name_input = f"input_{i}"
             name_label = f'label_{i}'
@@ -296,9 +336,9 @@ class EditarRegistro(Form, Base):
                 new_registro = getRegistrosSubtabla(col,registro[col])
                 self.setupInputsSubtabla(col,new_registro)
                 continue
-            if pri == 'PRI' or col in registros_id.keys(): 
+            if pri == 'PRI' or col in registros_id.keys() or col == 'color': 
                     if col in registros_id.keys(): self.pri_key[registros_id[col]] = (col,registro[col])
-                    else: self.pri_key['tabla_final'] = (col,registro[col])
+                    elif pri == 'PRI': self.pri_key['tabla_final'] = (col,registro[col])
                     # widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col, enable=False)
                     # layout.addWidget(widget)
                     continue
@@ -312,6 +352,7 @@ class EditarRegistro(Form, Base):
             attr_label.setObjectName(name_label)
             attr_label.setText(getNombreCompleto(col))
             layout.addWidget(attr_label)
+            print('columna actual',col)
             if isinstance(tipo_dato, bytes):
                 tipo_dato = tipo_dato.decode('utf-8')
             elif col in self.lista_columnas_write:
@@ -321,7 +362,9 @@ class EditarRegistro(Form, Base):
                     layout.addWidget(r1)
                 else:
                     widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col,enable=enable)
-                    if col in columnas_val_automatico: self.cols_auto[col] = widget
+                    if col in columnas_val_automatico: 
+                        print('aqui1!!!!',col)
+                        self.cols_auto[col] = widget
                     layout.addWidget(widget)
                 
             elif 'tinyint' in tipo_dato:
@@ -331,7 +374,9 @@ class EditarRegistro(Form, Base):
 
             else:
                 widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col, enable=False)
-                if col in columnas_val_automatico: self.cols_auto[col] = widget
+                if col in columnas_val_automatico:
+                    print('aqui1!!!!',col)
+                    self.cols_auto[col] = widget
                 layout.addWidget(widget)
                 
             if registro[col] is not None:
@@ -634,7 +679,22 @@ class EditarRegistro(Form, Base):
             self.cols_auto['saldo'].setEnabled(True)
             self.cols_auto['saldo'].setValue(self.saldo)
             self.cols_auto['saldo'].setEnabled(False)
-        
+        if col == 'fecha_escritura' and 'fecha_vence_td' in self.camposCambiados['tabla_final']:
+            fecha_vencimiento,algoinservible = calcularDia(val)
+            self.camposCambiados['tabla_final']['fecha_vence_td'] = fecha_vencimiento
+            print(fecha_vencimiento)
+            print(self.cols_auto)
+            self.cols_auto['fecha_vence_td'].setEnabled(True)
+            self.cols_auto['fecha_vence_td'].setDate(fecha_vencimiento)
+            self.cols_auto['fecha_vence_td'].setEnabled(False)
+        if col == 'fecha_presentado' and 'fecha_vence' in self.camposCambiados['tabla_final']:
+            date_obj = datetime.datetime.strptime(val, '%Y-%m-%d')
+            fecha_vencimiento2=date_obj+datetime.timedelta(days=90)
+            new_date_str = fecha_vencimiento2.strftime('%Y-%m-%d')
+            self.camposCambiados['tabla_final']['fecha_vence'] = new_date_str
+            self.cols_auto['fecha_vence'].setEnabled(True)
+            self.cols_auto['fecha_vence'].setDate(fecha_vencimiento2)
+            self.cols_auto['fecha_vence'].setEnabled(False)
     def actualizarRegistro(self):
         subtablas = ['no_facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos']
         user, pwd = getUsuarioLogueado()
@@ -642,6 +702,7 @@ class EditarRegistro(Form, Base):
         cur = conn.cursor()
         cur.execute("SET FOREIGN_KEY_CHECKS = 0")
 
+        print(self.camposCambiados)
         for tabla, registro in self.tablas_agregar.items():
             execute = True
             query = f"INSERT INTO {tabla} (" 
@@ -683,22 +744,31 @@ class EditarRegistro(Form, Base):
                 continue
             for i, (col, val) in enumerate(dicc.items()):
                 try:
-                    i += 1
-                    if col == 'fecha_escritura':
-                        i +=1
-                        fecha_vencimiento,lista = calcularDia(val)
-                        query+=f" fecha_vence_td = '{fecha_vencimiento}',"
-                    if col == 'fecha_vence_td':
-                        continue
                     id_col = self.pri_key[tabla][0]
                     id_value = self.pri_key[tabla][1]
-                    if i == len(dicc): query+= f"{col}='{val}' WHERE  {id_col}='{id_value}';"
+                    if i+1 == len(dicc): query+= f"{col}='{val}' WHERE  {id_col}='{id_value}';"
                     else: query+= f"{col}='{val}', "
                 except:
                     execute =False
             if execute and not subtabla: 
-                cur.execute(query)
-                conn.commit()
+                try:
+                    print(query)
+                    cur.execute(query)
+                    conn.commit()
+                except mysql.connector.errors.IntegrityError as error:
+                    self.label_error.setStyleSheet("color:red")
+                    if error.errno == mysql.connector.errorcode.ER_DUP_ENTRY:
+                        self.label_error.setText("Ese registro ya existe,  búsquelo en la tabla y haga doble clic para modificarlo")
+                    else:
+                        self.label_error.setText("Ha ocurrido un error, consulte al administrador")
+                        print("MySQL Error: {}".format(error))
+                    
+                    self.checkThreadTimer = QtCore.QTimer(self)
+                    self.checkThreadTimer.setInterval(10000)
+                    self.checkThreadTimer.start()
+                    self.checkThreadTimer.timeout.connect(partial(self.label_error.setText,''))
+                    #self.restartRegistro()
+                    return
 
 
         for tabla in subtablas:

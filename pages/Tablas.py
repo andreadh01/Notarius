@@ -5,7 +5,7 @@ import pandas as pd
 #python(suversion) -m pip install pandas
 from PyQt5.QtWidgets import QHeaderView, QSizePolicy,QTableView, QAbstractItemView,QPushButton,QMessageBox,QScrollBar,QItemDelegate,QLabel
 from PyQt5.QtCore import Qt,QSortFilterProxyModel, QTimer
-from PyQt5.QtGui import QStandardItemModel,QStandardItem
+from PyQt5.QtGui import QStandardItemModel,QStandardItem, QColor
 from bdConexion import obtener_conexion
 import os
 
@@ -95,6 +95,7 @@ class Tablas(Base, Form):
 		#add horizontal scrollbar to table view widget 
 		
 		self.tableView.horizontalHeader().setStretchLastSection(True)
+		self.tableView.setColumnHidden(0, True)
 
 
 	def setupSubTable(self,i,j,column,name)->QTableView:
@@ -217,6 +218,10 @@ class Tablas(Base, Form):
 		#agregar un evento al filtro para cuando se escribe en el line edit
 		for i, registro in enumerate(tabla):
 			for j, (col, val) in enumerate(registro.items()):
+				if col == 'color':
+					model.setItem(i,j,QStandardItem(''))
+					model.item(i, j).setBackground(QColor(val))
+					continue
 				if val is None: val =''
 				if col in list_nested_tables:
 					#si el campo es de una de las tablas en la lista, entonces se guarda su index

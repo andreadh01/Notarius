@@ -75,6 +75,7 @@ color: #957F5F;
        </property>
       </spacer>
      </item>
+     
      <item>
       <spacer name="horizontalSpacer_4">
        <property name="orientation">
@@ -213,6 +214,20 @@ QPushButton:pressed {
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_error">
+     <property name="styleSheet">
+      <string notr="true">font: 20pt &quot;Arial&quot;;
+color: #8fc26b;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QLabel" name="label_aviso_vencimiento">
