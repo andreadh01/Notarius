@@ -158,40 +158,36 @@ class EditarRegistro(Form, Base):
         option = self.combobox_colores.currentText()
         color = ''
         agregar_color = ''
-        self.dicc_colores[id] = []
 
         if option == 'Trámites y pagos finalizados':
-            color = '#09E513'
-            self.dicc_colores[id].insert(0, color)
+            color = 'green'
+            self.dicc_colores[id] = color
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color:#09E513;\n" 
             "}")
-            self.dicc_colores[id].insert(1, (propiedades + agregar_color))
         elif option == 'Tramites pendientes':
-            color = '#FFFF00'
-            self.dicc_colores[id].insert(0, color)
+            color = 'yellow'
+            self.dicc_colores[id] = color
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color: #FFFF00;\n" 
             "}")
-            self.dicc_colores[id].insert(1, (propiedades + agregar_color))
         elif option == 'Pagos pendientes':
-            color = '#FF0000'
-            self.dicc_colores[id].insert(0, color)
+            color = 'red'
+            self.dicc_colores[id] = color
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color: #FF0000;\n" 
             "}")
-            self.dicc_colores[id].insert(1, (propiedades + agregar_color))
         else:
-            color = '#B9B9B9'
-            self.dicc_colores[id].insert(0, color)
+            color = 'gray'
+            self.dicc_colores[id] = color
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color: #B9B9B9;\n" 
             "}")
-            self.dicc_colores[id].insert(1, (propiedades + agregar_color))
+        print("ESTE ES EL COLOR: ",self.dicc_colores)
         self.combobox_colores.setStyleSheet(propiedades + agregar_color)
 
     def propiedadesComboBox(self):
@@ -641,14 +637,11 @@ class EditarRegistro(Form, Base):
         
     def actualizarRegistro(self):
         subtablas = ['no_facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos']
-
         user, pwd = getUsuarioLogueado()
         conn = obtener_conexion(user,pwd)
         cur = conn.cursor()
         cur.execute("SET FOREIGN_KEY_CHECKS = 0")
 
-
-        
         for tabla, registro in self.tablas_agregar.items():
             execute = True
             query = f"INSERT INTO {tabla} (" 
@@ -733,12 +726,26 @@ class EditarRegistro(Form, Base):
         
         cur.close()
         conn.close()
+
+        conn = obtener_conexion('root','')
+        cur = conn.cursor()
+        key_id = next(iter(self.dicc_colores.keys()))
+        color_status = self.dicc_colores[key_id]
+        query = f"UPDATE tabla_final SET color = '{color_status}' WHERE id = {key_id}"
+        cur.execute(query)
+        conn.commit()
+        cur.close()
+        conn.close()
+        self.dicc_colores.clear()
+
         registro = getRegistroBD('tabla_final','id',self.pri_key['tabla_final'][1])[0]
         from pages.Tablas import Tablas
         updateTable('tabla_final')
 
         self.parent().findChild(Tablas).tabla(self.parent().findChild(Tablas))
         self.changePage()
+
+        # Aquí se actualiza el color
 
     def reject(self) -> None:
         return

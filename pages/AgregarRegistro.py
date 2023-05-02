@@ -27,7 +27,6 @@ class AgregarRegistro(Form, Base):
     saldo = 0
     cols_auto = {}
     temp_dicc_colores = {}
-    real_dicc_colores = {}
     def __init__(self, parent=None):
         super(self.__class__,self).__init__(parent)
         self.setupUi(self)
@@ -345,7 +344,6 @@ class AgregarRegistro(Form, Base):
         
     def guardarRegistro(self):
         key_id = list(self.temp_dicc_colores.keys())[0]
-        print("ESTE ES EL TEMMP_DICCICIONARIO: ", self.temp_dicc_colores)
         lista_pagos = []
         
         tabla = 'tabla_final'
@@ -451,6 +449,13 @@ class AgregarRegistro(Form, Base):
         self.temp_dicc_colores.clear()
 
     def restartRegistro(self):
+        propiedades = self.propiedadesComboBox()
+        agregar_color = ("\n"
+			"QComboBox {\n"
+			"background-color: #B9B9B9;\n" 
+            "}")
+        self.combobox_colores.setStyleSheet(propiedades + agregar_color)
+        self.combobox_colores.setCurrentText('Ninguno')
         self.setupColumns(self)
     
     def reject(self) -> None:
