@@ -17,6 +17,7 @@ from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
 from PyQt5.QtWidgets import QFileDialog
 from numpy import busday_count
+from datetime import date
 import workdays
 
 
@@ -129,7 +130,7 @@ class EditarRegistro(Form, Base):
             else:
                 self.label_aviso_vencimiento.setText(f"¡La fecha de vencimiento de este registro es en {dias_sobrantes} días!")
             print(dias_sobrantes)
-
+          
 
         columnas = getPermisos('tabla_final')["read"]
         columnas_write = getPermisos('tabla_final')["write"]
@@ -142,6 +143,39 @@ class EditarRegistro(Form, Base):
         list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
 
         layout = self.verticalLayout
+          ## este es mi codigo atte gracida
+        name_Fecha_V="fecha_Vencimiento_warning"
+        setattr(self,name_Fecha_V,QtWidgets.QLabel(self.scrollAreaWidgetContents))  
+
+        colorActual="Grey"
+        texto="por pagar en"
+        dato=registro.get('fecha_vence')
+        if not dato:
+            texto="Este registro no tiene datos en fecha vence "
+            colorActual="#666666"
+        else:
+            tiempoactual=date.today()
+            diferencia = dato-tiempoactual
+            diferencia = diferencia.days
+            if(diferencia<7 and diferencia>0):
+                colorActual='Yellow'
+                texto="apunto de vencerse en "+ str(diferencia)+"dias  aviso definitivo"
+            elif(diferencia<=0):
+                colorActual="Red"
+                texto="aviso definitibo vencido"
+            else:
+                colorActual="Grey"
+                texto="se vence en "+str(diferencia)+" aviso definitivo"
+        attr_label=getattr(self,name_Fecha_V)
+        attr_label.setStyleSheet("\n"
+                                    "font: 75 18pt;\n"
+                                    "text-align: center;\n"
+                                    "color: "+str(colorActual)+";\n"
+                                    "font-weight:1000")
+        attr_label.setObjectName(name_Fecha_V)
+        attr_label.setText(texto)
+        attr_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(attr_label)    
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
             enable = True
