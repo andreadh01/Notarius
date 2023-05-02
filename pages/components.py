@@ -4,7 +4,7 @@ from PyQt5 import uic, QtWidgets,QtGui,QtCore
 from PyQt5.QtCore import Qt
 from bdConexion import obtener_conexion
 from usuarios import getPermisos, getSubtabla, getUsuarioLogueado, listaDescribe
-import secrets
+import secrets, numpy as np, datetime, workdays
 # en este archivo se generan los componentes de gui que se agregaran de forma dinamica
 
 # esta funcion devuelve un boton de dashboard
@@ -31,7 +31,6 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
         query = f"SELECT {foreign_key[1]} FROM {foreign_key[0]};"
         cur.execute(query)
         lista_opciones = cur.fetchall()
-        # print(lista_opciones)
         if len(lista_opciones) > 0:
             opciones = ['Selecciona una opcion']
             for indice,tupla in enumerate(lista_opciones):
@@ -39,7 +38,6 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
                 opciones.append(temp)
         else:
             opciones = ['No existen datos para esta columna']
-
 
         #prepara combobox
         setattr(self, name_input, QtWidgets.QComboBox(self.scrollAreaWidgetContents))
@@ -73,8 +71,10 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             attr.setObjectName(name_input)
             registro = QtCore.QDate() if registro == '' else registro
             attr.dateChanged.connect(partial(self.actualizarDict,attr,name_input,nombre_tabla, col,enable))
-            attr.setDate(registro)
-            attr.setEnabled(enable)    
+            attr.setDate(registro)            
+            attr.setEnabled(enable)
+            
+                    
         elif 'varchar' in tipo_dato:
             widget = QtWidgets.QTextEdit(self.scrollAreaWidgetContents) if 'varchar(500)' in tipo_dato else QtWidgets.QLineEdit(self.scrollAreaWidgetContents)
             setattr(self, name_input, widget)
@@ -118,7 +118,7 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
 
             attr.currentTextChanged.connect(partial(self.actualizarDict, attr,name_input,nombre_tabla,col,enable))
             attr.setCurrentText(registro)
-            attr.setEnabled(enable)    
+            attr.setEnabled(enable)
         elif 'timestamp' in tipo_dato:
             setattr(self, name_input, QtWidgets.QDateTimeEdit(self.scrollAreaWidgetContents))
             attr = getattr(self,name_input)
@@ -129,11 +129,18 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             registro = QtCore.QDate() if registro == '' else registro
             attr.dateTimeChanged.connect(partial(self.actualizarDict,attr,name_input,nombre_tabla, col,enable))
             attr.setDate(registro)
-            attr.setEnabled(enable)    
+            attr.setEnabled(enable)
         self.previous[nombre_tabla] = {}
         self.previous[nombre_tabla][col] = {}
         self.previous[nombre_tabla][col][name_input] = registro
         return attr
+
+def actualizarFechaVencimiento(self):
+    #se calcula la nueva fecha de vencimiento
+    fecha = self.findChild(QtWidgets.QDateEdit, 'input_16').date().toPyDate()
+    end_date, cosa_inutil = calcularDia(str(fecha))
+    print(end_date)
+    self.findChild(QtWidgets.QDateEdit, "input_23").setDate(end_date)
 
 def crearRadioButton(self,name_input, nombre_tabla,registro='',col='',enable=True):
         si_radiobutton = f"{name_input}_1"
@@ -146,8 +153,8 @@ def crearRadioButton(self,name_input, nombre_tabla,registro='',col='',enable=Tru
         attr.addButton(r0)
         r1 = getattr(self,si_radiobutton)
         attr.addButton(r1)
-        r1.setStyleSheet("font: 100 11pt 'Segoe UI';\ncolor: #666666")
-        r0.setStyleSheet("font: 100 11pt 'Segoe UI';\ncolor: #666666")
+        r1.setStyleSheet("font: 100 14pt 'Segoe UI';\ncolor: #666666")
+        r0.setStyleSheet("font: 100 14pt 'Segoe UI';\ncolor: #666666")
         r1.setEnabled(enable)
         r0.setEnabled(enable)
         r1.toggled.connect(partial(self.actualizarDict, r1,name_input,nombre_tabla,col,enable, True))
@@ -165,7 +172,7 @@ def inputStylesheet(enable, date=False, combobox=False):
     if date: 
         stylesheet = """
         QDateTimeEdit {
-            font: 12pt "Arial";\ncolor: #666666;\nbackground-color: """+bg+""";\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\nheight: 50px; padding:0 10px;
+            font: 15pt "Arial";\ncolor: #666666;\nbackground-color: """+bg+""";\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\nheight: 50px; padding:0 10px;
         }
         QDateEdit::drop-down{
             background-color:#957F5F;
@@ -177,7 +184,7 @@ border-bottom-right-radius:8px;
     image:url(:/resources/resources/icons/calendario.png);
         }
         QDateEdit {
-            font: 12pt "Arial";\ncolor: #666666;\nbackground-color: """+bg+""";\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\nheight: 50px; padding:0 10px;
+            font: 15pt "Arial";\ncolor: #666666;\nbackground-color: """+bg+""";\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\nheight: 50px; padding:0 10px;
         }
         QDateTimeEdit::drop-down{
             background-color:#957F5F;
@@ -192,19 +199,19 @@ border-bottom-right-radius:8px;
 height: 30px;
 width: 90px;
 color: white;
-font-size: 14px;
+font-size: 16px;
 icon-size: 20px, 20px;
 background-color: #957F5F;
 }
 QCalendarWidget QMenu {
 width: 90px;
 color: #957F5F;
-font-size: 14px;
+font-size: 16px;
 background-color: """+bg+""";
 }
 QCalendarWidget QSpinBox {
 width: 70px;
-font-size:14px;
+font-size:16px;
 color: #957F5F;
 background-color: """+bg+""";
 selection-background-color: #957F5F;
@@ -225,7 +232,7 @@ QCalendarWidget QToolButton#qt_calendar_nextmonth
 /* normal days */
 QCalendarWidget QAbstractItemView:enabled
 {
-font-size:14;
+font-size:16;
 color: #957F5F;
 background-color: """+bg+""";
 selection-background-color: #957F5F;
@@ -251,7 +258,7 @@ QCalendarWidget {
     elif combobox:
         stylesheet = """
         QComboBox {
-            font: 12pt "Arial";\ncolor: #666666;\nbackground-color: """+bg+""";\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;
+            font: 15pt "Arial";\ncolor: #666666;\nbackground-color: """+bg+""";\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;
         }
 
 /* style for drop down area */
@@ -271,7 +278,7 @@ border: 4px solid #c2dbfe;
 }
 /* style for list menu */
 QComboBox QListView {
-font-size: 12px;
+font-size: 16px;
 border: 1px solid rgba(0, 0, 0, 10%);
 padding: 5px;
 background-color:"""+bg+""";
@@ -294,7 +301,7 @@ background-color: #d3c393;
 
         """
     else:
-        stylesheet = f"font: 100 12pt 'Arial';\ncolor: #666666;\nbackground-color: {bg};\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;"
+        stylesheet = f"font: 100 15pt 'Arial';\ncolor: #666666;\nbackground-color: {bg};\nborder-radius: 8px;\nborder: 1px solid #CCCCCC;\npadding: 10px;"
     return  stylesheet
 # esta funcion devuelve un checkbox
 #
@@ -307,7 +314,7 @@ QPushButton {
     border-radius: 20px;
     background-color: #957F5F;
     color: white;
-    font-size: 16px;
+    font-size: 18px;
     padding: 10px 10px;
 }
 
@@ -326,6 +333,33 @@ QPushButton:pressed {
     button.setStyleSheet(styleSheet)
     return button
 
+def calcularDia(dia):
+    start_date = datetime.datetime.strptime(dia, '%Y-%m-%d')
+    anio = dia[:4]
+    dias_festivos = [datetime.datetime.strptime(f'{anio}-01-01', '%Y-%m-%d'), datetime.datetime.strptime(f'{anio}-05-01', '%Y-%m-%d'), datetime.datetime.strptime(f'{anio}-09-16', '%Y-%m-%d'), datetime.datetime.strptime(f'{anio}-12-25', '%Y-%m-%d')]
+    dias_festivos = agregarDiasFestivos(dias_festivos, anio)
+    working_days = 60
+    end_date = workdays.workday(start_date,working_days,dias_festivos).date()
+    return end_date,dias_festivos
+
+def agregarDiasFestivos(lista:list, anio:str) -> list:
+
+    #agregar el primer lunes de febrero en conmemoracion del dia de la constitucion
+    holiday = np.busday_offset(anio+'-02', 0, roll='forward', weekmask='Mon')
+    holiday = np.datetime_as_string(holiday, unit='D')
+    lista.append(datetime.datetime.strptime(holiday,'%Y-%m-%d'))
+
+    #agregar el tercer lunes de marzo en conmemoracion del natalicio de benito juarez
+    holiday = np.busday_offset(anio+'-03', 2, roll='forward', weekmask='Mon')
+    holiday = np.datetime_as_string(holiday, unit='D')
+    lista.append(datetime.datetime.strptime(holiday,'%Y-%m-%d'))
+
+    #agregar el tercer lunes de noviembre en conmemoracion de la revolucion mexicana
+    holiday=np.busday_offset(anio+'-11', 2, roll='forward', weekmask='Mon')
+    holiday = np.datetime_as_string(holiday, unit='D')
+    lista.append(datetime.datetime.strptime(holiday,'%Y-%m-%d'))
+    
+    return lista
 def messageBox():
     custom_box = QtWidgets.QMessageBox()
     custom_box.setWindowTitle("Confirmation")
@@ -338,7 +372,7 @@ def messageBox():
         QMessageBox {
             background-color: white;
             color: #666666;
-            font-size: 16px;
+            font-size: 18px;
         }
         QMessageBox QLabel {
             color: #666666;
@@ -347,7 +381,7 @@ def messageBox():
             border-radius: 8px;
             background-color: #957F5F;
             color: white;
-            font-size: 16px;
+            font-size: 18px;
             padding: 10px 30px;
         }
         QMessageBox QPushButton:hover {

@@ -313,6 +313,7 @@ group by E.id
 )order by no_escritura asc;
 
 CREATE TABLE tabla_final AS       SELECT    *  FROM vista_tabla;
+ALTER TABLE tabla_final ENGINE = InnoDB;
 alter table tabla_final add column id int unsigned not null auto_increment primary key first;
 drop view vista_tabla;
 

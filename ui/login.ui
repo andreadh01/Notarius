@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>962</width>
+    <width>1034</width>
     <height>547</height>
    </rect>
   </property>
@@ -175,8 +175,60 @@ font: 55pt &quot;ARIAL BLACK&quot;
        </item>
        <item>
         <layout class="QGridLayout" name="gridLayout">
-         <item row="1" column="2">
-          <spacer name="horizontalSpacer_3">
+         <item row="2" column="8">
+          <spacer name="verticalSpacer_20">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="3" column="7">
+          <widget class="QLabel" name="label_4">
+           <property name="styleSheet">
+            <string notr="true">QLabel {
+	font: 20pt &quot;Arial Rounded MT Bold&quot;;
+	color: rgba(149, 127, 95, 1);
+}</string>
+           </property>
+           <property name="text">
+            <string>Contraseña</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <spacer name="verticalSpacer_13">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="2" column="10">
+          <spacer name="verticalSpacer_18">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="2" column="7">
+          <spacer name="horizontalSpacer_6">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -188,12 +240,18 @@ font: 55pt &quot;ARIAL BLACK&quot;
            </property>
           </spacer>
          </item>
-         <item row="4" column="1">
+         <item row="4" column="7">
           <widget class="QLineEdit" name="passwordfield">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>45</height>
+            </size>
+           </property>
            <property name="font">
             <font>
              <family>Segoe UI</family>
-             <pointsize>11</pointsize>
+             <pointsize>16</pointsize>
              <weight>50</weight>
              <italic>false</italic>
              <bold>false</bold>
@@ -209,7 +267,7 @@ border: 1px solid rgb(166, 164, 180);
 background-color: white;
 color: rgb(103, 80, 41);
 padding: 5px;
-font: 11pt &quot;Segoe UI&quot;;
+font: 16pt &quot;Segoe UI&quot;;
 height: 25px;
 }</string>
            </property>
@@ -218,25 +276,116 @@ height: 25px;
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
-          <spacer name="horizontalSpacer_6">
+         <item row="2" column="11">
+          <spacer name="verticalSpacer_16">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Vertical</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>40</width>
-             <height>20</height>
+             <width>20</width>
+             <height>40</height>
             </size>
            </property>
           </spacer>
          </item>
-         <item row="1" column="1">
+         <item row="2" column="3">
+          <spacer name="verticalSpacer_15">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="2" column="4">
+          <spacer name="verticalSpacer_17">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="2" column="6">
+          <spacer name="verticalSpacer_21">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="0" column="7">
+          <widget class="QLabel" name="label_2">
+           <property name="styleSheet">
+            <string notr="true">QLabel {
+	font: 20pt &quot;Arial Rounded MT Bold&quot;;
+	color: rgba(149, 127, 95, 1);
+}</string>
+           </property>
+           <property name="text">
+            <string>Usuario</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="14">
+          <spacer name="verticalSpacer_9">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="2" column="13">
+          <spacer name="verticalSpacer_12">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="2" column="1">
+          <spacer name="verticalSpacer_11">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="1" column="7">
           <widget class="QLineEdit" name="user">
            <property name="minimumSize">
             <size>
              <width>0</width>
-             <height>0</height>
+             <height>45</height>
             </size>
            </property>
            <property name="focusPolicy">
@@ -249,7 +398,7 @@ border: 1px solid rgb(166, 164, 180);
 background-color: white;
 color: rgb(103, 80, 41);
 padding: 5px;
-font: 11pt &quot;Segoe UI&quot;;
+font: 16pt &quot;Segoe UI&quot;;
 height: 25px;
 }</string>
            </property>
@@ -259,95 +408,56 @@ height: 25px;
           </widget>
          </item>
          <item row="2" column="0">
-          <spacer name="horizontalSpacer_5">
+          <spacer name="verticalSpacer_10">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Vertical</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>40</width>
-             <height>20</height>
+             <width>20</width>
+             <height>40</height>
             </size>
            </property>
           </spacer>
          </item>
-         <item row="1" column="0">
-          <spacer name="horizontalSpacer">
+         <item row="2" column="12">
+          <spacer name="verticalSpacer_14">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Vertical</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>40</width>
-             <height>20</height>
+             <width>20</width>
+             <height>40</height>
             </size>
            </property>
           </spacer>
          </item>
-         <item row="2" column="2">
-          <spacer name="horizontalSpacer_7">
+         <item row="2" column="5">
+          <spacer name="verticalSpacer_19">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Vertical</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>40</width>
-             <height>20</height>
+             <width>20</width>
+             <height>40</height>
             </size>
            </property>
           </spacer>
          </item>
-         <item row="4" column="2">
-          <spacer name="horizontalSpacer_4">
+         <item row="2" column="9">
+          <spacer name="verticalSpacer_22">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Vertical</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>40</width>
-             <height>20</height>
+             <width>20</width>
+             <height>40</height>
             </size>
            </property>
           </spacer>
-         </item>
-         <item row="4" column="0">
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="label_2">
-           <property name="styleSheet">
-            <string notr="true">QLabel {
-	font: 14pt &quot;Arial Rounded MT Bold&quot;;
-	color: rgba(149, 127, 95, 1);
-}</string>
-           </property>
-           <property name="text">
-            <string>Usuario</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLabel" name="label_4">
-           <property name="styleSheet">
-            <string notr="true">QLabel {
-	font: 14pt &quot;Arial Rounded MT Bold&quot;;
-	color: rgba(149, 127, 95, 1);
-}</string>
-           </property>
-           <property name="text">
-            <string>Contraseña</string>
-           </property>
-          </widget>
          </item>
         </layout>
        </item>
@@ -390,7 +500,7 @@ height: 25px;
            <property name="font">
             <font>
              <family>Arial Rounded MT Bold</family>
-             <pointsize>14</pointsize>
+             <pointsize>18</pointsize>
              <weight>50</weight>
              <italic>false</italic>
              <bold>false</bold>
@@ -404,7 +514,7 @@ background-color: rgba(149, 127, 95, 1);
 color: white;
 padding:10px 0;
 
-font: 14pt &quot;Arial Rounded MT Bold&quot;;
+font: 18pt &quot;Arial Rounded MT Bold&quot;;
 }
 
 QPushButton:hover {

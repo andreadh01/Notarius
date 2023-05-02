@@ -41,7 +41,7 @@ class Ui_Dashboard(object):
         self.styleSheet.setStyleSheet(u"""
                                       QWidget{
                                       	color: rgb(221, 221, 221);
-                                      	font: 11pt \"Segoe UI\";
+                                      	font: 16pt \"Segoe UI\";
                                       }
                                       
           

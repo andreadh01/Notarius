@@ -1,3 +1,4 @@
+import datetime
 from functools import partial
 from logging import makeLogRecord
 import re
@@ -5,7 +6,7 @@ from PyQt5 import uic, QtWidgets
 import os
 from PDFGenerator import generarPDF
 from bdConexion import obtener_conexion
-from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla, messageBox
+from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla, messageBox,calcularDia, actualizarFechaVencimiento
 from usuarios import getAllPermisos, getAutoIncrement, getListaTablasWrite, getNombreColumna, getNombreCompleto, getNombreCompletoSubtabla, getPermisos, getRegistro, getRegistroBD, getRegistrosSubtabla, getSubtabla, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
 from PyQt5.QtCore import Qt
 from deployment import getBaseDir
@@ -17,6 +18,9 @@ from reportlab.lib.units import inch
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
 from PyQt5.QtWidgets import QFileDialog
+from numpy import busday_count
+import workdays
+
 
 
 base_dir = getBaseDir()
@@ -35,6 +39,7 @@ class EditarRegistro(Form, Base):
     tablas_agregar = {}
     saldo = 0
     cols_auto = {}
+    dicc_colores = {}
     
     def __init__(self, parent=None):
         super(self.__class__,self).__init__(parent)
@@ -42,6 +47,7 @@ class EditarRegistro(Form, Base):
             # se mandan llamar los metodos al correr el programa
         #self.setupInputs(self)
         self.pushButton_cancelar.clicked.connect(self.changePage)
+        self.combobox_colores.currentTextChanged.connect(self.cargarColores)
         self.pushButton_confirmar.clicked.connect(self.actualizarRegistro)
         self.pushButton_pdf.clicked.connect(partial(generarPDF,self))
 	
@@ -105,15 +111,104 @@ class EditarRegistro(Form, Base):
     #     return diccionario
 
 
+    def cargarColores(self):
+        propiedades = self.propiedadesComboBox()
+        id = self.pri_key['tabla_final'][1]
+        option = self.combobox_colores.currentText()
+        color = ''
+        agregar_color = ''
+        self.dicc_colores[id] = []
+        if option == 'Trámites y pagos finalizados':
+            color = '#09E513'
+            self.dicc_colores[id].insert(0, color)
+            agregar_color = ("\n"
+			"QComboBox {\n"
+			"background-color:#09E513;\n" 
+            "}")
+            self.dicc_colores[id].insert(1, (propiedades + agregar_color))
+        elif option == 'Tramites pendientes':
+            color = '#FFFF00'
+            self.dicc_colores[id].insert(0, color)
+            agregar_color = ("\n"
+			"QComboBox {\n"
+			"background-color: #FFFF00;\n" 
+            "}")
+            self.dicc_colores[id].insert(1, (propiedades + agregar_color))
+        elif option == 'Pagos pendientes':
+            color = '#FF0000'
+            self.dicc_colores[id].insert(0, color)
+            agregar_color = ("\n"
+			"QComboBox {\n"
+			"background-color: #FF0000;\n" 
+            "}")
+            self.dicc_colores[id].insert(1, (propiedades + agregar_color))
+        else:
+            color = '#B9B9B9'
+            self.dicc_colores[id].insert(0, color)
+            agregar_color = ("\n"
+			"QComboBox {\n"
+			"background-color: #B9B9B9;\n" 
+            "}")
+            self.dicc_colores[id].insert(1, (propiedades + agregar_color))
+        self.combobox_colores.setStyleSheet(propiedades + agregar_color)
+        print("DICT COLORES: ",self.dicc_colores)
 
+    def propiedadesComboBox(self):
+        css_code = ("\n"
+            "QComboBox {\n"
+            "    width: 30px;\n"
+            "    height: 30px;\n"
+            "    border-radius: 15px;\n"
+            "    border: 1px solid;\n"
+            "    font: 75 12pt \"MS Sans Serif\";\n"
+            "}\n"
+            "\n"
+            "QComboBox::drop-down {\n"
+            "    subcontrol-origin: padding;\n"
+            "    subcontrol-position: top right;\n"
+            "    width: 0px;\n"
+            "    height: 0px;\n"
+            "    border-left-width: 0px;\n"
+            "    border-top-right-radius: 15px;\n"
+            "    border-bottom-right-radius: 15px;\n"
+            "}\n"
+            "\n"
+            "QComboBox QAbstractItemView {\n"
+            "    min-width: 250px;\n"
+            "    border-radius: 6px;\n"
+            "    background-color: rgb(255, 255, 255);\n"
+            "    padding: 10px;\n"
+            "    outline: none;\n"
+            "}\n"
+            "\n"
+            "QComboBox QAbstractItemView::item:hover {\n"
+            "    background-color: #f0f0f0;\n"
+            "}\n")
+        return css_code
     def setupInputs(self, Form, registro, subtabla=False):
         columnas_val_automatico = ['saldo']
         # se eliminan los inputs anteriores
         self.listaregistros_editarregistros = {}
         self.registro_viejo = registro
+        #esto es lo que crea el aviso de fecha vencida
+        if registro['fecha_vence_td'] != None:            
+            fecha_actual = datetime.datetime.now()
+            fecha_vencimiento = datetime.datetime.combine(registro['fecha_vence_td'], datetime.datetime.min.time())
+            #se obtienen los dias festivos con la funcion de el modulo components.py
+            algo,lista_dias_festivos = calcularDia(str(registro['fecha_escritura']))
+            #se calculan los dias laborales de diferencia entre la fecha actual y la de vencimiento
+            dias_sobrantes = workdays.networkdays(fecha_actual,fecha_vencimiento,lista_dias_festivos)
+            print(fecha_actual,fecha_vencimiento)
+            if dias_sobrantes == 0:
+                self.label_aviso_vencimiento.setText("¡La fecha de vencimiento de este registro es hoy!")
+            elif dias_sobrantes < 0:
+                self.label_aviso_vencimiento.setText(f"¡La fecha de vencimiento de este registro ya pasó! Hace {abs(dias_sobrantes)} días")
+            else:
+                self.label_aviso_vencimiento.setText(f"¡La fecha de vencimiento de este registro es en {dias_sobrantes} días!")
+            print(dias_sobrantes)
+
         columnas = getPermisos('tabla_final')["read"]
         columnas_write = getPermisos('tabla_final')["write"]
-        #print('registroooo tabla',registro)
         lista_columnas = columnas.split(',')
         self.lista_columnas_write = columnas_write.split(',')
         propiedades_columnas = listaDescribe('tabla_final',lista_columnas)
@@ -127,6 +222,7 @@ class EditarRegistro(Form, Base):
         for i, col in enumerate(lista_columnas):
             
             enable = True
+            if col == 'fecha_vence_td': enable=False
             if col in columnas_val_automatico: enable=False
             name_input = f"input_{i}"
             name_label = f'label_{i}'
@@ -147,7 +243,7 @@ class EditarRegistro(Form, Base):
             # Label
             attr_label = getattr(self,name_label)
             attr_label.setStyleSheet("\n"
-			"font: 75 16pt;\n"
+			"font: 75 18pt;\n"
 			"color: #666666;\n" 
             "font-weight: 700;")
             attr_label.setObjectName(name_label)
@@ -177,6 +273,9 @@ class EditarRegistro(Form, Base):
                 
             if registro[col] is not None:
                 self.listaregistros_editarregistros[col]=registro[col]
+            if self.findChild(QtWidgets.QDateEdit, 'input_16') != None:
+                print('agregar',self.findChild(QtWidgets.QDateEdit, 'input_16'))
+                self.findChild(QtWidgets.QDateEdit, 'input_16').dateChanged.connect(partial(actualizarFechaVencimiento,self))
                 
     # este metodo carga el registro seleccionado
     def getRegistro(self, Form, index, tabla, col):
@@ -218,7 +317,7 @@ class EditarRegistro(Form, Base):
             # Label
         attr_label = getattr(self,name_label)
         attr_label.setStyleSheet("\n"
-		"font: 75 16pt;\n"
+		"font: 75 18pt;\n"
 		"color: #957F5F;\n" 
         "font-weight: 700;")
         attr_label.setObjectName(name_label)
@@ -265,7 +364,7 @@ class EditarRegistro(Form, Base):
             # Label
             attr_label = getattr(self,name_label)
             attr_label.setStyleSheet("\n"
-			"font: 75 14pt;\n"
+			"font: 75 16pt;\n"
 			"color: #957F5F;\n")
             attr_label.setObjectName(name_label)
             attr_label.setText(getNombreCompletoSubtabla(nombre_tabla,col))
@@ -395,8 +494,6 @@ class EditarRegistro(Form, Base):
                     registro_viejo = registro_viejo[key]
                     if col_name not in self.pri_key:
                         self.pri_key[col_name] = {}
-                    print('col',col_name,'key',key,'id',registro_viejo['id'])
-                    print(self.pri_key[col_name])
                     self.pri_key[col_name][key] = ('id',registro_viejo['id'])
                     print(self.pri_key)
                     
@@ -438,7 +535,6 @@ class EditarRegistro(Form, Base):
                 self.camposCambiados[relacion] = {}
             cols_rel = getPermisos(relacion)['write'].split(',')
             
-            print(cols_rel)
             for col_rel in cols_rel:
                 if col_rel in self.camposCambiados['tabla_final']:
                     registro = getRegistro(relacion,col_rel,self.camposCambiados['tabla_final'][col_rel])
@@ -458,16 +554,11 @@ class EditarRegistro(Form, Base):
                                 self.tablas_agregar[relacion] = {}
                             self.tablas_agregar[relacion][col_rel] = value
                     
-        
-       
-        print("TABLAS DE INSERT",self.tablas_agregar)
-        print("CAMPOS CAMBIADOS",self.camposCambiados)
-        print("LLAVES PRIMARIAS",self.pri_key)
+
         if col == 'cantidad':
             self.saldo = 0            
             if 'pagos' in self.camposCambiados:
                 for index,dicc in self.camposCambiados['pagos'].items():
-                    print('aqui!!!!!',dicc)
                     self.saldo = self.saldo - float(dicc['cantidad'])
             if 'pagos' in self.tablas_agregar:
                 for index,dicc in self.tablas_agregar['pagos'].items():
@@ -510,7 +601,6 @@ class EditarRegistro(Form, Base):
                             query+=f"{col},"
                             vals+= f"'{val}', "
                     if execute:
-                        print(query+vals)
                         cur.execute(query+vals)
                         conn.commit()
             else:
@@ -522,7 +612,6 @@ class EditarRegistro(Form, Base):
                         query+=f"{col},"
                         vals+= f"'{val}', "
                 if execute:
-                    print(query+vals)
                     cur.execute(query+vals)
                     conn.commit()
                     
@@ -536,14 +625,23 @@ class EditarRegistro(Form, Base):
                 continue
             for i, (col, val) in enumerate(dicc.items()):
                 try:
+                    i += 1
+                    if col == 'fecha_escritura':
+                        i +=1
+                        fecha_vencimiento,lista = calcularDia(val)
+                        query+=f" fecha_vence_td = '{fecha_vencimiento}',"
+                    if col == 'fecha_vence_td':
+                        continue
+                    print(tabla,self.pri_key)
                     id_col = self.pri_key[tabla][0]
                     id_value = self.pri_key[tabla][1]
-                    if i+1 == len(dicc): query+= f"{col}='{val}' WHERE  {id_col}='{id_value}'"
+                    print(i,len(dicc))
+                    if i == len(dicc): query+= f"{col}='{val}' WHERE  {id_col}='{id_value}';"
                     else: query+= f"{col}='{val}', "
                 except:
                     execute =False
-            print(query)
             if execute and not subtabla: 
+                print(query)
                 cur.execute(query)
                 conn.commit()
 
@@ -558,14 +656,12 @@ class EditarRegistro(Form, Base):
                     if tabla not in self.pri_key or key not in self.pri_key[tabla]: 
                             execute = False
                             continue
-                    print(dicc)
                     for i, (col,val) in enumerate(dicc.items()):
                         id_col = self.pri_key[tabla][key][0]
                         id_value = self.pri_key[tabla][key][1]
                         if col == 'id': continue
                         if i+1 == len(dicc): query+= f"{col}='{val}' WHERE  {id_col}='{id_value}'"
                         else: query+= f"{col}='{val}', "
-                    print(query)
                     if execute:
                         cur.execute(query)
                         conn.commit()
@@ -576,7 +672,6 @@ class EditarRegistro(Form, Base):
         cur.close()
         conn.close()
         registro = getRegistroBD('tabla_final','id',self.pri_key['tabla_final'][1])[0]
-        print(registro)
         from pages.Tablas import Tablas
         updateTable('tabla_final')
 
@@ -587,3 +682,4 @@ class EditarRegistro(Form, Base):
         return
     
     # def compararCambios(new_val,old_val):
+        

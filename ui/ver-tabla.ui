@@ -20,11 +20,12 @@
       <widget class="QPushButton" name="pushButton_2">
        <property name="styleSheet">
         <string notr="true">QPushButton {
+font-size: 16pt;
 border-radius: 11px;
 border: 2px solid #957F5F;
 background-color: white;
 color: #957F5F;
-height: 25px;
+height: 35px;
 }
 
 QPushButton:hover {
@@ -73,11 +74,12 @@ QPushButton:pressed {
       <widget class="QLineEdit" name="line_edit_busqueda_presupuesto">
        <property name="styleSheet">
         <string notr="true">QLineEdit {
+font-size: 14pt;
 border-radius: 11px;
 border: 1px solid #957F5F;
 background-color: white;
 color: #957F5F;
-height: 25px;
+height: 35px;
 }
 </string>
        </property>
@@ -88,11 +90,12 @@ height: 25px;
        <property name="styleSheet">
         <string notr="true">/* style for the QComboBox */
 #comboBox_busqueda_presupuesto {
+font-size: 14pt;
 border-radius: 11px;
 border: 2px solid #957F5F;
 background-color: #957F5F;
 color: white;
-height: 25px;
+height: 35px;
 min-width:120px;
 padding: 0 15px;
 
@@ -117,7 +120,7 @@ color: white;
 }
 /* style for list menu */
 #comboBox_busqueda_presupuesto QListView {
-font-size: 12px;
+font-size: 14pt;
 border: 1px solid rgba(0, 0, 0, 10%);
 padding: 5px;
 background-color: #957F5F;
@@ -172,16 +175,18 @@ font: 11pt &quot;Segoe UI&quot;;</string>
       <widget class="QTableView" name="tableView">
        <property name="font">
         <font>
-         <pointsize>11</pointsize>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="styleSheet">
         <string notr="true">QTableView {
+font-size:16pt;
 border:none;
 color:#666666;
 }
-QHeaderView::section { background-color:#957F5F; color:white; font: 11pt &quot;Segoe UI&quot;;  padding-left:5px; border: 1px solid white;}
+QHeaderView::section { background-color:#957F5F; color:white; font: 16pt &quot;Segoe UI&quot;;  padding-left:5px; border: 1px solid white;}
 QScrollBar:vertical {
+	font-size: 16pt;
 	border: none;
     background: white;
     width: 10px;

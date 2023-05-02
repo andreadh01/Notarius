@@ -3,15 +3,15 @@ from functools import partial
 from PyQt5 import uic,QtWidgets,QtCore
 import os
 import mysql.connector
-
+import workdays,datetime
 import re
 
 from bdConexion import obtener_conexion
 from pages.Tablas import Tablas
-from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla
+from pages.components import agregarInputsSubtabla, calcularDia, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla,actualizarFechaVencimiento
 from usuarios import getLastElement, getAutoIncrement, getListaTablas, getListaTablasWrite, getNombreColumna, getNombreCompleto, getNombreCompletoSubtabla, getPermisos, getRegistroBD, getRegistrosSubtabla, getSubtabla, getTablaRelacionada, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
 from deployment import getBaseDir
-
+import numpy as np
 
 base_dir = getBaseDir()
 Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','agregar-registros.ui'))
@@ -26,6 +26,8 @@ class AgregarRegistro(Form, Base):
     camposCambiados = {}
     saldo = 0
     cols_auto = {}
+    temp_dicc_colores = {}
+    real_dicc_colores = {}
     def __init__(self, parent=None):
         super(self.__class__,self).__init__(parent)
         self.setupUi(self)
@@ -33,12 +35,58 @@ class AgregarRegistro(Form, Base):
         self.setupColumns(self)
         # cada que se actualice el combobox de tablas, se actualizan los labels de las columnas y se agregan sus debidos inputs
         self.pushButton_confirmar.clicked.connect(self.guardarRegistro)
+        self.combobox_colores.currentTextChanged.connect(self.cargarColores)
         self.pushButton_cancelar.clicked.connect(self.restartRegistro)
+        if self.findChild(QtWidgets.QDateEdit, 'input_16') != None:
+            print('agregar',self.findChild(QtWidgets.QDateEdit, 'input_16'))
+            self.findChild(QtWidgets.QDateEdit, 'input_16').dateChanged.connect(partial(actualizarFechaVencimiento,self))
 			
+    def cargarColores(self):
+        propiedades = self.propiedadesComboBox()
+        #id = self.pri_key['tabla_final'][1]
+        option = self.combobox_colores.currentText()
+        color = ''
+        agregar_color = ''
+        id = getAutoIncrement('tabla_final')
+        self.temp_dicc_colores[id] = []
+        if option == 'Trámites y pagos finalizados':
+            color = '#09E513'
+            self.temp_dicc_colores[id].insert(0, color)
+            agregar_color = ("\n"
+			"QComboBox {\n"
+			"background-color:#09E513;\n" 
+            "}")
+            self.temp_dicc_colores[id].insert(1, (propiedades + agregar_color))
+        elif option == 'Tramites pendientes':
+            color = '#FFFF00'
+            self.temp_dicc_colores[id].insert(0, color)
+            agregar_color = ("\n"
+			"QComboBox {\n"
+			"background-color: #FFFF00;\n" 
+            "}")
+            self.temp_dicc_colores[id].insert(1, (propiedades + agregar_color))
+        elif option == 'Pagos pendientes':
+            color = '#FF0000'
+            self.temp_dicc_colores[id].insert(0, color)
+            agregar_color = ("\n"
+			"QComboBox {\n"
+			"background-color: #FF0000;\n" 
+            "}")
+            self.temp_dicc_colores[id].insert(1, (propiedades + agregar_color))
+        else:
+            color = '#B9B9B9'
+            self.temp_dicc_colores[id].insert(0, color)
+            agregar_color = ("\n"
+			"QComboBox {\n"
+			"background-color: #B9B9B9;\n" 
+            "}")
+            self.temp_dicc_colores[id].insert(1, (propiedades + agregar_color))
+        self.combobox_colores.setStyleSheet(propiedades + agregar_color)
+    
  	# en esta funcion se van a actualizar los labels y se agregaran los inputs segun los labels de las columnas
     def setupColumns(self, Form):
         registros_id = {'id_cc':'cc_fechas_cc','id_ctd':'ctd_fechas_ctd','id_rpp':'rpp_fechas_rpp'}
-        columnas_val_automatico = ['saldo']
+        columnas_val_automatico = ['saldo','fecha_vence_td']
         list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
         # se eliminan los combobox anteriores
         self.camposCambiados.clear()
@@ -49,7 +97,9 @@ class AgregarRegistro(Form, Base):
         propiedades_columnas = listaDescribe(tabla,lista_columnas)
         layout = self.verticalLayout
         index = getValoresTabla(tabla)[-1]['id']
-       
+        restart_color = self.propiedadesComboBox()
+        self.combobox_colores.setStyleSheet(restart_color)
+        self.combobox_colores.setCurrentIndex(0)
         
         # aqui se crea los widgets del label con sus input y se agrega al gui
         for i, col in enumerate(lista_columnas):
@@ -71,12 +121,11 @@ class AgregarRegistro(Form, Base):
                 self.setupInputsSubtabla(col)
                 continue
             if col in columnas_val_automatico: enable=False
-
             setattr(self, name_label, QtWidgets.QLabel(self.scrollAreaWidgetContents))
             # Label
             attr_label = getattr(self,name_label)
             attr_label.setStyleSheet("\n"
-			"font: 75 12pt;\n"
+			"font: 75 18pt;\n"
 			"color: #666666;\n" 
             "font-weight: 700;")
             attr_label.setObjectName(name_label)
@@ -98,6 +147,40 @@ class AgregarRegistro(Form, Base):
                 layout.addWidget(widget)
                 self.cols.append(widget)
 
+    def propiedadesComboBox(self):
+        css_code = ("\n"
+            "QComboBox {\n"
+            "    width: 30px;\n"
+            "    height: 30px;\n"
+            "    border-radius: 15px;\n"
+            "    border: 1px solid;\n"
+            "    background-color: rgb(185, 185, 185);\n"
+            "    font: 75 12pt \"MS Sans Serif\";\n"
+            "}\n"
+            "\n"
+            "QComboBox::drop-down {\n"
+            "    subcontrol-origin: padding;\n"
+            "    subcontrol-position: top right;\n"
+            "    width: 0px;\n"
+            "    height: 0px;\n"
+            "    border-left-width: 0px;\n"
+            "    border-top-right-radius: 15px;\n"
+            "    border-bottom-right-radius: 15px;\n"
+            "}\n"
+            "\n"
+            "QComboBox QAbstractItemView {\n"
+            "    min-width: 250px;\n"
+            "    border-radius: 6px;\n"
+            "    background-color: rgb(255, 255, 255);\n"
+            "    padding: 10px;\n"
+            "    outline: none;\n"
+            "}\n"
+            "\n"
+            "QComboBox QAbstractItemView::item:hover {\n"
+            "    background-color: #f0f0f0;\n"
+            "}\n")
+        return css_code
+    
     def setupInputsSubtabla(self,column):
         nombre_tabla,select = getSubtabla(column)
         columnas = getPermisos(nombre_tabla)["write"]
@@ -137,7 +220,7 @@ class AgregarRegistro(Form, Base):
             # Label
             attr_label = getattr(self,name_label)
             attr_label.setStyleSheet("\n"
-			"font: 75 14pt;\n"
+			"font: 75 16pt;\n"
 			"color: #957F5F;\n")
             attr_label.setObjectName(name_label)
             attr_label.setText(getNombreCompletoSubtabla(nombre_tabla,col))
@@ -251,7 +334,6 @@ class AgregarRegistro(Form, Base):
                 
                 for index,dicc in self.camposCambiados['pagos'].items():
                     self.saldo = self.saldo - dicc['cantidad']
-                    print(dicc['cantidad'])
             if 'depositos' in self.camposCambiados:
                 for index,dicc in self.camposCambiados['depositos'].items():
                     self.saldo = self.saldo + dicc['cantidad']
@@ -259,8 +341,9 @@ class AgregarRegistro(Form, Base):
             self.cols_auto['saldo'].setValue(self.saldo)
             self.cols_auto['saldo'].setEnabled(False)
         
-        print(self.camposCambiados)
     def guardarRegistro(self):
+        self.real_dicc_colores = self.temp_dicc_colores
+        self.temp_dicc_colores.clear()
         lista_pagos = []
         
         tabla = 'tabla_final'
@@ -281,13 +364,17 @@ class AgregarRegistro(Form, Base):
                 subtabla = True
                 continue
             for i, (col, val) in enumerate(dicc.items()):
+                if col == 'fecha_escritura':
+                    fecha_vencimiento,algoinservible = calcularDia(val)
+                    print(fecha_vencimiento)
+                    query+="fecha_vence_td,"
+                    vals+=f"'{fecha_vencimiento}',"
                 if i+1 == len(dicc): 
                     query+= f"{col}) "
                     vals+= f"'{val}');"
                 else: 
                     query+=f"{col},"
                     vals+= f"'{val}', "
-            #print(query+vals)
             if not subtabla: 
                 try:
                     cur.execute(query+vals)
@@ -316,18 +403,16 @@ class AgregarRegistro(Form, Base):
                             query+=f"{col},"
                             vals+= f"'{val}', "
                     
-                    #print(query+vals)
                     cur.execute(query+vals)
                     conn.commit()
                                 
         cur.execute("SET FOREIGN_KEY_CHECKS = 1")
-        cur.execute(query)
+        #cur.execute(query)
         conn.commit()
         cur.close()
         conn.close()
         
         registro = getRegistroBD('tabla_final','id',self.camposCambiados['tabla_final']['id'])[0]
-        print(registro)
         updateTable('tabla_final')
         self.label_exito.setStyleSheet("color:green")
         self.label_exito.setText("Registro guardado exitosamente")
