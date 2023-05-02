@@ -518,3 +518,4 @@ REFERENCES `ctd_fechas_ctd` (`id`)
 ON DELETE CASCADE ON UPDATE CASCADE;
 
 alter table tabla_final add CONSTRAINT `unique` UNIQUE ( no_escritura, bis );
+alter table tabla_final add column color VARCHAR(30) DEFAULT 'gray';
