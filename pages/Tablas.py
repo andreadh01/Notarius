@@ -5,7 +5,7 @@ import pandas as pd
 #python(suversion) -m pip install pandas
 from PyQt5.QtWidgets import QHeaderView, QSizePolicy,QTableView, QAbstractItemView,QPushButton,QMessageBox,QScrollBar,QItemDelegate,QLabel
 from PyQt5.QtCore import Qt,QSortFilterProxyModel, QTimer
-from PyQt5.QtGui import QStandardItemModel,QStandardItem
+from PyQt5.QtGui import QStandardItemModel,QStandardItem, QColor
 from bdConexion import obtener_conexion
 import os
 
@@ -229,6 +229,22 @@ class Tablas(Base, Form):
 					model.setItem(i,j,QStandardItem(str(val)))
 				else:
 					model.setItem(i,j,QStandardItem(str(val)))
+					if col == 'ID' or col == 'id':
+						index = model.index(i, j)
+						valor = int(val)
+						conn = obtener_conexion()
+						cur = conn.cursor()
+						query = f"SELECT color FROM tabla_final WHERE id = {valor}"
+						cur.execute(query)
+						vals = cur.fetchall()[0][0]
+						cur.close()
+						conn.close()
+						if vals == 'green':
+							model.setData(index, QColor("#5AE964"), Qt.BackgroundRole)
+						elif vals == 'yellow':
+							model.setData(index, QColor("#DAF544"), Qt.BackgroundRole)
+						elif vals == 'red':
+							model.setData(index, QColor("#F53E3E"), Qt.BackgroundRole)
 	
 	def agregarRegistro(self,registro):
 		list_nested_tables = ['facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos'] #lista de tablas que deben ser anidadas en los respectivos campos
