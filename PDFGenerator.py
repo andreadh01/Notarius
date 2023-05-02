@@ -95,7 +95,7 @@ def generarPDF(self):
 	print('subtablasssss',subtablas)
 	outfile, _ = QFileDialog.getSaveFileName(filter='PDF Files (*.pdf)')
 	if outfile != '':
-		with open("reporte.html") as f:
+		with open("reporte.html", encoding='utf8') as f:
 			template_content = f.read()
 
 		template = Template(template_content)

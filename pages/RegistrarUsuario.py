@@ -95,8 +95,8 @@ class RegistrarUsuario(Form, Base):
         
         # aqui se crea el widget del checkbox y se agrega al gui
         for i, col in enumerate(lista_columnas):
-            if col == 'color' or col == 'vencimiento_color':
-                continue 
+            # if col == 'color' or col == 'vencimiento_color':
+            #     continue 
             name_ver = f"acceso_{i}_read"
             name_escritura = f"acceso_{i}_write"
             setattr(self, name_ver, QtWidgets.QCheckBox(Form))
