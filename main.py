@@ -14,15 +14,13 @@
 #
 # ///////////////////////////////////////////////////////////////
 
-import subprocess
 import sys
 import os
-import platform
-from PyQt5 import QtWidgets,QtGui,QtCore
+from PyQt5 import QtWidgets,QtGui
 
 
 from ui_functions import *
-from usuarios import clearSession, getAllPermisos
+from usuarios import clearSession, getUsuarioLogueado
 # IMPORT / GUI AND MODULES AND WIDGETS
 # ///////////////////////////////////////////////////////////////
 

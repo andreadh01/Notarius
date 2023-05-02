@@ -1,6 +1,5 @@
 import datetime
 from functools import partial
-from logging import makeLogRecord
 import re
 from PyQt5 import uic, QtWidgets,QtCore
 import os
@@ -8,21 +7,12 @@ import os
 import mysql.connector
 from PDFGenerator import generarPDF
 from bdConexion import obtener_conexion
-from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla, messageBox,calcularDia, actualizarFechaVencimiento
-from usuarios import getAllPermisos, getAutoIncrement, getListaTablasWrite, getNombreColumna, getNombreCompleto, getNombreCompletoSubtabla, getPermisos, getRegistro, getRegistroBD, getRegistrosSubtabla, getSubtabla, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
+from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, calcularDia, actualizarFechaVencimiento
+from usuarios import getAutoIncrement, getListaTablasWrite,  getNombreCompleto, getNombreCompletoSubtabla, getPermisos, getRegistro, getRegistroBD, getRegistrosSubtabla, getSubtabla, getUsuarioLogueado,  listaDescribe, updateTable
 from PyQt5.QtCore import Qt
 from deployment import getBaseDir
-#from reportlab.pdfgen import canvas, 
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import inch
-from reportlab.lib import colors
-from reportlab.lib.enums import TA_LEFT
-from PyQt5.QtWidgets import QFileDialog
-from numpy import busday_count
 import workdays
-from datetime import date , timedelta
+from datetime import date
 
 
 
@@ -336,7 +326,7 @@ class EditarRegistro(Form, Base):
                 new_registro = getRegistrosSubtabla(col,registro[col])
                 self.setupInputsSubtabla(col,new_registro)
                 continue
-            if pri == 'PRI' or col in registros_id.keys() or col == 'color': 
+            if pri == 'PRI' or col in registros_id.keys() or col == 'color' or col == 'vencimiento_color': 
                     if col in registros_id.keys(): self.pri_key[registros_id[col]] = (col,registro[col])
                     elif pri == 'PRI': self.pri_key['tabla_final'] = (col,registro[col])
                     # widget = crearInput(self, tipo_dato, name_input,'tabla_final', registro[col],col, enable=False)

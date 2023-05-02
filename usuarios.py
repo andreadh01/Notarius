@@ -228,7 +228,8 @@ def tablaToDict(user, pwd):
     cur = conn.cursor(dictionary=True)
     for tabla, permisos in dict_permisos.items():
         select = permisos["read"]
-        if tabla == 'tabla_final': query = f"SELECT {select} FROM {tabla} order by no_escritura asc"
+        if tabla == 'tabla_final': 
+            if 'no_escritura' in select: query = f"SELECT {select} FROM {tabla} order by no_escritura asc"
         else: query = f"SELECT {select} FROM {tabla}"
         cur.execute(query)
         valores = cur.fetchall()

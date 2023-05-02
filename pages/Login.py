@@ -1,4 +1,3 @@
-from doctest import master
 import os
 import sys
 from resources_rc import *

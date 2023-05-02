@@ -1,12 +1,8 @@
-from tabnanny import check
 from PyQt5 import uic,QtWidgets,QtCore
 import os
 from bdConexion import obtener_conexion
 from functools import partial
-from PyQt5.QtWidgets import QCheckBox, QWidget
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
-from PyQt5.QtCore import Qt
-from usuarios import getListaTablas, getPermisos, getTablaRelacionada, getUsuarioLogueado, getValoresTabla
+from usuarios import  getPermisos, getTablaRelacionada, getUsuarioLogueado, getValoresTabla
 from deployment import getBaseDir
 
 

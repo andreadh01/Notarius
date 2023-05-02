@@ -1,17 +1,15 @@
-from collections import OrderedDict
 from functools import partial
 from PyQt5 import uic,QtWidgets,QtCore
 import os
 import mysql.connector
-import workdays,datetime
+import datetime
 import re
 
 from bdConexion import obtener_conexion
 from pages.Tablas import Tablas
-from pages.components import agregarInputsSubtabla, calcularDia, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla,actualizarFechaVencimiento
-from usuarios import getLastElement, getAutoIncrement, getListaTablas, getListaTablasWrite, getNombreColumna, getNombreCompleto, getNombreCompletoSubtabla, getPermisos, getRegistroBD, getRegistrosSubtabla, getSubtabla, getTablaRelacionada, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
+from pages.components import agregarInputsSubtabla, calcularDia, crearBoton, crearInput, crearRadioButton, actualizarFechaVencimiento
+from usuarios import getAutoIncrement,  getListaTablasWrite, getNombreCompleto, getNombreCompletoSubtabla, getPermisos,  getSubtabla,  getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
 from deployment import getBaseDir
-import numpy as np
 
 base_dir = getBaseDir()
 Form, Base = uic.loadUiType(os.path.join(base_dir,'ui','agregar-registros.ui'))
@@ -111,7 +109,7 @@ class AgregarRegistro(Form, Base):
             tipo_dato = propiedades_columnas[i][1]
             auto_increment = propiedades_columnas[i][5]
             pri = propiedades_columnas[i][3]
-            if pri == 'PRI' or col in registros_id.keys() or col == 'color':
+            if pri == 'PRI' or col in registros_id.keys() or col == 'color' or col == 'vencimiento_color':
                     # if col in registros_id.keys(): index = getAutoIncrement(registros_id[col])
                     # else: index = getAutoIncrement('tabla_final')
                     # widget = crearInput(self, tipo_dato, name_input,tabla,registro=index,col=col, enable=False)
@@ -351,7 +349,18 @@ class AgregarRegistro(Form, Base):
         if col == 'fecha_presentado':
             date_obj = datetime.datetime.strptime(val, '%Y-%m-%d')
             fecha_vencimiento2=date_obj+datetime.timedelta(days=90)
+            tiempoactual=datetime.date.today()
+            datetime_obj = datetime.datetime.combine(tiempoactual, datetime.datetime.min.time())
+            diferencia = fecha_vencimiento2-datetime_obj
+            diferencia = diferencia.days
+            if(diferencia<7 and diferencia>0):
+                    self.camposCambiados['tabla_final']['vencimiento_color'] = 'yellow'
+            elif(diferencia<=0):
+                    self.camposCambiados['tabla_final']['vencimiento_color'] = 'red'
+            else:
+                    self.camposCambiados['tabla_final']['vencimiento_color'] = 'grey'
             new_date_str = fecha_vencimiento2.strftime('%Y-%m-%d')
+            self.camposCambiados['tabla_final']['fecha_vence'] = new_date_str
             self.camposCambiados['tabla_final']['fecha_vence'] = new_date_str
             self.cols_auto['fecha_vence'].setEnabled(True)
             self.cols_auto['fecha_vence'].setValue(new_date_str)

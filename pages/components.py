@@ -1,9 +1,8 @@
 from functools import partial
 import re
-from PyQt5 import uic, QtWidgets,QtGui,QtCore
-from PyQt5.QtCore import Qt
+from PyQt5 import QtWidgets,QtCore
 from bdConexion import obtener_conexion
-from usuarios import getPermisos, getSubtabla, getUsuarioLogueado, listaDescribe
+from usuarios import getSubtabla, getUsuarioLogueado, listaDescribe
 import secrets, numpy as np, datetime, workdays
 # en este archivo se generan los componentes de gui que se agregaran de forma dinamica
 

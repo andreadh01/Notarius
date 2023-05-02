@@ -19,7 +19,7 @@
 from functools import partial
 import importlib
 import re
-from usuarios import getAllPermisos, getUsuarioLogueado
+from usuarios import getAllPermisos
 from main import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *

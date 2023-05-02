@@ -1,16 +1,15 @@
 from datetime import date
-from functools import partial
 from PyQt5 import uic
 import pandas as pd
 #python(suversion) -m pip install pandas
-from PyQt5.QtWidgets import QHeaderView, QSizePolicy,QTableView, QAbstractItemView,QPushButton,QMessageBox,QScrollBar,QItemDelegate,QLabel
+from PyQt5.QtWidgets import QTableView, QAbstractItemView,QPushButton,QScrollBar,QItemDelegate
 from PyQt5.QtCore import Qt,QSortFilterProxyModel, QTimer
 from PyQt5.QtGui import QStandardItemModel,QStandardItem, QColor
 from bdConexion import obtener_conexion
 import os
 
 from pages.EditarRegistro import EditarRegistro
-from usuarios import getListaTablas, getNombreCompleto, getPermisos, getRegistro, getRegistrosSubtabla, getValoresTabla
+from usuarios import getNombreCompleto, getPermisos, getRegistrosSubtabla, getValoresTabla
 from deployment import getBaseDir
 
 base_dir = getBaseDir()
