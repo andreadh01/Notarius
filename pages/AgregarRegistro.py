@@ -48,40 +48,42 @@ class AgregarRegistro(Form, Base):
         color = ''
         agregar_color = ''
         id = getAutoIncrement('tabla_final')
-        self.temp_dicc_colores[id] = []
         if option == 'Trámites y pagos finalizados':
             color = '#09E513'
-            self.temp_dicc_colores[id].insert(0, color)
+            color = 'green'
+            self.temp_dicc_colores[id] = color
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color:#09E513;\n" 
             "}")
-            self.temp_dicc_colores[id].insert(1, (propiedades + agregar_color))
+            #self.temp_dicc_colores[id].insert(1, (propiedades + agregar_color))
         elif option == 'Tramites pendientes':
             color = '#FFFF00'
-            self.temp_dicc_colores[id].insert(0, color)
+            color = 'yellow'
+            self.temp_dicc_colores[id] = color
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color: #FFFF00;\n" 
             "}")
-            self.temp_dicc_colores[id].insert(1, (propiedades + agregar_color))
         elif option == 'Pagos pendientes':
             color = '#FF0000'
-            self.temp_dicc_colores[id].insert(0, color)
+            color = 'red'
+            self.temp_dicc_colores[id] = color
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color: #FF0000;\n" 
             "}")
-            self.temp_dicc_colores[id].insert(1, (propiedades + agregar_color))
         else:
             color = '#B9B9B9'
-            self.temp_dicc_colores[id].insert(0, color)
+            color = 'gray'
+            self.temp_dicc_colores[id] = color
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color: #B9B9B9;\n" 
             "}")
-            self.temp_dicc_colores[id].insert(1, (propiedades + agregar_color))
         self.combobox_colores.setStyleSheet(propiedades + agregar_color)
+
+
     
  	# en esta funcion se van a actualizar los labels y se agregaran los inputs segun los labels de las columnas
     def setupColumns(self, Form):
@@ -342,8 +344,8 @@ class AgregarRegistro(Form, Base):
             self.cols_auto['saldo'].setEnabled(False)
         
     def guardarRegistro(self):
-        self.real_dicc_colores = self.temp_dicc_colores
-        self.temp_dicc_colores.clear()
+        key_id = list(self.temp_dicc_colores.keys())[0]
+        print("ESTE ES EL TEMMP_DICCICIONARIO: ", self.temp_dicc_colores)
         lista_pagos = []
         
         tabla = 'tabla_final'
@@ -411,6 +413,28 @@ class AgregarRegistro(Form, Base):
         conn.commit()
         cur.close()
         conn.close()
+
+        registro = getRegistroBD('tabla_final','id',self.camposCambiados['tabla_final']['id'])[0]
+        updateTable('tabla_final')
+        self.label_exito.setStyleSheet("color:green")
+        self.label_exito.setText("Registro guardado exitosamente")
+        self.checkThreadTimer = QtCore.QTimer(self)
+        self.checkThreadTimer.setInterval(10000)
+        self.checkThreadTimer.start()
+        self.checkThreadTimer.timeout.connect(partial(self.label_exito.setText,''))
+        self.parent().findChild(Tablas).tabla(self.parent().findChild(Tablas))
+        self.restartRegistro()
+                
+        #insert into {nombre_tabla} (cols[0]) cols[1]
+        # Aquí se ponen los colores en la base de datos pero con el root para q no haya pedos
+        conn = obtener_conexion('root','')
+        cur = conn.cursor()
+        color_status = self.temp_dicc_colores[key_id]
+        query = f"UPDATE tabla_final SET color = '{color_status}' WHERE id = {key_id}"
+        cur.execute(query)
+        conn.commit()
+        cur.close()
+        conn.close()
         
         registro = getRegistroBD('tabla_final','id',self.camposCambiados['tabla_final']['id'])[0]
         updateTable('tabla_final')
@@ -424,6 +448,8 @@ class AgregarRegistro(Form, Base):
         self.restartRegistro()
                 
         #insert into {nombre_tabla} (cols[0]) cols[1]
+        self.temp_dicc_colores.clear()
+
     def restartRegistro(self):
         self.setupColumns(self)
     
