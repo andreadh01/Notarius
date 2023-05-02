@@ -15,6 +15,7 @@ dict_nombres_completos_columnas_subtablas = {
 }
 dict_nombres_completos_columnas = {
     "Estado del registro":"color",
+    "Vencimiento de aviso definitivo": "vencimiento_color",
 	"No de presupuesto":"no_presupuesto",
 	"No de escritura":"no_escritura",
 	"Bis":"bis",

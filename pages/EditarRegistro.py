@@ -690,6 +690,16 @@ class EditarRegistro(Form, Base):
         if col == 'fecha_presentado' and 'fecha_vence' in self.camposCambiados['tabla_final']:
             date_obj = datetime.datetime.strptime(val, '%Y-%m-%d')
             fecha_vencimiento2=date_obj+datetime.timedelta(days=90)
+            tiempoactual=date.today()
+            datetime_obj = datetime.datetime.combine(tiempoactual, datetime.datetime.min.time())
+            diferencia = fecha_vencimiento2-datetime_obj
+            diferencia = diferencia.days
+            if(diferencia<7 and diferencia>0):
+                    self.camposCambiados['tabla_final']['vencimiento_color'] = 'yellow'
+            elif(diferencia<=0):
+                    self.camposCambiados['tabla_final']['vencimiento_color'] = 'red'
+            else:
+                    self.camposCambiados['tabla_final']['vencimiento_color'] = 'grey'
             new_date_str = fecha_vencimiento2.strftime('%Y-%m-%d')
             self.camposCambiados['tabla_final']['fecha_vence'] = new_date_str
             self.cols_auto['fecha_vence'].setEnabled(True)

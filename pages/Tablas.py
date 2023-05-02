@@ -218,7 +218,7 @@ class Tablas(Base, Form):
 		#agregar un evento al filtro para cuando se escribe en el line edit
 		for i, registro in enumerate(tabla):
 			for j, (col, val) in enumerate(registro.items()):
-				if col == 'color':
+				if col == 'color' or col == 'vencimiento_color':
 					model.setItem(i,j,QStandardItem(''))
 					index = model.index(i, j)
 					if val == 'green':

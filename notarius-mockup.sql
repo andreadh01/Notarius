@@ -519,5 +519,8 @@ ON DELETE CASCADE ON UPDATE CASCADE;
 
 alter table tabla_final add CONSTRAINT `unique` UNIQUE ( no_escritura, bis );
 alter table tabla_final add column color VARCHAR(30) DEFAULT 'gray';
+ALTER TABLE tabla_final MODIFY COLUMN color VARCHAR(30) DEFAULT 'gray' after id;
+alter table tabla_final add column vencimiento_color VARCHAR(30) DEFAULT 'gray';
+ALTER TABLE tabla_final MODIFY COLUMN vencimiento_color VARCHAR(30) DEFAULT 'gray' after color;
 alter table tabla_final drop column vencimiento_td;
 alter table tabla_final modify column cat_terminado enum('si','en tramite','correccion') null;
