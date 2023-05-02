@@ -8,7 +8,7 @@ import re
 
 from bdConexion import obtener_conexion
 from pages.Tablas import Tablas
-from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla, calcularDia
+from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla, calcularDia, actualizarFechaVencimiento
 from usuarios import getLastElement, getAutoIncrement, getListaTablas, getListaTablasWrite, getPermisos, getRegistroBD, getRegistrosSubtabla, getSubtabla, getTablaRelacionada, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
 from deployment import getBaseDir
 import numpy as np
@@ -37,6 +37,9 @@ class AgregarRegistro(Form, Base):
         self.pushButton_confirmar.clicked.connect(self.guardarRegistro)
         self.combobox_colores.currentTextChanged.connect(self.cargarColores)
         self.pushButton_cancelar.clicked.connect(self.restartRegistro)
+        if self.findChild(QtWidgets.QDateEdit, 'input_16') != None:
+            print('agregar',self.findChild(QtWidgets.QDateEdit, 'input_16'))
+            self.findChild(QtWidgets.QDateEdit, 'input_16').dateChanged.connect(partial(actualizarFechaVencimiento,self))
 			
     def cargarColores(self):
         propiedades = self.propiedadesComboBox()

@@ -4,7 +4,7 @@ import re
 from PyQt5 import uic, QtWidgets
 import os
 from bdConexion import obtener_conexion
-from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla, messageBox, calcularDia
+from pages.components import agregarInputsSubtabla, crearBoton, crearInput, crearRadioButton, eliminarInputsSubtabla, messageBox, calcularDia, actualizarFechaVencimiento
 from usuarios import getAllPermisos, getAutoIncrement, getListaTablasWrite, getPermisos, getRegistro, getRegistroBD, getRegistrosSubtabla, getSubtabla, getUsuarioLogueado, getValoresTabla, listaDescribe, updateTable
 from PyQt5.QtCore import Qt
 from deployment import getBaseDir
@@ -46,7 +46,8 @@ class EditarRegistro(Form, Base):
         self.pushButton_cancelar.clicked.connect(self.changePage)
         self.pushButton_confirmar.clicked.connect(self.actualizarRegistro)
         self.pushButton_pdf.clicked.connect(self.crearPDF)
-	
+        
+                       
     def crearPDF(self):
         #se abre el filechooser o ajá
         file_path, _ = QFileDialog.getSaveFileName(filter='PDF Files (*.pdf)')
@@ -114,7 +115,7 @@ class EditarRegistro(Form, Base):
         self.listaregistros_editarregistros = []
         self.registro_viejo = registro
         #esto es lo que crea el aviso de fecha vencida
-        if registro['fecha_vence_td'] != None:
+        if registro['fecha_vence_td'] != None:            
             fecha_actual = datetime.datetime.now()
             fecha_vencimiento = datetime.datetime.combine(registro['fecha_vence_td'], datetime.datetime.min.time())
             #se obtienen los dias festivos con la funcion de el modulo components.py
@@ -129,7 +130,6 @@ class EditarRegistro(Form, Base):
             else:
                 self.label_aviso_vencimiento.setText(f"¡La fecha de vencimiento de este registro es en {dias_sobrantes} días!")
             print(dias_sobrantes)
-
 
         columnas = getPermisos('tabla_final')["read"]
         columnas_write = getPermisos('tabla_final')["write"]
@@ -194,6 +194,10 @@ class EditarRegistro(Form, Base):
                 
             if registro[col] is not None:
                 self.listaregistros_editarregistros.append((col,registro[col]))
+
+        if self.findChild(QtWidgets.QDateEdit, 'input_16') != None:
+            print('agregar',self.findChild(QtWidgets.QDateEdit, 'input_16'))
+            self.findChild(QtWidgets.QDateEdit, 'input_16').dateChanged.connect(partial(actualizarFechaVencimiento,self))
                 
     # este metodo carga el registro seleccionado
     def getRegistro(self, Form, index, tabla, col):

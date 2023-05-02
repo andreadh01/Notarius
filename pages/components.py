@@ -72,15 +72,6 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
             registro = QtCore.QDate() if registro == '' else registro
             attr.dateChanged.connect(partial(self.actualizarDict,attr,name_input,nombre_tabla, col,enable))
             attr.setDate(registro)            
-            if col == 'fecha_escritura':
-                fecha_escritura_date = attr.date()
-                variable = attr
-            if 'fecha_escritura_date' in locals():
-                print('aqui estoyyyyy')
-            if col == 'fecha_vence_td' and 'fecha_escritura_date' in locals():
-                print(variable.date(), fecha_escritura_date)
-                variable.dateChanged.connect(partial(actualizarFechaVencimiento, fecha_escritura_date,registro))
-            
             attr.setEnabled(enable)
             
                     
@@ -144,10 +135,12 @@ def crearInput(self,tipo_dato,name_input,nombre_tabla,registro='',col='',enable=
         self.previous[nombre_tabla][col][name_input] = registro
         return attr
 
-def actualizarFechaVencimiento(self,fecha, pene):
-    print(pene)
-    print(pene.objectName())
-    print(self.objectName())
+def actualizarFechaVencimiento(self):
+    #se calcula la nueva fecha de vencimiento
+    fecha = self.findChild(QtWidgets.QDateEdit, 'input_16').date().toPyDate()
+    end_date, cosa_inutil = calcularDia(str(fecha))
+    print(end_date)
+    self.findChild(QtWidgets.QDateEdit, "input_23").setDate(end_date)
 
 def crearRadioButton(self,name_input, nombre_tabla,registro='',col='',enable=True):
         si_radiobutton = f"{name_input}_1"
