@@ -33,7 +33,6 @@ class EditarRegistro(Form, Base):
     tablas_agregar = {}
     saldo = 0
     cols_auto = {}
-    dicc_colores = {}
     
     def __init__(self, parent=None):
         super(self.__class__,self).__init__(parent)

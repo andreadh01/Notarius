@@ -24,7 +24,6 @@ class AgregarRegistro(Form, Base):
     camposCambiados = {}
     saldo = 0
     cols_auto = {}
-    temp_dicc_colores = {}
     def __init__(self, parent=None):
         super(self.__class__,self).__init__(parent)
         self.setupUi(self)
@@ -351,7 +350,7 @@ class AgregarRegistro(Form, Base):
             print(fecha_vencimiento)
             if 'fecha_vence_td' in self.cols_auto:
                 self.cols_auto['fecha_vence_td'].setEnabled(True)
-                self.cols_auto['fecha_vence_td'].seDate(fecha_vencimiento)
+                self.cols_auto['fecha_vence_td'].setDate(fecha_vencimiento)
                 self.cols_auto['fecha_vence_td'].setEnabled(False)
         if col == 'fecha_presentado':
             date_obj = datetime.datetime.strptime(val, '%Y-%m-%d')
@@ -374,7 +373,7 @@ class AgregarRegistro(Form, Base):
                 self.cols_auto['fecha_vence'].setEnabled(False)
         
     def guardarRegistro(self):
-        key_id = list(self.temp_dicc_colores.keys())[0]
+        #key_id = list(self.temp_dicc_colores.keys())[0]
         lista_pagos = []
         
         tabla = 'tabla_final'
@@ -476,7 +475,7 @@ class AgregarRegistro(Form, Base):
         self.restartRegistro()
                 
         #insert into {nombre_tabla} (cols[0]) cols[1]
-        self.temp_dicc_colores.clear()
+        #self.temp_dicc_colores.clear()
 
     def restartRegistro(self):
         propiedades = self.propiedadesComboBox()
