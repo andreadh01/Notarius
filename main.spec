@@ -5,7 +5,10 @@
 block_cipher = None
 
 added_files = [
-         ( './ui', 'ui' )
+         ( './ui', 'ui' ),
+         ( './reporte.html', '.' ),
+         ( './style.css', '.' ),
+         ( './logo.png', '.' )
          ]
 
 a = Analysis(
@@ -31,11 +34,11 @@ exe = EXE(
     [],
     exclude_binaries=True,
     name='Notarius',
-    debug=False,
+    debug=True,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=False,
+    console=True,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
