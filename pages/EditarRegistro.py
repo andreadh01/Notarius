@@ -173,7 +173,7 @@ class EditarRegistro(Form, Base):
 			"QComboBox {\n"
 			"background-color: #B9B9B9;\n" 
             "}")
-        print("ESTE ES EL COLOR: ",self.dicc_colores)
+        #print("ESTE ES EL COLOR: ",self.dicc_colores)
         self.camposCambiados['tabla_final']['color'] = color
         self.combobox_colores.setStyleSheet(propiedades + agregar_color)
 
