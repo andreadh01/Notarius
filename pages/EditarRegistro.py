@@ -105,13 +105,7 @@ class EditarRegistro(Form, Base):
     #                 diccionario[element[0]].append(element[1])
     #     return diccionario
 
-    def colorAsignado(self):
-        id = self.pri_key['tabla_final'][1]
-        conn = obtener_conexion('root','')
-        cur = conn.cursor()
-        query = f"SELECT color FROM tabla_final WHERE id = {id}"
-        cur.execute(query)
-        color = cur.fetchall()[0][0]
+    def colorAsignado(self,color):
         propiedades = self.propiedadesComboBox()
         agregar_color = ""
         status_color = ''
@@ -142,46 +136,46 @@ class EditarRegistro(Form, Base):
         self.combobox_colores.setCurrentText(status_color)
         style = propiedades + agregar_color
         self.combobox_colores.setStyleSheet(style)
-        conn.commit()
-        cur.close()
-        conn.close()
         
     def cargarColores(self):
+        if 'tabla_final' not in self.camposCambiados:
+            self.camposCambiados['tabla_final']={}
         propiedades = self.propiedadesComboBox()
-        id = self.pri_key['tabla_final'][1]
+        #id = self.pri_key['tabla_final'][1]
         option = self.combobox_colores.currentText()
         color = ''
         agregar_color = ''
 
         if option == 'Trámites y pagos finalizados':
             color = 'green'
-            self.dicc_colores[id] = color
+            #self.dicc_colores[id] = color
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color:#09E513;\n" 
             "}")
         elif option == 'Tramites pendientes':
             color = 'yellow'
-            self.dicc_colores[id] = color
+            #self.dicc_colores[id] = color
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color: #FFFF00;\n" 
             "}")
         elif option == 'Pagos pendientes':
             color = 'red'
-            self.dicc_colores[id] = color
+            #self.dicc_colores[id] = color
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color: #FF0000;\n" 
             "}")
         else:
             color = 'gray'
-            self.dicc_colores[id] = color
+            #self.dicc_colores[id] = color
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color: #B9B9B9;\n" 
             "}")
         print("ESTE ES EL COLOR: ",self.dicc_colores)
+        self.camposCambiados['tabla_final']['color'] = color
         self.combobox_colores.setStyleSheet(propiedades + agregar_color)
 
     def propiedadesComboBox(self):
@@ -246,6 +240,8 @@ class EditarRegistro(Form, Base):
     
     def setupInputs(self, Form, registro, subtabla=False):
         columnas_val_automatico = ['saldo','fecha_vence_td','fecha_vence']
+        
+        if registro['color'] != None: self.colorAsignado(registro['color'])
         # se eliminan los inputs anteriores
         self.listaregistros_editarregistros = {}
         self.registro_viejo = registro
@@ -264,6 +260,7 @@ class EditarRegistro(Form, Base):
             else:
                 self.label_aviso_vencimiento.setText(f"¡La fecha de vencimiento de este registro es en {dias_sobrantes} días!")
 
+        
         columnas = getPermisos('tabla_final')["read"]
         columnas_write = getPermisos('tabla_final')["write"]
         lista_columnas = columnas.split(',')
@@ -378,7 +375,6 @@ class EditarRegistro(Form, Base):
     def getRegistro(self, Form, index, tabla, col):
         registro = getRegistro(tabla,col,int(index))
         self.setupInputs(self,registro)
-        self.colorAsignado()
         
     def limpiarString(self,cadena_sucia):
         string_limpio = re.sub("[^0-9]","",cadena_sucia)
@@ -610,7 +606,7 @@ class EditarRegistro(Form, Base):
         
         # aqui se agrega el indice que relaciona la tabla final con la subtabla
         for subtabla, relacion in relacionadas.items():
-            
+            if subtabla or relacion not in getListaTablasWrite(): continue
             col_name = subtabla if subtabla != 'no_facturas' else 'facturas'
             id_col = self.pri_key['tabla_final'][0]
             id_val = self.pri_key['tabla_final'][1]
@@ -666,18 +662,20 @@ class EditarRegistro(Form, Base):
             if 'depositos' in self.tablas_agregar:
                 for index,dicc in self.tablas_agregar['depositos'].items():
                     self.saldo = self.saldo + float(dicc['cantidad'])
-            self.cols_auto['saldo'].setEnabled(True)
-            self.cols_auto['saldo'].setValue(self.saldo)
-            self.cols_auto['saldo'].setEnabled(False)
-        if col == 'fecha_escritura' and 'fecha_vence_td' in self.camposCambiados['tabla_final']:
+            if 'saldo' in self.cols_auto:
+                self.cols_auto['saldo'].setEnabled(True)
+                self.cols_auto['saldo'].setValue(self.saldo)
+                self.cols_auto['saldo'].setEnabled(False)
+        if col == 'fecha_escritura':
             fecha_vencimiento,algoinservible = calcularDia(val)
             self.camposCambiados['tabla_final']['fecha_vence_td'] = fecha_vencimiento
             print(fecha_vencimiento)
             print(self.cols_auto)
-            self.cols_auto['fecha_vence_td'].setEnabled(True)
-            self.cols_auto['fecha_vence_td'].setDate(fecha_vencimiento)
-            self.cols_auto['fecha_vence_td'].setEnabled(False)
-        if col == 'fecha_presentado' and 'fecha_vence' in self.camposCambiados['tabla_final']:
+            if 'fecha_vence_td' in self.cols_auto:
+                self.cols_auto['fecha_vence_td'].setEnabled(True)
+                self.cols_auto['fecha_vence_td'].setDate(fecha_vencimiento)
+                self.cols_auto['fecha_vence_td'].setEnabled(False)
+        if col == 'fecha_presentado':
             date_obj = datetime.datetime.strptime(val, '%Y-%m-%d')
             fecha_vencimiento2=date_obj+datetime.timedelta(days=90)
             tiempoactual=date.today()
@@ -692,9 +690,10 @@ class EditarRegistro(Form, Base):
                     self.camposCambiados['tabla_final']['vencimiento_color'] = 'grey'
             new_date_str = fecha_vencimiento2.strftime('%Y-%m-%d')
             self.camposCambiados['tabla_final']['fecha_vence'] = new_date_str
-            self.cols_auto['fecha_vence'].setEnabled(True)
-            self.cols_auto['fecha_vence'].setDate(fecha_vencimiento2)
-            self.cols_auto['fecha_vence'].setEnabled(False)
+            if 'fecha_vence' in self.cols_auto:
+                self.cols_auto['fecha_vence'].setEnabled(True)
+                self.cols_auto['fecha_vence'].setDate(fecha_vencimiento2)
+                self.cols_auto['fecha_vence'].setEnabled(False)
     def actualizarRegistro(self):
         subtablas = ['no_facturas','fechas_catastro_calif','fechas_catastro_td','fechas_rpp','desgloce_ppto','pagos','depositos']
         user, pwd = getUsuarioLogueado()
@@ -797,16 +796,16 @@ class EditarRegistro(Form, Base):
         cur.close()
         conn.close()
 
-        conn = obtener_conexion('root','')
-        cur = conn.cursor()
-        key_id = next(iter(self.dicc_colores.keys()))
-        color_status = self.dicc_colores[key_id]
-        query = f"UPDATE tabla_final SET color = '{color_status}' WHERE id = {key_id}"
-        cur.execute(query)
-        conn.commit()
-        cur.close()
-        conn.close()
-        self.dicc_colores.clear()
+        # conn = obtener_conexion('root','')
+        # cur = conn.cursor()
+        # key_id = next(iter(self.dicc_colores.keys()))
+        # color_status = self.dicc_colores[key_id]
+        # query = f"UPDATE tabla_final SET color = '{color_status}' WHERE id = {key_id}"
+        # cur.execute(query)
+        # conn.commit()
+        # cur.close()
+        # conn.close()
+        # self.dicc_colores.clear()
 
         registro = getRegistroBD('tabla_final','id',self.pri_key['tabla_final'][1])[0]
         from pages.Tablas import Tablas

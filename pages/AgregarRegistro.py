@@ -39,6 +39,9 @@ class AgregarRegistro(Form, Base):
             self.findChild(QtWidgets.QDateEdit, 'input_16').dateChanged.connect(partial(actualizarFechaVencimiento,self))
 			
     def cargarColores(self):
+        if 'tabla_final' not in self.camposCambiados:
+            self.camposCambiados['tabla_final']={}
+        
         propiedades = self.propiedadesComboBox()
         #id = self.pri_key['tabla_final'][1]
         option = self.combobox_colores.currentText()
@@ -48,7 +51,8 @@ class AgregarRegistro(Form, Base):
         if option == 'Trámites y pagos finalizados':
             color = '#09E513'
             color = 'green'
-            self.temp_dicc_colores[id] = color
+            
+            #self.temp_dicc_colores[id] = color
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color:#09E513;\n" 
@@ -57,7 +61,7 @@ class AgregarRegistro(Form, Base):
         elif option == 'Tramites pendientes':
             color = '#FFFF00'
             color = 'yellow'
-            self.temp_dicc_colores[id] = color
+            #self.temp_dicc_colores[id] = color
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color: #FFFF00;\n" 
@@ -65,7 +69,7 @@ class AgregarRegistro(Form, Base):
         elif option == 'Pagos pendientes':
             color = '#FF0000'
             color = 'red'
-            self.temp_dicc_colores[id] = color
+            #self.temp_dicc_colores[id] = color
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color: #FF0000;\n" 
@@ -73,11 +77,12 @@ class AgregarRegistro(Form, Base):
         else:
             color = '#B9B9B9'
             color = 'gray'
-            self.temp_dicc_colores[id] = color
+            #self.temp_dicc_colores[id] = color
             agregar_color = ("\n"
 			"QComboBox {\n"
 			"background-color: #B9B9B9;\n" 
             "}")
+        self.camposCambiados['tabla_final']['color'] = color
         self.combobox_colores.setStyleSheet(propiedades + agregar_color)
 
 
@@ -310,7 +315,7 @@ class AgregarRegistro(Form, Base):
             if col in columnas_write: self.camposCambiados[tabla][col] = val                    
         
         for tabla, relacion in relacionadas.items():
-            if relacion not in getListaTablasWrite(): continue
+            if relacion or tabla not in getListaTablasWrite(): continue
             if relacion not in self.camposCambiados: 
                 self.camposCambiados[relacion] = {}
             cols_rel = getPermisos(relacion)['write'].split(',')
@@ -336,16 +341,18 @@ class AgregarRegistro(Form, Base):
             if 'depositos' in self.camposCambiados:
                 for index,dicc in self.camposCambiados['depositos'].items():
                     self.saldo = self.saldo + dicc['cantidad']
-            self.cols_auto['saldo'].setEnabled(True)
-            self.cols_auto['saldo'].setValue(self.saldo)
-            self.cols_auto['saldo'].setEnabled(False)
+            if 'saldo' in self.cols_auto:
+                self.cols_auto['saldo'].setEnabled(True)
+                self.cols_auto['saldo'].setValue(self.saldo)
+                self.cols_auto['saldo'].setEnabled(False)
         if col == 'fecha_escritura':
             fecha_vencimiento,algoinservible = calcularDia(val)
             self.camposCambiados['tabla_final']['fecha_vence_td'] = fecha_vencimiento
             print(fecha_vencimiento)
-            self.cols_auto['fecha_vence_td'].setEnabled(True)
-            self.cols_auto['fecha_vence_td'].setValue(fecha_vencimiento)
-            self.cols_auto['fecha_vence_td'].setEnabled(False)
+            if 'fecha_vence_td' in self.cols_auto:
+                self.cols_auto['fecha_vence_td'].setEnabled(True)
+                self.cols_auto['fecha_vence_td'].seDate(fecha_vencimiento)
+                self.cols_auto['fecha_vence_td'].setEnabled(False)
         if col == 'fecha_presentado':
             date_obj = datetime.datetime.strptime(val, '%Y-%m-%d')
             fecha_vencimiento2=date_obj+datetime.timedelta(days=90)
@@ -361,10 +368,10 @@ class AgregarRegistro(Form, Base):
                     self.camposCambiados['tabla_final']['vencimiento_color'] = 'grey'
             new_date_str = fecha_vencimiento2.strftime('%Y-%m-%d')
             self.camposCambiados['tabla_final']['fecha_vence'] = new_date_str
-            self.camposCambiados['tabla_final']['fecha_vence'] = new_date_str
-            self.cols_auto['fecha_vence'].setEnabled(True)
-            self.cols_auto['fecha_vence'].setValue(new_date_str)
-            self.cols_auto['fecha_vence'].setEnabled(False)
+            if 'fecha_vence' in self.cols_auto:
+                self.cols_auto['fecha_vence'].setEnabled(True)
+                self.cols_auto['fecha_vence'].setDate(fecha_vencimiento2)
+                self.cols_auto['fecha_vence'].setEnabled(False)
         
     def guardarRegistro(self):
         key_id = list(self.temp_dicc_colores.keys())[0]
@@ -448,14 +455,14 @@ class AgregarRegistro(Form, Base):
                 
         #insert into {nombre_tabla} (cols[0]) cols[1]
         # Aquí se ponen los colores en la base de datos pero con el root para q no haya pedos
-        conn = obtener_conexion('root','')
-        cur = conn.cursor()
-        color_status = self.temp_dicc_colores[key_id]
-        query = f"UPDATE tabla_final SET color = '{color_status}' WHERE id = {key_id}"
-        cur.execute(query)
-        conn.commit()
-        cur.close()
-        conn.close()
+        # conn = obtener_conexion('root','')
+        # cur = conn.cursor()
+        # color_status = self.temp_dicc_colores[key_id]
+        # query = f"UPDATE tabla_final SET color = '{color_status}' WHERE id = {key_id}"
+        # cur.execute(query)
+        # conn.commit()
+        # cur.close()
+        # conn.close()
         
         #registro = getRegistroBD('tabla_final','id',self.camposCambiados['tabla_final']['id'])[0]
         updateTable('tabla_final')
